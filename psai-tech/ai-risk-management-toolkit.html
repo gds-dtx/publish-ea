@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Risk Management Toolkit — Guidance</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans 3', Arial, sans-serif; color: #1A2B4A; background: #fff; line-height: 1.6; }
+
+        .header { background: #fff; border-bottom: 3px solid #1A1A1A; padding: 20px 40px; display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+        .header h1 { font-size: 1.6rem; font-weight: 700; color: #1A1A1A; }
+        .header span { font-size: 0.9rem; color: #555555; }
+
+        .tab-bar { background: #F5F5F5; border-bottom: 1px solid #D0D0D0; padding: 0 40px; display: flex; gap: 0; overflow-x: auto; position: sticky; top: 0; z-index: 10; }
+        .tab-btn { padding: 14px 20px; font-size: 0.9rem; font-weight: 600; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; color: #555555; white-space: nowrap; }
+        .tab-btn:hover { color: #1A1A1A; background: #F0F0F0; }
+        .tab-btn.active { color: #1A1A1A; border-bottom-color: #1A1A1A; background: #fff; }
+
+        .content { max-width: 1080px; margin: 0 auto; padding: 40px; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        h2 { font-size: 1.6rem; color: #1A1A1A; margin-bottom: 16px; font-weight: 700; }
+        h3 { font-size: 1.2rem; color: #1A1A1A; margin: 24px 0 10px; font-weight: 700; }
+        h4 { font-size: 1rem; color: #1A2B4A; margin: 16px 0 8px; font-weight: 700; }
+        p { font-size: 1rem; margin-bottom: 12px; }
+        ul, ol { margin: 8px 0 16px 24px; }
+        li { margin-bottom: 8px; font-size: 0.95rem; }
+
+        table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 0.9rem; }
+        th { background: #1A1A1A; color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; }
+        td { padding: 10px 14px; border-bottom: 1px solid #E5E5E5; vertical-align: top; }
+        tr:nth-child(even) td { background: #F5F5F5; }
+
+        .card { background: #F5F5F5; border-left: 4px solid #1A1A1A; padding: 16px 20px; margin: 16px 0; }
+        .card-title { font-weight: 700; color: #1A1A1A; margin-bottom: 6px; }
+
+        .themes { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+        .theme-pill { background: #F0F0F0; border: 1px solid #1A1A1A; color: #1A1A1A; padding: 6px 14px; font-size: 0.8rem; font-weight: 600; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 16px 0 24px; }
+        .grid .card { margin: 0; }
+
+        details { background: #FAFAFA; border: 1px solid #E0E0E0; border-left: 4px solid #1A1A1A; padding: 12px 16px; margin-bottom: 10px; }
+        details summary { cursor: pointer; font-weight: 700; color: #1A1A1A; font-size: 1rem; }
+        details[open] summary { margin-bottom: 10px; }
+        details ul { margin-top: 8px; }
+
+        .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 16px 0 24px; }
+        .scale-cell { padding: 12px; color: #fff; font-weight: 600; font-size: 0.85rem; text-align: center; }
+        .s1 { background: #2E7D32; }
+        .s2 { background: #66BB6A; }
+        .s3 { background: #FBC02D; color: #1A1A1A; }
+        .s4 { background: #EF6C00; }
+        .s5 { background: #C62828; }
+
+        .matrix { display: grid; grid-template-columns: 80px repeat(5, 1fr); gap: 2px; margin: 16px 0 24px; font-size: 0.8rem; }
+        .matrix div { padding: 10px; text-align: center; font-weight: 600; }
+        .m-head { background: #1A1A1A; color: #fff; }
+        .m-low { background: #C8E6C9; color: #1A1A1A; }
+        .m-med { background: #FFF59D; color: #1A1A1A; }
+        .m-high { background: #FFAB91; color: #1A1A1A; }
+        .m-crit { background: #EF9A9A; color: #1A1A1A; }
+
+        .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.85rem; margin-bottom: 24px; }
+        .legend span { padding: 4px 10px; }
+
+        .search-box { width: 100%; padding: 10px 14px; font-size: 0.95rem; border: 2px solid #1A1A1A; margin-bottom: 16px; font-family: inherit; }
+
+        .nav-jump { background: #F0F0F0; padding: 12px 16px; margin-bottom: 20px; border-left: 4px solid #1A1A1A; }
+        .nav-jump a { color: #1A1A1A; text-decoration: none; font-weight: 600; margin-right: 16px; font-size: 0.9rem; border-bottom: 1px dashed #1A1A1A; }
+        .nav-jump a:hover { color: #C62828; }
+
+        @media print {
+            .header, .tab-bar, .nav-jump, .search-box { display: none; }
+            .tab-panel { display: block !important; page-break-before: always; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>AI Risk Management Toolkit — Guidance</h1>
+    <span>Reference: D02_AI Risk Management toolkit_v1</span>
+</div>
+
+<div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('overview', event)">Overview</button>
+    <button class="tab-btn" onclick="showTab('team', event)">Team & Roles</button>
+    <button class="tab-btn" onclick="showTab('identify', event)">Risk Identification</button>
+    <button class="tab-btn" onclick="showTab('appetite', event)">Risk Appetite</button>
+    <button class="tab-btn" onclick="showTab('quantify', event)">Quantifying Risks</button>
+    <button class="tab-btn" onclick="showTab('impacts', event)">Impact Scales</button>
+    <button class="tab-btn" onclick="showTab('treatment', event)">Treatment Options</button>
+    <button class="tab-btn" onclick="showTab('questions', event)">Question Bank</button>
+    <button class="tab-btn" onclick="showTab('resources', event)">Resources</button>
+</div>
+
+<div class="content">
+
+<!-- =================== OVERVIEW =================== -->
+<div id="overview" class="tab-panel active">
+    <h2>Purpose of the Toolkit</h2>
+    <p>The AI Risk Management Toolkit supports anyone involved in the design, operation, procurement and delivery of products empowered by or enabled by AI. It is intended as a starting point for multi-disciplinary project teams looking to implement good risk management practices across the full AI lifecycle.</p>
+
+    <div class="themes">
+        <span class="theme-pill">Identify</span>
+        <span class="theme-pill">Assess</span>
+        <span class="theme-pill">Treat</span>
+        <span class="theme-pill">Monitor</span>
+        <span class="theme-pill">Report</span>
+    </div>
+
+    <h3>Quick navigation</h3>
+    <div class="nav-jump">
+        <a onclick="showTab('team', null, this)">Team & Roles</a>
+        <a onclick="showTab('identify', null, this)">Risk Categories</a>
+        <a onclick="showTab('appetite', null, this)">Risk Appetite</a>
+        <a onclick="showTab('quantify', null, this)">Likelihood & Impact</a>
+        <a onclick="showTab('treatment', null, this)">Treatment</a>
+        <a onclick="showTab('questions', null, this)">Question Bank</a>
+    </div>
+
+    <h3>What's in the toolkit</h3>
+    <div class="grid">
+        <div class="card">
+            <div class="card-title">Risk Assessment Guide</div>
+            <p>Best practice aligned with the Orange Book's Risk Management Framework.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">Critical Questions</div>
+            <p>A set of probing questions to expose where AI risks are hiding for your specific solution.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">Risk Workbook</div>
+            <p>A record of identified risks, their assessment and associated treatment actions.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">Risk Monitoring Dashboard</div>
+            <p>An overall perspective on the risk profile of the AI solution with chances of different degrees of success and failure.</p>
+        </div>
+    </div>
+
+    <h3>Why ongoing risk management matters</h3>
+    <ul>
+        <li>AI systems change and evolve during their lifetime — there is no "final version" to validate against.</li>
+        <li>The ability to address risks is maximised if they are identified at the outset (legal, ethical and robust by design).</li>
+        <li>The legal, regulatory and ethical landscape, and technical capabilities, are continually evolving.</li>
+        <li>Risks and treatments must be continuously re-assessed — new risks may arise, or treatments may lose efficacy.</li>
+    </ul>
+
+    <div class="card">
+        <div class="card-title">Alignment with the Orange Book</div>
+        <p>The Toolkit implements Section D (Risk Management Processes): risk identification and assessment, risk treatment, risk monitoring, and risk reporting. It is designed to work together with the Cyber Assessment Framework (CAF).</p>
+    </div>
+</div>
+
+<!-- =================== TEAM & ROLES =================== -->
+<div id="team" class="tab-panel">
+    <h2>The AI Risk Management Team</h2>
+    <p>A multi-disciplinary team is required to drive active risk identification and management. The team should ideally be led by an identifiable individual known as an <strong>AI governance officer</strong>. An individual or smaller team may hold multiple responsibilities.</p>
+
+    <h3>Roles and responsibilities</h3>
+    <table>
+        <tr><th>Role</th><th>Responsibilities</th></tr>
+        <tr><td>AI governance officer</td><td>Implementation and oversight of processes, activities and policies relating to the use of AI within the organisation, directorate or team.</td></tr>
+        <tr><td>Senior leaders</td><td>Steer the direction and success of AI solutions through defining a long-term vision and setting risk appetite and tolerance.</td></tr>
+        <tr><td>Data teams</td><td>Manage the environment and process through which AI solutions are developed; manage data architecture, flows and lineage.</td></tr>
+        <tr><td>AI practitioners</td><td>Data scientists, ML/AI engineers responsible for producing AI solutions that automate tasks and solve key problems.</td></tr>
+        <tr><td>Security team</td><td>Ensure AI solutions and infrastructure function safely; monitor and minimise threat of cyber-attacks; ensure compliance.</td></tr>
+        <tr><td>Legal & compliance</td><td>Ensure AI solutions operate in alignment with applicable laws, regulations and organisational policies.</td></tr>
+        <tr><td>Business domain experts</td><td>Provide insights and expertise in the production and implementation of AI solutions within a specific context.</td></tr>
+        <tr><td>End users</td><td>Direct and indirect stakeholders who engage with and use AI solutions, including internal colleagues and external stakeholders.</td></tr>
+    </table>
+
+    <div class="card">
+        <div class="card-title">Central log of AI risks</div>
+        <p>GDS encourages departments to keep a central log of AI risks and share these with GDS and DSIT's Central AI Risk Toolkit Team (CAIRF). This helps prioritise risks where investment in causal mapping and treatment options would provide maximum benefit.</p>
+    </div>
+</div>
+
+<!-- =================== RISK IDENTIFICATION =================== -->
+<div id="identify" class="tab-panel">
+    <h2>AI Risk Identification</h2>
+    <p>A risk is a potential future uncertain event that affects your objectives and impacts the outcomes. Your team should aim to identify as many potential scenarios as possible, however unlikely they may seem.</p>
+
+    <div class="card">
+        <div class="card-title">When to reassess risks</div>
+        <ul>
+            <li>When a machine learning model has sufficient monitoring to capture drift and the underlying model is updated.</li>
+            <li>After Alpha and Beta releases.</li>
+            <li>Upon creating a live service — continuously monitor performance and stress test.</li>
+            <li>Use real-world Alpha/Beta scenarios to monitor unforeseen failures and analyse past incidents.</li>
+        </ul>
+    </div>
+
+    <h3>The nine AI risk categories</h3>
+    <p>Use these categories to direct activities and ensure thorough investigation. Click each category to see scope.</p>
+
+    <details>
+        <summary>💰 Financial</summary>
+        <p>Risks that could lead to financial losses for the organisation, including increased operational costs, expenses related to fixing or maintaining AI solutions, and potential financial implications from automated decisions.</p>
+    </details>
+    <details>
+        <summary>⚖️ Legal and regulatory compliance</summary>
+        <p>Risks related to failing to meet legal frameworks, regulatory regimes and guidance — including data protection, equality law, and compliance with evolving AI-specific laws (e.g. EU AI Act, UK GDPR).</p>
+    </details>
+    <details>
+        <summary>🔍 Appropriate transparency and explainability</summary>
+        <p>Risks related to the AI solution's lack of transparency or explainability — whether users and those impacted understand how it works, its decision-making, and that they are interacting with AI.</p>
+    </details>
+    <details>
+        <summary>⚖️ Fairness</summary>
+        <p>Risks of the AI solution being unfair, biased, or discriminatory towards specific groups; impact on individual rights or creation of unfair market outcomes; compliance with equality laws.</p>
+    </details>
+    <details>
+        <summary>👥 Accountability and governance</summary>
+        <p>Risks associated with a lack of clear accountability and effective governance — identifying who is responsible, establishing risk management processes, ensuring clear communication and roles.</p>
+    </details>
+    <details>
+        <summary>🛡️ Contestability and redress</summary>
+        <p>Risks related to the ability of users or affected parties to contest outputs or seek redress if harmed — accessible and transparent redress mechanisms and procedures.</p>
+    </details>
+    <details>
+        <summary>⚙️ Technical robustness</summary>
+        <p>Risks related to the AI solution's ability to function reliably and maintain performance — data quality, model reliability, and ability to perform under unexpected situations or data.</p>
+    </details>
+    <details>
+        <summary>🔒 Security</summary>
+        <p>Risks from threats arising from deployment — data poisoning, leakage, cyber-attacks. Whether the organisation is more vulnerable and if security measures are in place.</p>
+    </details>
+    <details>
+        <summary>🌍 Risks to people and the environment</summary>
+        <p>Risks concerning impact on physical and mental well-being, safety of critical infrastructure and the environment — likelihood of safety-related incidents and mitigation steps.</p>
+    </details>
+</div>
+
+<!-- =================== RISK APPETITE =================== -->
+<div id="appetite" class="tab-panel">
+    <h2>AI Risk Appetite</h2>
+    <p>Before planning risk treatments, the severity and likelihood of a risk must be compared to the risk appetite. This appetite should be set at an organisational level, aligned with the department's wider risk appetite, and signed off at board level.</p>
+
+    <div class="card">
+        <div class="card-title">Why appetite matters</div>
+        <p>Without clearly defined and measurable levels of risk appetite, users will encounter challenges and blockers when trying to manage risks for new AI tooling — stifling innovation. A properly communicated and appropriate risk appetite actively enables your organisation to achieve its targets.</p>
+    </div>
+
+    <h3>Appetite levels (Orange Book aligned)</h3>
+    <div class="scale">
+        <div class="scale-cell s1">Averse</div>
+        <div class="scale-cell s2">Minimal</div>
+        <div class="scale-cell s3">Cautious</div>
+        <div class="scale-cell s4">Open</div>
+        <div class="scale-cell s5">Eager</div>
+    </div>
+
+    <h3>Appetite by risk category</h3>
+    <p>Use the dropdowns below to compare appetite levels across each AI risk category.</p>
+
+    <details open>
+        <summary>Legal, regulatory and compliance</summary>
+        <table>
+            <tr><th>Level</th><th>Definition</th></tr>
+            <tr><td>Averse</td><td>Zero appetite for any AI project with the chance of legal challenge, even if highly unlikely to be successful.</td></tr>
+            <tr><td>Minimal</td><td>Appetite limited to AI projects with no chance of any significant legal challenge.</td></tr>
+            <tr><td>Cautious</td><td>Appetite limited to AI projects with little chance of a successful legal challenge.</td></tr>
+            <tr><td>Open</td><td>Appetite for projects with potential to expose the department to legal challenge, but only where mitigation steps are taken and gain outweighs impact.</td></tr>
+            <tr><td>Eager</td><td>Appetite for projects with potential to expose the department to legal challenge where chances of a successful challenge are high but exceptional benefits could be realised.</td></tr>
+        </table>
+    </details>
+
+    <details>
+        <summary>Accountability and governance</summary>
+        <table>
+            <tr><th>Level</th><th>Definition</th></tr>
+            <tr><td>Averse</td><td>Avoid AI projects with accountability/governance risk. No decisions outside AI processes; significant resource on detection and prevention.</td></tr>
+            <tr><td>Minimal</td><td>Willing to consider low accountability/governance risk projects which support delivery of priorities; robust controls and sanctions.</td></tr>
+            <tr><td>Cautious</td><td>Willing to consider projects where benefits outweigh some risk; processes enable cautious risk taking.</td></tr>
+            <tr><td>Open</td><td>Ready to take on projects with accountability/governance risk when benefits outweigh risks; controls varied to reflect scale.</td></tr>
+            <tr><td>Eager</td><td>Ready to take on high-risk AI projects when benefits outweigh risks; processes support informed risk taking.</td></tr>
+        </table>
+    </details>
+
+    <details>
+        <summary>Contestability and redress</summary>
+        <table>
+            <tr><th>Level</th><th>Definition</th></tr>
+            <tr><td>Averse</td><td>Zero appetite where third parties could contest an AI decision or outcome.</td></tr>
+            <tr><td>Minimal</td><td>Limited to projects with very small likelihood of being contested.</td></tr>
+            <tr><td>Cautious</td><td>Little chance of contestation, with appropriate steps to minimise likelihood.</td></tr>
+            <tr><td>Open</td><td>Potential for contestation, with steps taken to minimise likelihood.</td></tr>
+            <tr><td>Eager</td><td>Likely to be contested — only where potential benefits outweigh risks.</td></tr>
+        </table>
+    </details>
+
+    <details>
+        <summary>Appropriate transparency and explainability</summary>
+        <table>
+            <tr><th>Level</th><th>Definition</th></tr>
+            <tr><td>Averse</td><td>Avoid projects with associated transparency/explainability risks; significant resource on open communication.</td></tr>
+            <tr><td>Minimal</td><td>Willing to consider low transparency/explainability risk projects supporting delivery.</td></tr>
+            <tr><td>Cautious</td><td>Appropriate processes ensure communication of information; enable cautious risk taking.</td></tr>
+            <tr><td>Open</td><td>Considered risk taking; controls varied; trade-off between accuracy and explainability.</td></tr>
+            <tr><td>Eager</td><td>High-risk projects when benefits outweigh transparency/explainability risks.</td></tr>
+        </table>
+    </details>
+
+    <details>
+        <summary>Fairness</summary>
+        <table>
+            <tr><th>Level</th><th>Definition</th></tr>
+            <tr><td>Averse</td><td>Zero appetite for projects that may impact rights, discriminate unfairly, or create unfair market outcomes.</td></tr>
+            <tr><td>Minimal</td><td>Low chance of repercussion to rights/discrimination; only if essential with significant mitigation (e.g. human-in-the-loop).</td></tr>
+            <tr><td>Cautious</td><td>Little chance of significant unfair impact; only if benefits outweigh risk with mitigation steps.</td></tr>
+            <tr><td>Open</td><td>Potential for impact on rights; benefits outweigh risks; appropriate controls to minimise.</td></tr>
+            <tr><td>Eager</td><td>High risk that rights will be impacted — only when exceptional benefits could be realised with appropriate steps.</td></tr>
+        </table>
+    </details>
+
+    <details>
+        <summary>Technical robustness</summary>
+        <table>
+            <tr><th>Level</th><th>Definition</th></tr>
+            <tr><td>Averse</td><td>Zero appetite for AI systems unable to reliably function as intended throughout the lifecycle.</td></tr>
+            <tr><td>Minimal</td><td>Only essential developments to protect current operations.</td></tr>
+            <tr><td>Cautious</td><td>Accept need for robustness with stress testing, KPIs and continuous improvement.</td></tr>
+            <tr><td>Open</td><td>Robustness considered to enable improved delivery; Agile principles may be followed.</td></tr>
+            <tr><td>Eager</td><td>New AI technologies viewed as key enabler; Agile embraced over secure-by-design.</td></tr>
+        </table>
+    </details>
+
+    <details>
+        <summary>Environment and people</summary>
+        <table>
+            <tr><th>Level</th><th>Definition</th></tr>
+            <tr><td>Averse</td><td>Zero appetite for high chance of repercussions to wellbeing or safety of critical infrastructure.</td></tr>
+            <tr><td>Minimal</td><td>Low chance of repercussion; only if essential with significant mitigation.</td></tr>
+            <tr><td>Cautious</td><td>Little chance of significant impact; only if benefits outweigh risk with mitigation.</td></tr>
+            <tr><td>Open</td><td>Potential for impact; benefits outweigh risks; appropriate controls.</td></tr>
+            <tr><td>Eager</td><td>High-risk projects where exceptional benefits could be realised.</td></tr>
+        </table>
+    </details>
+
+    <details>
+        <summary>Security</summary>
+        <table>
+            <tr><th>Level</th><th>Definition</th></tr>
+            <tr><td>Averse</td><td>No tolerance for security risks (data poisoning, leakage, perturbation, prompt injection).</td></tr>
+            <tr><td>Minimal</td><td>Minimal appetite; stringent security measures.</td></tr>
+            <tr><td>Cautious</td><td>Limited risks accepted to support business needs; appropriate security measures.</td></tr>
+            <tr><td>Open</td><td>Cautious acceptance to support business needs; controls varied to scale.</td></tr>
+            <tr><td>Eager</td><td>Willing to accept security risks to support business needs; security measures in place.</td></tr>
+        </table>
+    </details>
+
+    <details>
+        <summary>Financial</summary>
+        <table>
+            <tr><th>Level</th><th>Definition</th></tr>
+            <tr><td>Averse</td><td>No appetite for any financial impact or loss from the AI solution.</td></tr>
+            <tr><td>Minimal</td><td>Department willing to accept minimal financial impact if essential to delivery.</td></tr>
+            <tr><td>Cautious</td><td>Seeks safe AI delivery; cautious of residual financial loss; only if it provides benefits.</td></tr>
+            <tr><td>Open</td><td>Prepared to invest in AI for productivity benefits while minimising financial losses.</td></tr>
+            <tr><td>Eager</td><td>Prepared to invest for best possible benefits, accepting possibility of financial losses with controls.</td></tr>
+        </table>
+    </details>
+</div>
+
+<!-- =================== QUANTIFYING =================== -->
+<div id="quantify" class="tab-panel">
+    <h2>Quantifying AI Risks</h2>
+    <p>Once risks are identified, score impact and likelihood between <strong>1 and 5</strong>. The risk score is the product of likelihood × impact. Your team may apply weightings reflecting relative importance (e.g. an internal-facing system may weight contestability higher than financial).</p>
+
+    <h3>Likelihood scale</h3>
+    <table>
+        <tr><th>Level</th><th>Description</th><th>Probability range</th></tr>
+        <tr><td><strong>1 — Rare</strong></td><td>Highly unlikely to occur</td><td>&lt; 5%</td></tr>
+        <tr><td><strong>2 — Unlikely</strong></td><td>Unlikely but possible</td><td>5% – 20%</td></tr>
+        <tr><td><strong>3 — Possible</strong></td><td>Possible to occur at some time</td><td>20% – 50%</td></tr>
+        <tr><td><strong>4 — Likely</strong></td><td>Likely to occur in many circumstances</td><td>50% – 80%</td></tr>
+        <tr><td><strong>5 — Almost Certain</strong></td><td>Almost certain to occur</td><td>&gt; 80%</td></tr>
+    </table>
+
+    <h3>Methods for estimating likelihood</h3>
+    <div class="grid">
+        <div class="card">
+            <div class="card-title">Historical data analysis</div>
+            <p>Service uptime, frequency of use, historical user errors and bug frequency.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">Model analysis</div>
+            <p>Accuracy, precision, recall, BERTscore — assessed during model development.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">Expert judgement</div>
+            <p>Engage AI specialists, data scientists, risk and legal experts.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">Experimentation & monitoring</div>
+            <p>Alpha/Beta user research in safe environments; iterate assumptions.</p>
+        </div>
+    </div>
+
+    <h3>Risk matrix (Likelihood × Impact)</h3>
+    <div class="matrix">
+        <div class="m-head">L \ I</div>
+        <div class="m-head">1 Negligible</div>
+        <div class="m-head">2 Minor</div>
+        <div class="m-head">3 Moderate</div>
+        <div class="m-head">4 Major</div>
+        <div class="m-head">5 Catastrophic</div>
+
+        <div class="m-head">5 Almost Certain</div>
+        <div class="m-med">5</div><div class="m-high">10</div><div class="m-high">15</div><div class="m-crit">20</div><div class="m-crit">25</div>
+
+        <div class="m-head">4 Likely</div>
+        <div class="m-low">4</div><div class="m-med">8</div><div class="m-high">12</div><div class="m-high">16</div><div class="m-crit">20</div>
+
+        <div class="m-head">3 Possible</div>
+        <div class="m-low">3</div><div class="m-med">6</div><div class="m-med">9</div><div class="m-high">12</div><div class="m-high">15</div>
+
+        <div class="m-head">2 Unlikely</div>
+        <div class="m-low">2</div><div class="m-low">4</div><div class="m-med">6</div><div class="m-med">8</div><div class="m-high">10</div>
+
+        <div class="m-head">1 Rare</div>
+        <div class="m-low">1</div><div class="m-low">2</div><div class="m-low">3</div><div class="m-med">4</div><div class="m-med">5</div>
+    </div>
+    <div class="legend">
+        <span class="m-low">Low (1–4)</span>
+        <span class="m-med">Medium (5–9)</span>
+        <span class="m-high">High (10–16)</span>
+        <span class="m-crit">Critical (20–25)</span>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Quantifying impact</div>
+        <p>First identify if the impact is quantifiable. If not, consult with relevant stakeholders and experts to assign a sensible impact score. When a risk may result in multiple outcomes, assign weightings to each potential outcome, or use the highest impact score.</p>
+    </div>
+</div>
+
+<!-- =================== IMPACT SCALES =================== -->
+<div id="impacts" class="tab-panel">
+    <h2>Impact Levels by Category</h2>
+    <p>Impact scoring table from <em>Appendix III</em>. Quantifiable indicators are listed across four categories: Business, Staff, Service User/Citizen, and Reputation.</p>
+
+    <h3>1 — Negligible</h3>
+    <table>
+        <tr><th>Business</th><th>Staff</th><th>Service User/Citizen</th><th>Reputation</th></tr>
+        <tr>
+            <td>Operational downtime &lt; 1hr; Financial loss &lt; £10k; Service delivery delays &lt; 1hr; Minimal strategic setback.</td>
+            <td>Turnover &lt; 1%; Absenteeism &lt; 1%; Training costs &lt; £1k; No change in morale.</td>
+            <td>Access delays &lt; 1hr; Complaints +&lt;1%; Cost to citizen &lt; £1k; No change in satisfaction.</td>
+            <td>Negligible media coverage; Minimal social sentiment; No public enquiries; No change in trust.</td>
+        </tr>
+    </table>
+
+    <h3>2 — Minor</h3>
+    <table>
+        <tr><th>Business</th><th>Staff</th><th>Service User/Citizen</th><th>Reputation</th></tr>
+        <tr>
+            <td>Downtime 1–4hrs; Loss £10k–£50k; Delays 1–4hrs.</td>
+            <td>Turnover 1–2%; Absenteeism 1–2%; Training £1k–£5k; Slight morale decrease.</td>
+            <td>Access delays 1–4hrs; Complaints +1–2%; Cost £1k–£5k.</td>
+            <td>Minor media coverage; Minor sentiment; Slight trust decrease.</td>
+        </tr>
+    </table>
+
+    <h3>3 — Moderate</h3>
+    <table>
+        <tr><th>Business</th><th>Staff</th><th>Service User/Citizen</th><th>Reputation</th></tr>
+        <tr>
+            <td>Downtime 4–8hrs; Loss £50k–£200k; Delays 4–8hrs.</td>
+            <td>Turnover 2–4%; Absenteeism 2–4%; Training £5k–£20k; Noticeable morale decrease.</td>
+            <td>Access delays 4–8hrs; Complaints +2–4%; Cost £5k–£20k.</td>
+            <td>Moderate media; Moderate sentiment; Noticeable trust decrease.</td>
+        </tr>
+    </table>
+
+    <h3>4 — Major</h3>
+    <table>
+        <tr><th>Business</th><th>Staff</th><th>Service User/Citizen</th><th>Reputation</th></tr>
+        <tr>
+            <td>Downtime 8–24hrs; Loss £200k–£1m; Delays 8–24hrs.</td>
+            <td>Turnover 4–8%; Absenteeism 4–8%; Training £20k–£100k; Significant morale decrease.</td>
+            <td>Access delays 8–24hrs; Complaints +4–8%; Cost £20k–£100k.</td>
+            <td>Major media; Significant sentiment shift; Significant trust decrease.</td>
+        </tr>
+    </table>
+
+    <h3>5 — Catastrophic</h3>
+    <table>
+        <tr><th>Business</th><th>Staff</th><th>Service User/Citizen</th><th>Reputation</th></tr>
+        <tr>
+            <td>Downtime &gt; 24hrs; Loss &gt; £1m; Delays &gt; 24hrs; Innovation halt.</td>
+            <td>Turnover &gt; 8%; Absenteeism &gt; 8%; Training &gt; £100k; Severe morale decrease.</td>
+            <td>Access delays &gt; 24hrs; Complaints +&gt;8%; Cost &gt; £100k.</td>
+            <td>Severe media; Severe sentiment; Numerous public enquiries; Severe trust decrease.</td>
+        </tr>
+    </table>
+
+    <h3>Non-quantifiable impact areas</h3>
+    <div class="grid">
+        <div class="card">
+            <div class="card-title">Business</div>
+            <ul><li>Strategic setback</li><li>Resource diversion</li><li>Innovation stagnation</li><li>Dependence on technology</li><li>Loss of human skills</li></ul>
+        </div>
+        <div class="card">
+            <div class="card-title">Staff</div>
+            <ul><li>Morale & satisfaction</li><li>Workplace culture</li><li>Talent attraction</li><li>Ethical dilemmas</li><li>Adaptation challenges</li></ul>
+        </div>
+        <div class="card">
+            <div class="card-title">Service User / Citizen</div>
+            <ul><li>Citizen satisfaction</li><li>Equity and fairness</li><li>Social isolation</li><li>Loss of privacy</li></ul>
+        </div>
+        <div class="card">
+            <div class="card-title">Reputation</div>
+            <ul><li>Public trust and confidence</li><li>Brand perception</li><li>Public perception of competence</li><li>Decision-making transparency</li></ul>
+        </div>
+    </div>
+</div>
+
+<!-- =================== TREATMENT =================== -->
+<div id="treatment" class="tab-panel">
+    <h2>Risk Treatment Options</h2>
+    <p>Treatment options manage an identified risk to bring it within risk appetite or tolerance limits. Treatments should adhere to institutional standards and may evolve over the lifetime of the AI system.</p>
+
+    <h3>Four treatment categories</h3>
+    <div class="grid">
+        <div class="card">
+            <div class="card-title">🚫 Avoidance</div>
+            <p>Avoid any exposure to the risk — suitable when both potential impact and cost of mitigating are too high.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">📉 Limitation</div>
+            <p>Take action to maintain risk levels within an acceptable range — a blend of acceptance and avoidance.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">↗️ Transference</div>
+            <p>Shift all/portion of risk liability to third parties — appropriate when external expertise or resources are better suited.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">✅ Acceptance</div>
+            <p>Acknowledge the risk and accept potential impacts — appropriate when within the organisation's risk tolerance.</p>
+        </div>
+    </div>
+
+    <h3>Suggested treatments by risk type</h3>
+
+    <details>
+        <summary>Poor accuracy or performance</summary>
+        <ul>
+            <li><strong>Limitation —</strong> Policies setting required level of human involvement in AI-augmented decision-making.</li>
+            <li><strong>Limitation —</strong> Policies and testing procedures for regular monitoring; metrics for fit-for-purpose and acceptable limits.</li>
+            <li><strong>Avoidance —</strong> Incident response procedures and real-time alerts when performance differs from pre-deployment tests.</li>
+            <li><strong>Avoidance —</strong> Procedures to bypass/deactivate the AI; redundant or backup systems.</li>
+            <li><strong>Limitation —</strong> Red-teaming/adversarial testing under stress conditions by independent experts.</li>
+            <li><strong>Transference —</strong> Make end users aware of limitations and responsibility for verifying outputs.</li>
+            <li><strong>Limitation —</strong> Proficiency standards and training material for end users.</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Accountability</summary>
+        <ul>
+            <li><strong>Acceptance —</strong> Senior leaders own responsibility for organisational AI risk appetite.</li>
+            <li><strong>Acceptance —</strong> Identify a specific team or individual responsible for AI risk management across the organisation.</li>
+            <li><strong>Limitation —</strong> Accountability metrics for clear and transparent lines of responsibility.</li>
+            <li><strong>Limitation —</strong> Confidential feedback mechanisms and whistleblowing policies.</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Bias and Fairness</summary>
+        <ul>
+            <li><strong>Limitation —</strong> Compliance with Data Protection Law, Equality Law and PSED; ICO/EHRC guidance; complete a DPIA.</li>
+            <li><strong>Limitation —</strong> Diverse project teams; participatory design approaches.</li>
+            <li><strong>Limitation —</strong> Testing and verification of data sets and models, including third parties.</li>
+            <li><strong>Limitation —</strong> Independent teams to counter implicit biases, groupthink and sunk cost fallacy.</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Transparency</summary>
+        <ul>
+            <li><strong>Limitation —</strong> Standardised AI documentation with responsible owners and contact information.</li>
+            <li><strong>Limitation —</strong> AI model inventory system, regularly reviewed.</li>
+            <li><strong>Limitation —</strong> Document and review transparency tools; follow industry best practice.</li>
+            <li><strong>Limitation —</strong> Public disclosure of AI use and risk material (impact assessments, audits, model docs, test results).</li>
+            <li><strong>Limitation —</strong> Stakeholder engagement plans with feedback follow-up.</li>
+            <li><strong>Limitation —</strong> Transparency around decommissioning and retirement.</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Explainability and interpretability</summary>
+        <ul>
+            <li><strong>Limitation —</strong> Develop explainable/interpretable solutions; use inherently explainable approaches (e.g. decision trees); visualisation, model extraction, feature importance; test explanations prior to deployment.</li>
+            <li><strong>Limitation —</strong> Document and review explainability tools; follow standards at time of use.</li>
+            <li><strong>Limitation —</strong> Auditability mechanisms — traceability, data sources, logging of processes/outcomes/impacts.</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Privacy</summary>
+        <ul>
+            <li><strong>Limitation —</strong> Compliance with Data Protection Law; ICO guidance; complete a DPIA.</li>
+            <li><strong>Avoidance —</strong> Use privacy-enhancing technologies (PETs) and data minimisation (de-identification, aggregation).</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Security</summary>
+        <ul>
+            <li><strong>Limitation —</strong> ML and end-point security countermeasures: robust models, differential privacy, authentication and throttling.</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Hallucinations and misinformation</summary>
+        <ul>
+            <li><strong>Transference —</strong> Policies for end users to check AI-generated content for accuracy.</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Legal compliance</summary>
+        <ul>
+            <li><strong>Limitation —</strong> Consider legal compliance from outset; close work with legal teams; follow EHRC/ICO and sector regulators.</li>
+            <li><strong>Limitation —</strong> Ongoing monitoring and review; preserve materials for forensic/regulatory/legal review.</li>
+            <li><strong>Limitation —</strong> Staff training and re-training on legal/regulatory considerations.</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Does not deliver expected benefits</summary>
+        <ul>
+            <li><strong>Limitation —</strong> Policies to determine if AI is the right tool when weighing risks against benefits.</li>
+            <li><strong>Limitation —</strong> Define KPIs and success metrics for testing throughout the lifecycle.</li>
+            <li><strong>Limitation —</strong> Participatory stakeholder engagement; document and action feedback.</li>
+            <li><strong>Limitation —</strong> Keep narrow application scope to map benefits/risks more easily.</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Failure of third party elements</summary>
+        <ul>
+            <li><strong>Limitation —</strong> Test, evaluate and validate third party data, software, hardware.</li>
+            <li><strong>Limitation —</strong> Processes for suppliers to report known or potential issues and vulnerabilities.</li>
+            <li><strong>Limitation —</strong> Redundancies covering third-party functions.</li>
+            <li><strong>Avoidance —</strong> Procedures to bypass the AI solution; redundant/backup systems for continuity.</li>
+            <li><strong>Transference —</strong> Robust warranty and indemnity provisions in contracts and licenses.</li>
+        </ul>
+    </details>
+</div>
+
+<!-- =================== QUESTION BANK =================== -->
+<div id="questions" class="tab-panel">
+    <h2>Risk Identification Question Bank</h2>
+    <p>A condensed reference of probing questions from <em>Appendix I</em>. Use the search box to filter across all categories.</p>
+
+    <input type="text" id="qsearch" class="search-box" placeholder="Search questions... (e.g. 'bias', 'third party', 'data protection')" oninput="filterQuestions()">
+
+    <details class="qcat" open>
+        <summary>💰 Financial</summary>
+        <ul>
+            <li>Are there any financial implications of using the AI tool that need to be considered (e.g. increased operational costs or scaling costs post-piloting)?</li>
+            <li>Have financial risks from unstable AI systems and harmful results (errors requiring costly refurbishment and replacement) been considered?</li>
+            <li>Is there a need for additional resources to fix and maintain the AI solution? Have financial implications been considered?</li>
+            <li>Have potential financial implications related to non-compliance with legal provisions (including fines and reputational damage) been considered?</li>
+        </ul>
+    </details>
+
+    <details class="qcat">
+        <summary>⚖️ Legal and regulatory compliance</summary>
+        <ul>
+            <li>What legal frameworks and regulators/regulatory regimes are relevant given the deployment context?</li>
+            <li>Have these been considered: Human Rights Law, Equality Law (PSED), Data Protection Law (UK GDPR), Intellectual Property, Social Value Act, applicable AI Laws (e.g. EU AI Act)?</li>
+            <li>Have these regulatory regimes been considered: EHRC PSED guidance; ICO AI and data protection guidance?</li>
+            <li>How will the AI solution be reviewed for compliance? How will the evolving landscape be regularly reviewed?</li>
+            <li>How is the model trained? Does it involve open-source environments where compliance (e.g. Data Protection Law) is at risk?</li>
+            <li>How is compliance ensured during deployment? When and how regularly is it monitored?</li>
+            <li>What processes are in place if issues are discovered? Are they sufficient given the deployment context?</li>
+            <li>Do you have the requisite internal expertise? What mandatory training do these individuals receive?</li>
+            <li>What knowledge and skills do others in the organisation need about legal/regulatory requirements?</li>
+            <li>What third party data, software, hardware or infrastructure is deployed? What are the terms of contract/licence?</li>
+            <li>How do you ensure third party elements comply with relevant legal frameworks?</li>
+        </ul>
+    </details>
+
+    <details class="qcat">
+        <summary>🔍 Appropriate transparency and explainability</summary>
+        <ul>
+            <li>Who are the intended users? Do they need to know they are interacting with an AI? What explanations do they need?</li>
+            <li>Who is impacted by the output and how? What are their expectations to know they are impacted by an AI?</li>
+            <li>Have you complied with the GDS and RTA's Algorithmic Transparency Recording Standard?</li>
+            <li>Are there minimum legal/regulatory standards for transparency and explainability?</li>
+            <li>What action has been taken to maintain a regime that allows continued export to trading partners (e.g. EU AI Act)?</li>
+            <li>What data is collected and what features are selected to train the model — and why? Why some data over others?</li>
+            <li>Are users reliably aware of data obtained and how it is used? Can they access, consent or object?</li>
+            <li>Can you explain what model was selected and why? Can you explain how it makes decisions and what influences outputs?</li>
+            <li>Is it necessary to explain why the AI model has made a particular recommendation?</li>
+            <li>Does deployment/scaling enable transparency about when people are interacting with AI?</li>
+            <li>Do organisational policies promote transparency about AI use and outputs?</li>
+            <li>Are outputs and explanations clearly and accurately communicated in a timely fashion?</li>
+            <li>Does the organisation have the relevant internal expertise to enable the type of explanation required?</li>
+            <li>Are there third party requirements for transparency and explainability? How are they complied with?</li>
+        </ul>
+    </details>
+
+    <details class="qcat">
+        <summary>⚖️ Fairness</summary>
+        <ul>
+            <li>What does fairness look like in the deployment context?</li>
+            <li>Could the AI solution impact an individual's or organisation's legal rights?</li>
+            <li>Does the AI solution unfairly advantage or disadvantage a particular group?</li>
+            <li>Does the AI give biased or discriminatory outputs?</li>
+            <li>Are there minimum legal/regulatory requirements (Equality Law, PSED, EHRC; Data Protection Law and ICO)?</li>
+            <li>How has fairness, discrimination and bias been tested? How is it monitored?</li>
+            <li>Have you considered intersectionality across protected characteristics?</li>
+            <li>Could variables be proxies for protected characteristics? Can you test for proxies?</li>
+            <li>How is selected data ensured to be a fair representation of the relevant population?</li>
+            <li>Does the AI solution display bias toward certain groups? Is differential treatment legal and justified?</li>
+            <li>Do you measure disparities in model predictions/outcomes? What is the remediation?</li>
+            <li>What is the risk for the model to create toxic outputs?</li>
+            <li>Is the service fair to those who object to automated decision making?</li>
+            <li>Do third parties have fairness/bias requirements? How are they met?</li>
+        </ul>
+    </details>
+
+    <details class="qcat">
+        <summary>👥 Accountability and governance</summary>
+        <ul>
+            <li>Has an individual been identified who is ultimately accountable for the AI solution and its outputs?</li>
+            <li>Who is responsible for AI risk management? Do they have right level of authority, human resource and budget?</li>
+            <li>Is there a diverse team engaged in AI risk management?</li>
+            <li>Are there legal/regulatory requirements for accountability and governance?</li>
+            <li>Who is responsible for data collected and selected? How do they report to the overall responsible individual?</li>
+            <li>Are data governance practices established to oversee compliance?</li>
+            <li>Who is responsible for model selection, training, deployment, scaling and ongoing monitoring?</li>
+            <li>How does AI risk management connect into existing organisational governance and risk controls?</li>
+            <li>Are roles, responsibilities and lines of communication documented and clear?</li>
+            <li>Are there policies for monitoring and mitigating AI risk across the whole lifecycle?</li>
+            <li>Are whistleblower policies in place? Is there an incident response plan?</li>
+            <li>Do responsible individuals have requisite skills, knowledge and authority?</li>
+        </ul>
+    </details>
+
+    <details class="qcat">
+        <summary>🛡️ Contestability and redress</summary>
+        <ul>
+            <li>Who are the types of users and what are their expectations to contest an AI output and seek redress?</li>
+            <li>Who is impacted by an output and what are their contest/redress expectations?</li>
+            <li>Are there legal/regulatory requirements for contestability and redress?</li>
+            <li>Has GDPR's right to rectification been considered?</li>
+            <li>Are there defined procedures for remediating harm caused by the AI solution? How are they reviewed?</li>
+            <li>Are there redress mechanisms? Are they accessible and transparent (including for those with vulnerabilities)?</li>
+            <li>Who is responsible for procedures and decisions on addressing harms? Do they have requisite skills/authority?</li>
+            <li>What mechanisms address disputes for third party data/software/hardware? Is risk meaningfully passed to the third party?</li>
+        </ul>
+    </details>
+
+    <details class="qcat">
+        <summary>⚙️ Technical robustness</summary>
+        <ul>
+            <li>What level of performance must the AI solution maintain in its deployment context?</li>
+            <li>Are there legal/regulatory requirements for technical robustness?</li>
+            <li>How is performance measured and monitored? What metrics or data are used?</li>
+            <li>Does the user have a role (human-in-the-loop)?</li>
+            <li>What data is collected/selected to train the model? Is it suitable for the deployment context?</li>
+            <li>How could performance/robustness be affected by data quality or pipeline issues?</li>
+            <li>Will data be supplemented across the lifecycle? How is the dataset monitored in live deployment?</li>
+            <li>Was the AI solution trained on data from other AI models? How are data quality and collapse risks managed?</li>
+            <li>Is the model trained under conditions that mimic adverse conditions and natural drift?</li>
+            <li>How is robustness ensured during deployment? When and how regularly is it tested (drift, misinformation)?</li>
+            <li>Is a robust-by-design approach adopted?</li>
+            <li>What processes are in place if issues are discovered?</li>
+            <li>Do third party suppliers have contingency plans for failures/incidents?</li>
+        </ul>
+    </details>
+
+    <details class="qcat">
+        <summary>🔒 Security</summary>
+        <ul>
+            <li>What security threats arise from the deployment context?</li>
+            <li>Has the organisation created new security risks by deploying the AI? Who are the new threat actors? (CAF Section A2 evidence)</li>
+            <li>Are there legal/regulatory requirements for security?</li>
+            <li>Has NCSC's guidance on principles for the security of machine learning been followed?</li>
+            <li>Is there an overarching AI security strategy with clear policies/procedures? (CAF A1/B1 evidence)</li>
+            <li>Could data collection/selection/processing cause security issues? (CAF B3 evidence)</li>
+            <li>Is data selected from trusted sources, with management approval for exceptions?</li>
+            <li>Are data sets tracked and verified via cryptographic hash? Uniquely identified for change detection?</li>
+            <li>What type of data does the model ingest? Does it interact with business-critical or infrastructure?</li>
+            <li>Could the model embed security vulnerabilities? Is training code reviewed by a responsible party?</li>
+            <li>Is the model trained under conditions that mimic adversarial conditions?</li>
+            <li>Are models adequately tested for vulnerabilities prior to deployment?</li>
+            <li>Is a secure-by-design approach adopted? (CAF B1 evidence)</li>
+            <li>Are disaster recovery and business continuity procedures in place? (CAF Objective D evidence)</li>
+            <li>What security education exists for users and super users? (CAF B6 evidence)</li>
+            <li>Are third party security requirements complied with? (CAF A4 Supply Chain evidence)</li>
+        </ul>
+    </details>
+
+    <details class="qcat">
+        <summary>🌍 Environment and people</summary>
+        <ul>
+            <li>Could the AI solution impact an individual's physical or mental well-being?</li>
+            <li>Could it impact the safety of infrastructure or the environment?</li>
+            <li>How will vulnerable users be protected?</li>
+            <li>Are there legal/regulatory requirements for safety?</li>
+            <li>How are safety risks measured and monitored?</li>
+            <li>Could data collection/selection cause safety issues? Could data quality/pipeline issues affect safety?</li>
+            <li>Could the chosen model cause safety issues? How could safety be affected by design and development?</li>
+            <li>Could new safety issues arise from unexpected situations or data during deployment?</li>
+            <li>Is a safe-by-design approach adopted? Are processes sufficient if issues are discovered?</li>
+            <li>Does the organisation promote a culture of safeguarding end users, particularly vulnerable individuals?</li>
+            <li>Are third party safety requirements complied with?</li>
+        </ul>
+    </details>
+</div>
+
+<!-- =================== RESOURCES =================== -->
+<div id="resources" class="tab-panel">
+    <h2>Additional Resources</h2>
+
+    <h3>AI Standards Hub</h3>
+    <p>Standards Development Organisations (SDOs) — including ISO, IEC and IEEE SA — are actively developing standards addressing known AI risks. The AI Standards Hub has a database covering relevant standards and offers e-learning training on topics such as assessing and mitigating bias and discrimination in AI.</p>
+
+    <h3>DSIT Central AI Risk Toolkit Team (CAIRF)</h3>
+    <p>CAIRF is considering high-level AI risks by preparing common scenarios and mapping out their causes — helping teams better understand how to treat underlying causes.</p>
+
+    <h3>Companion frameworks</h3>
+    <div class="grid">
+        <div class="card">
+            <div class="card-title">Orange Book</div>
+            <p>Establishes risk management principles and processes for UK public sector. This toolkit implements Section D.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">Cyber Assessment Framework (CAF)</div>
+            <p>Evidence from CAF sections A1, A2, A4, B1, B3, B6 and Objectives C and D can be reused for AI security assurance.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">AI Playbook for Government</div>
+            <p>Foundational principles teams can build upon when identifying risks.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">Algorithmic Transparency Recording Standard</div>
+            <p>GDS/RTA standard for transparency disclosure.</p>
+        </div>
+    </div>
+
+    <h3>Key principles</h3>
+    <ul>
+        <li>Risk management is an ongoing lifecycle activity — not a one-time task.</li>
+        <li>A multi-disciplinary team is essential for thorough risk identification.</li>
+        <li>Be proactive: take good risks in pursuit of opportunity, supported by appropriate controls.</li>
+        <li>Reuse evidence from established frameworks (CAF, Orange Book) where applicable.</li>
+        <li>Keep a central log of AI risks and share with GDS/CAIRF to support sector-wide learning.</li>
+    </ul>
+</div>
+
+</div>
+
+<script>
+function showTab(tabId, event, jumpLink) {
+    document.querySelectorAll('.tab-panel').forEach(function(panel) { panel.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(button) { button.classList.remove('active'); });
+
+    var selectedPanel = document.getElementById(tabId);
+    if (selectedPanel) { selectedPanel.classList.add('active'); }
+
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    } else {
+        // activated via in-page jump link — find matching tab button
+        document.querySelectorAll('.tab-btn').forEach(function(button) {
+            if (button.getAttribute('onclick') && button.getAttribute('onclick').indexOf("'" + tabId + "'") !== -1) {
+                button.classList.add('active');
+            }
+        });
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function filterQuestions() {
+    var term = document.getElementById('qsearch').value.toLowerCase().trim();
+    document.querySelectorAll('#questions .qcat').forEach(function(cat) {
+        var anyMatch = false;
+        cat.querySelectorAll('li').forEach(function(li) {
+            var match = !term || li.textContent.toLowerCase().indexOf(term) !== -1;
+            li.style.display = match ? '' : 'none';
+            if (match) anyMatch = true;
+        });
+        cat.style.display = anyMatch ? '' : 'none';
+        if (term && anyMatch) cat.setAttribute('open', 'open');
+    });
+}
+</script>
+
+</body>
+</html>
