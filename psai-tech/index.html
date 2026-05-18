@@ -41,6 +41,32 @@
             margin: 0 auto;
         }
         
+        /* Resource cards */
+        .resource-card {
+            background: #f3f2f1;
+            border-left: 5px solid #1d70b8;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: border-color 0.15s ease-in-out;
+        }
+        
+        .resource-card:hover {
+            border-left-color: #003078;
+        }
+        
+        .resource-card h2 {
+            margin-top: 0;
+        }
+        
+        .resource-card a {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .resource-card p {
+            margin-bottom: 0;
+        }
+        
         /* Service navigation */
         .app-service-nav {
             background: #f3f2f1;
@@ -170,6 +196,32 @@
                 <li>AI ethics and responsible use</li>
                 <li>AI implementation frameworks</li>
             </ul>
+
+            <h2 class="govuk-heading-l">Resources</h2>
+
+            <!-- AI Risk Management Toolkit Card -->
+            <div class="resource-card">
+                <h2 class="govuk-heading-m">
+                    <a href="ai-risk-management-toolkit.html" class="govuk-link">AI Risk Management Toolkit</a>
+                </h2>
+                <p class="govuk-body">A practical toolkit to help government teams identify, assess, and mitigate risks associated with the design, development, and deployment of AI systems.</p>
+            </div>
+
+            <!-- UK Public Sector AI Governance Operating Model Card -->
+            <div class="resource-card">
+                <h2 class="govuk-heading-m">
+                    <a href="operating-model-V1.0.html" class="govuk-link">UK Public Sector AI Governance Operating Model</a>
+                </h2>
+                <p class="govuk-body">A reference operating model setting out roles, responsibilities and decision rights for governing AI across the UK public sector.</p>
+            </div>
+
+            <!-- Service Assessment Questions Navigator Card -->
+            <div class="resource-card">
+                <h2 class="govuk-heading-m">
+                    <a href="research-assessment.html" class="govuk-link">Service Assessment Questions Navigator</a>
+                </h2>
+                <p class="govuk-body">An interactive navigator of service assessment questions to support teams in researching and assessing AI-enabled services.</p>
+            </div>
             
         </main>
     </div>

@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UK Public Sector AI Governance Operating Model &mdash; Reference</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&display=swap');
+
+/* ---------- base ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --ink: #0B0C0C;
+    --ink-soft: #1A2B4A;
+    --mute: #4B5563;
+    --line: #D0D0D0;
+    --bg: #FFFFFF;
+    --bg-soft: #F5F7FA;
+    --bg-tint: #EEF3F8;
+
+    /* domain colours */
+    --strategic: #1A2B4A;   /* navy */
+    --tactical:  #0F766E;   /* teal */
+    --operational: #B45309; /* amber-brown */
+    --assurance: #6A1B9A;   /* purple */
+
+    /* lifecycle */
+    --pilot: #1976D2;
+    --mbeta: #00838F;
+    --beta:  #6A1B9A;
+    --live:  #2E7D32;
+
+    /* risk tiers */
+    --r1: #2E7D32;
+    --r2: #F9A825;
+    --r3: #EF6C00;
+    --r4: #C62828;
+
+    /* E2VT */
+    --evaluate: #1565C0;
+    --evidence: #00897B;
+    --validate: #6A1B9A;
+    --trust:    #C62828;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Source Sans 3', Arial, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+
+/* ---------- header ---------- */
+.header { background: linear-gradient(135deg, #0B0C0C 0%, #1A2B4A 100%); color: #fff; padding: 28px 40px; border-bottom: 4px solid #C62828; }
+.header-grid { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+.header h1 { font-size: 1.7rem; font-weight: 900; letter-spacing: -0.3px; }
+.header .crown { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.8; margin-bottom: 4px; font-weight: 600; }
+.header .strap { font-size: 1rem; opacity: 0.92; max-width: 680px; margin-top: 6px; font-weight: 300; }
+.header .meta { font-size: 0.8rem; opacity: 0.75; text-align: right; }
+.header .meta strong { display: block; font-size: 0.95rem; opacity: 1; font-weight: 700; }
+
+/* ---------- nav ---------- */
+.nav-bar { background: #fff; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 30; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.nav-inner { max-width: 1400px; margin: 0 auto; padding: 0 40px; display: flex; gap: 0; overflow-x: auto; }
+.nav-btn { padding: 14px 18px; font-size: 0.88rem; font-weight: 600; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; color: var(--mute); white-space: nowrap; font-family: inherit; transition: all 0.15s; }
+.nav-btn:hover { color: var(--ink); background: var(--bg-soft); }
+.nav-btn.active { color: var(--ink); border-bottom-color: #C62828; }
+
+/* ---------- content ---------- */
+.content { max-width: 1400px; margin: 0 auto; padding: 36px 40px 80px; }
+.panel { display: none; }
+.panel.active { display: block; animation: fade 0.25s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+h2 { font-size: 1.8rem; font-weight: 900; color: var(--ink); margin-bottom: 8px; letter-spacing: -0.4px; }
+h2 + .lede { font-size: 1.05rem; color: var(--mute); margin-bottom: 24px; max-width: 920px; }
+h3 { font-size: 1.25rem; font-weight: 700; color: var(--ink); margin: 28px 0 12px; }
+h4 { font-size: 1rem; font-weight: 700; color: var(--ink-soft); margin: 16px 0 8px; }
+p { margin-bottom: 12px; }
+ul, ol { margin: 8px 0 16px 22px; }
+li { margin-bottom: 6px; }
+
+.section { margin-bottom: 36px; }
+
+/* ---------- operating model map ---------- */
+.opm-map { background: var(--bg-soft); border: 1px solid var(--line); padding: 24px; margin: 20px 0 32px; }
+.opm-band { display: grid; gap: 10px; margin-bottom: 16px; }
+.opm-row { display: grid; grid-template-columns: 200px 1fr; gap: 12px; align-items: stretch; }
+.opm-row-label { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #fff; padding: 14px 14px; display: flex; align-items: center; }
+.opm-row-label.strategic { background: var(--strategic); }
+.opm-row-label.tactical { background: var(--tactical); }
+.opm-row-label.operational { background: var(--operational); }
+.opm-row-label.assurance { background: var(--assurance); }
+.opm-cells { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 6px; }
+.opm-cell { background: #fff; border: 1px solid var(--line); padding: 10px 12px; font-size: 0.85rem; cursor: pointer; transition: all 0.15s; border-left-width: 4px; border-left-style: solid; }
+.opm-cell:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.opm-cell .ct { font-weight: 700; display: block; margin-bottom: 2px; color: var(--ink); }
+.opm-cell .cs { font-size: 0.75rem; color: var(--mute); }
+.opm-cell.strategic { border-left-color: var(--strategic); }
+.opm-cell.tactical { border-left-color: var(--tactical); }
+.opm-cell.operational { border-left-color: var(--operational); }
+.opm-cell.assurance { border-left-color: var(--assurance); }
+
+/* lifecycle ribbon under map */
+.opm-flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 18px; }
+.opm-flow-step { padding: 14px; color: #fff; text-align: center; position: relative; }
+.opm-flow-step .fs-num { font-size: 1.4rem; font-weight: 900; line-height: 1; }
+.opm-flow-step .fs-lab { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; font-weight: 700; }
+.opm-flow-step .fs-q { font-size: 0.82rem; margin-top: 8px; font-weight: 400; opacity: 0.95; }
+.opm-flow-step.pilot { background: var(--pilot); }
+.opm-flow-step.mbeta { background: var(--mbeta); }
+.opm-flow-step.beta  { background: var(--beta); }
+.opm-flow-step.live  { background: var(--live); }
+
+/* legend */
+.legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; font-size: 0.82rem; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-sw { width: 16px; height: 16px; }
+
+/* ---------- principles grid ---------- */
+.princ-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 16px 0; }
+.princ { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--strategic); padding: 16px; }
+.princ-no { font-family: 'Courier New', monospace; font-size: 0.78rem; font-weight: 700; color: #fff; background: var(--strategic); padding: 2px 8px; display: inline-block; margin-bottom: 8px; }
+.princ-t { font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
+.princ-d { font-size: 0.88rem; color: var(--mute); }
+
+/* ---------- risk tier cards ---------- */
+.tier-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 16px 0; }
+.tier { background: #fff; border: 1px solid var(--line); padding: 16px; border-top: 5px solid var(--r1); position: relative; }
+.tier[data-tier="R1"] { border-top-color: var(--r1); }
+.tier[data-tier="R2"] { border-top-color: var(--r2); }
+.tier[data-tier="R3"] { border-top-color: var(--r3); }
+.tier[data-tier="R4"] { border-top-color: var(--r4); }
+.tier-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.tier-id { font-weight: 900; font-size: 1.2rem; }
+.tier-badge { font-size: 0.7rem; font-weight: 700; padding: 3px 10px; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
+.tier[data-tier="R1"] .tier-badge { background: var(--r1); }
+.tier[data-tier="R2"] .tier-badge { background: var(--r2); color: #111; }
+.tier[data-tier="R3"] .tier-badge { background: var(--r3); }
+.tier[data-tier="R4"] .tier-badge { background: var(--r4); }
+.tier-name { font-weight: 700; margin-bottom: 6px; font-size: 0.95rem; }
+.tier-ex { font-size: 0.85rem; color: var(--mute); margin-bottom: 8px; }
+.tier-ctrls { font-size: 0.82rem; }
+.tier-ctrls li { margin-bottom: 4px; }
+
+/* ---------- risk categories ---------- */
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 16px 0; }
+.cat { padding: 12px; border: 1px solid var(--line); background: #fff; border-left: 4px solid; }
+.cat .cat-t { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+.cat .cat-d { font-size: 0.82rem; color: var(--mute); }
+.cat[data-c="fin"] { border-left-color: #1565C0; }
+.cat[data-c="leg"] { border-left-color: #6A1B9A; }
+.cat[data-c="trn"] { border-left-color: #00897B; }
+.cat[data-c="tec"] { border-left-color: #0277BD; }
+.cat[data-c="fai"] { border-left-color: #C62828; }
+.cat[data-c="red"] { border-left-color: #EF6C00; }
+.cat[data-c="acc"] { border-left-color: #1A2B4A; }
+.cat[data-c="sec"] { border-left-color: #B71C1C; }
+.cat[data-c="peo"] { border-left-color: #AD1457; }
+
+/* ---------- E2VT ---------- */
+.e2vt { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 18px 0; }
+.e2vt-c { padding: 16px; color: #fff; }
+.e2vt-c h4 { color: #fff; margin: 0 0 6px; font-size: 1.1rem; }
+.e2vt-c p { font-size: 0.85rem; margin: 0; opacity: 0.95; }
+.e2vt-c.eval { background: var(--evaluate); }
+.e2vt-c.evid { background: var(--evidence); }
+.e2vt-c.vali { background: var(--validate); }
+.e2vt-c.trus { background: var(--trust); }
+
+/* ---------- tables ---------- */
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.88rem; background: #fff; border: 1px solid var(--line); }
+th { background: var(--ink); color: #fff; text-align: left; padding: 10px 12px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 10px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: var(--bg-soft); }
+.pill { display: inline-block; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; border-radius: 2px; }
+.pill.r1 { background: #C8E6C9; color: #1B5E20; }
+.pill.r2 { background: #FFF9C4; color: #F57F17; }
+.pill.r3 { background: #FFE0B2; color: #E65100; }
+.pill.r4 { background: #FFCDD2; color: #B71C1C; }
+.pill.pilot { background: #BBDEFB; color: #0D47A1; }
+.pill.mbeta { background: #B2DFDB; color: #004D40; }
+.pill.beta  { background: #E1BEE7; color: #4A148C; }
+.pill.live  { background: #C8E6C9; color: #1B5E20; }
+
+/* ---------- lifecycle accordion ---------- */
+.lc-acc { border: 1px solid var(--line); margin-bottom: 10px; background: #fff; }
+.lc-acc summary { padding: 14px 18px; cursor: pointer; font-weight: 700; display: flex; justify-content: space-between; align-items: center; list-style: none; border-left: 6px solid var(--strategic); }
+.lc-acc summary::-webkit-details-marker { display: none; }
+.lc-acc summary::after { content: '+'; font-size: 1.4rem; font-weight: 300; }
+.lc-acc[open] summary::after { content: '−'; }
+.lc-acc[data-ph="pilot"] summary { border-left-color: var(--pilot); }
+.lc-acc[data-ph="mbeta"] summary { border-left-color: var(--mbeta); }
+.lc-acc[data-ph="beta"]  summary { border-left-color: var(--beta); }
+.lc-acc[data-ph="live"]  summary { border-left-color: var(--live); }
+.lc-acc .lc-body { padding: 16px 22px; border-top: 1px solid var(--line); }
+.lc-acc .lc-body h5 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--mute); margin: 12px 0 6px; font-weight: 700; }
+
+/* ---------- template ---------- */
+.tmpl { background: #fff; border: 1px solid var(--line); margin: 16px 0; }
+.tmpl-hd { background: var(--ink-soft); color: #fff; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; }
+.tmpl-hd .tmpl-t { font-weight: 700; font-size: 1.02rem; }
+.tmpl-hd .tmpl-tag { font-size: 0.72rem; padding: 2px 8px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.5px; }
+.tmpl-body { padding: 18px; }
+.tmpl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.field label { font-size: 0.78rem; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.5px; }
+.field input, .field textarea, .field select { font-family: inherit; font-size: 0.9rem; padding: 8px 10px; border: 1px solid var(--line); background: #FCFCFD; }
+.field textarea { resize: vertical; min-height: 60px; }
+.field input:focus, .field textarea:focus, .field select:focus { outline: 2px solid var(--evaluate); outline-offset: 1px; }
+.tmpl-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { background: var(--ink); color: #fff; border: none; padding: 8px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn:hover { background: #000; }
+.btn.ghost { background: #fff; color: var(--ink); border: 1px solid var(--ink); }
+.btn.accent { background: var(--trust); }
+
+/* ---------- failure modes ---------- */
+.fm-table th { background: var(--operational); }
+
+/* ---------- synergy matrix ---------- */
+.syn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
+.syn { background: #fff; border: 1px solid var(--line); padding: 14px; border-top: 4px solid var(--assurance); }
+.syn-src { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--assurance); letter-spacing: 0.8px; }
+.syn-t { font-weight: 700; margin: 4px 0 8px; }
+.syn-d { font-size: 0.85rem; color: var(--mute); }
+.syn-link { font-size: 0.78rem; margin-top: 8px; color: var(--ink-soft); }
+.syn-link strong { color: var(--ink); }
+
+/* quote */
+.quote { border-left: 4px solid var(--trust); background: #FFF8F8; padding: 14px 18px; margin: 16px 0; font-style: italic; color: var(--ink-soft); font-size: 1rem; }
+.quote cite { display: block; margin-top: 6px; font-size: 0.8rem; font-style: normal; color: var(--mute); }
+
+/* footer */
+.footer { background: var(--ink-soft); color: #fff; padding: 24px 40px; font-size: 0.85rem; }
+.footer-inner { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+@media (max-width: 900px) {
+    .opm-row { grid-template-columns: 1fr; }
+    .e2vt { grid-template-columns: 1fr 1fr; }
+    .opm-flow { grid-template-columns: 1fr 1fr; }
+    .tmpl-grid { grid-template-columns: 1fr; }
+}
+@media print {
+    .nav-bar, .tmpl-actions, .btn { display: none !important; }
+    .panel { display: block !important; page-break-before: always; }
+    .opm-cell:hover { transform: none; box-shadow: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-grid">
+        <div>
+            <div class="crown">UK Public Sector &middot; Reference Operating Model</div>
+            <h1>Governing AI-Enabled Public Services at Scale</h1>
+            <div class="strap">An interactive reference operating model &mdash; for the assured delivery of <strong>secure, ethical, safe and robust</strong> AI services.</div>
+        </div>
+        <div class="meta">
+            <strong>Version 1.0</strong>
+            May 2026 &middot; Reference release<br>
+            Source synthesis: Level 3 V2.0 / Strategic AI Gov / AAQ v4.3 / RMT / RA
+        </div>
+    </div>
+</div>
+
+<nav class="nav-bar">
+    <div class="nav-inner">
+        <button class="nav-btn active" data-tab="map">Operating Model Map</button>
+        <button class="nav-btn" data-tab="principles">10 Principles</button>
+        <button class="nav-btn" data-tab="risk">Risk Tiering &amp; Categories</button>
+        <button class="nav-btn" data-tab="lifecycle">Service Lifecycle</button>
+        <button class="nav-btn" data-tab="e2vt">E2VT &amp; Standard</button>
+        <button class="nav-btn" data-tab="governance">Governance &amp; RACI</button>
+        <button class="nav-btn" data-tab="failure">Failure Modes</button>
+        <button class="nav-btn" data-tab="guidance">Central Guidance</button>
+        <button class="nav-btn" data-tab="templates">Templates</button>
+        <button class="nav-btn" data-tab="synergy">Framework Synergy</button>
+    </div>
+</nav>
+
+<div class="content">
+
+<!-- ============ MAP ============ -->
+<div id="map" class="panel active">
+    <h2>The Reference Operating Model</h2>
+    <p class="lede">Four interlocking layers govern AI from ambition to live operation. Strategic intent sets the conditions, tactical capabilities turn intent into reusable assets, operational delivery runs services safely, and continuous assurance evidences trust. Every cell maps to one or more of the source frameworks.</p>
+
+    <div class="opm-map" role="region" aria-label="Operating model map">
+        <div class="opm-band">
+            <!-- STRATEGIC -->
+            <div class="opm-row">
+                <div class="opm-row-label strategic">Strategic<br>Intent &amp; Ambition</div>
+                <div class="opm-cells">
+                    <a class="opm-cell strategic" href="#principles" onclick="goTab('principles')"><span class="ct">10 Foundational Principles</span><span class="cs">Risk appetite, public trust, ethics</span></a>
+                    <a class="opm-cell strategic" href="#risk" onclick="goTab('risk')"><span class="ct">Risk Appetite &amp; Tiering</span><span class="cs">R1 Minimal &rarr; R4 Eager</span></a>
+                    <a class="opm-cell strategic" href="#guidance" onclick="goTab('guidance')"><span class="ct">Central Deployment Guidance</span><span class="cs">D1&ndash;D7 commitments; cross-government floor</span></a>
+                    <div class="opm-cell strategic"><span class="ct">Leadership Choice</span><span class="cs">Govern strategically</span></div>
+                    <div class="opm-cell strategic"><span class="ct">Public Accountability</span><span class="cs">Transparent records, ATRS, SIRO</span></div>
+                    <div class="opm-cell strategic"><span class="ct">Workforce &amp; Capability</span><span class="cs">AI literacy, multi-disciplinary teams</span></div>
+                </div>
+            </div>
+            <!-- TACTICAL -->
+            <div class="opm-row">
+                <div class="opm-row-label tactical">Tactical<br>Capability &amp; Platforms</div>
+                <div class="opm-cells">
+                    <div class="opm-cell tactical"><span class="ct">Pre-approved Routes</span><span class="cs">Common AI use-case patterns</span></div>
+                    <div class="opm-cell tactical"><span class="ct">Shared Evaluation Standards</span><span class="cs">E2VT &amp; test harnesses</span></div>
+                    <div class="opm-cell tactical"><span class="ct">Model Registry</span><span class="cs">Versioning, provenance, exit plan</span></div>
+                    <a class="opm-cell tactical" href="#guidance" onclick="goTab('guidance')"><span class="ct">Model Update Governance</span><span class="cs">G2 &middot; five triggers, tiered response</span></a>
+                    <div class="opm-cell tactical"><span class="ct">Reusable Patterns</span><span class="cs">Open source, open standards</span></div>
+                    <div class="opm-cell tactical"><span class="ct">Procurement &amp; Supplier Mgmt</span><span class="cs">Vendor lock-in, model-change risk</span></div>
+                </div>
+            </div>
+            <!-- OPERATIONAL -->
+            <div class="opm-row">
+                <div class="opm-row-label operational">Operational<br>Delivery &amp; Service</div>
+                <div class="opm-cells">
+                    <a class="opm-cell operational" href="#lifecycle" onclick="goTab('lifecycle')"><span class="ct">Pilot &rarr; MB &rarr; Beta &rarr; Live</span><span class="cs">Phase gates with AI assurance Qs</span></a>
+                    <div class="opm-cell operational"><span class="ct">Service Standard (14)</span><span class="cs">User need, inclusion, reliability</span></div>
+                    <div class="opm-cell operational"><span class="ct">Human-in-the-loop</span><span class="cs">Override, appeal, fallback</span></div>
+                    <div class="opm-cell operational"><span class="ct">Monitoring &amp; Drift</span><span class="cs">Hallucination, accuracy, fairness</span></div>
+                    <div class="opm-cell operational"><span class="ct">Incident Mgmt &amp; Kill-switch</span><span class="cs">Rollback, escalation, comms</span></div>
+                </div>
+            </div>
+            <!-- ASSURANCE -->
+            <div class="opm-row">
+                <div class="opm-row-label assurance">Continuous<br>Assurance &amp; Evidence</div>
+                <div class="opm-cells">
+                    <a class="opm-cell assurance" href="#e2vt" onclick="goTab('e2vt')"><span class="ct">E2VT Loop</span><span class="cs">Evaluate · Evidence · Validate · Trust</span></a>
+                    <div class="opm-cell assurance"><span class="ct">DPIA / EqIA / AIA</span><span class="cs">Privacy, equality, AI impact</span></div>
+                    <div class="opm-cell assurance"><span class="ct">Red-team &amp; Adversarial</span><span class="cs">Prompt injection, abuse cases</span></div>
+                    <div class="opm-cell assurance"><span class="ct">Audit Trail &amp; Decision Log</span><span class="cs">Reproducible reassessment</span></div>
+                    <a class="opm-cell assurance" href="#governance" onclick="goTab('governance')"><span class="ct">RACI &amp; Assurance Board</span><span class="cs">Named accountable owner</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="opm-flow" role="region" aria-label="Lifecycle">
+            <div class="opm-flow-step pilot"><div class="fs-num">1</div><div class="fs-lab">Pilot</div><div class="fs-q">Is this worth pursuing? Can we identify the risk?</div></div>
+            <div class="opm-flow-step mbeta"><div class="fs-num">2</div><div class="fs-lab">Managed Beta</div><div class="fs-q">Safe with limited users under controlled conditions?</div></div>
+            <div class="opm-flow-step beta"><div class="fs-num">3</div><div class="fs-lab">Beta</div><div class="fs-q">Safe with real users, real data, real constraints?</div></div>
+            <div class="opm-flow-step live"><div class="fs-num">4</div><div class="fs-lab">Live</div><div class="fs-q">Safe, reliable, continuously assured at scale?</div></div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><div class="legend-sw" style="background:var(--strategic)"></div>Strategic</div>
+            <div class="legend-item"><div class="legend-sw" style="background:var(--tactical)"></div>Tactical</div>
+            <div class="legend-item"><div class="legend-sw" style="background:var(--operational)"></div>Operational</div>
+            <div class="legend-item"><div class="legend-sw" style="background:var(--assurance)"></div>Assurance</div>
+            <div class="legend-item"><div class="legend-sw" style="background:var(--pilot)"></div>Pilot</div>
+            <div class="legend-item"><div class="legend-sw" style="background:var(--mbeta)"></div>Managed Beta</div>
+            <div class="legend-item"><div class="legend-sw" style="background:var(--beta)"></div>Beta</div>
+            <div class="legend-item"><div class="legend-sw" style="background:var(--live)"></div>Live</div>
+        </div>
+    </div>
+
+    <div class="quote">
+        &ldquo;Strategic AI governance is not the brake on innovation. It is the infrastructure that allows innovation to travel safely, at speed, and with public trust.&rdquo;
+        <cite>&mdash; Strategic AI Governance at Scale, GCAIO / DSIT</cite>
+    </div>
+
+    <h3>How to use this model</h3>
+    <ol>
+        <li><strong>Classify</strong> the AI use case using <a href="#risk" onclick="goTab('risk')">Risk Tiering</a>. R-tier sets the proportionate control depth.</li>
+        <li><strong>Sequence</strong> the work through the four lifecycle phases &mdash; do not collapse pilot results into live readiness.</li>
+        <li><strong>Apply</strong> the <a href="#e2vt" onclick="goTab('e2vt')">E2VT loop</a> at each phase gate to generate evidence rather than assertion.</li>
+        <li><strong>Govern</strong> using the <a href="#governance" onclick="goTab('governance')">RACI</a> &mdash; every artefact has a named accountable owner.</li>
+        <li><strong>Stress-test</strong> using the <a href="#failure" onclick="goTab('failure')">failure-mode matrix</a> before formal service assessment.</li>
+        <li><strong>Evidence</strong> using the <a href="#templates" onclick="goTab('templates')">templates</a>: service story, evidence tracker, model card, phase decision log, incident report.</li>
+    </ol>
+</div>
+
+<!-- ============ PRINCIPLES ============ -->
+<div id="principles" class="panel">
+    <h2>10 Foundational Principles</h2>
+    <p class="lede">Drawn from the Strategic AI Governance position and aligned with the AI Risk Management Toolkit, these are the non-negotiable principles every AI-enabled public service must satisfy regardless of risk tier.</p>
+
+    <div class="princ-grid">
+        <div class="princ"><span class="princ-no">P1</span><div class="princ-t">User need first</div><div class="princ-d">AI is justified by a real user or operational need, not by technological novelty. Non-AI alternatives have been considered.</div></div>
+        <div class="princ"><span class="princ-no">P2</span><div class="princ-t">Proportionate to risk</div><div class="princ-d">Controls scale with the R-tier. Vulnerable cohorts and high-consequence decisions demand independent assurance.</div></div>
+        <div class="princ"><span class="princ-no">P3</span><div class="princ-t">Meaningful human control</div><div class="princ-d">A named person can pause, disable, override, appeal or roll back any AI component in production.</div></div>
+        <div class="princ"><span class="princ-no">P4</span><div class="princ-t">Transparency</div><div class="princ-d">Users know when AI is involved, in language they understand. The service is recorded on the Algorithmic Transparency Recording Standard.</div></div>
+        <div class="princ"><span class="princ-no">P5</span><div class="princ-t">Fair and inclusive</div><div class="princ-d">Differential impact is tested before launch and monitored after. Accessibility evidence covers the full user base.</div></div>
+        <div class="princ"><span class="princ-no">P6</span><div class="princ-t">Secure by design</div><div class="princ-d">Threat-modelled for prompt injection, data exfiltration and adversarial misuse. Patched continuously.</div></div>
+        <div class="princ"><span class="princ-no">P7</span><div class="princ-t">Privacy preserving</div><div class="princ-d">DPIA completed. Minimum personal data principle applied to training, prompts and logs.</div></div>
+        <div class="princ"><span class="princ-no">P8</span><div class="princ-t">Evidenced, not asserted</div><div class="princ-d">Every assurance claim is grounded in evidence held in a discoverable evidence pack &mdash; not in one person&rsquo;s head.</div></div>
+        <div class="princ"><span class="princ-no">P9</span><div class="princ-t">Reliable in operation</div><div class="princ-d">Runbooks, monitoring, drift alerts, supplier-failure fallback and rollback criteria all exist and have been rehearsed.</div></div>
+        <div class="princ"><span class="princ-no">P10</span><div class="princ-t">Accountable &amp; reassessable</div><div class="princ-d">Single SRO. Decision log maintained. Service is reassessable on amber review or material change.</div></div>
+    </div>
+</div>
+
+<!-- ============ RISK ============ -->
+<div id="risk" class="panel">
+    <h2>Risk Tiering and Categories</h2>
+    <p class="lede">Risk tiering is the cornerstone of proportionate assurance. It converts a binary &ldquo;is this AI risky?&rdquo; into a four-band decision that drives the depth of evaluation, the seniority of sign-off, and the cadence of re-certification.</p>
+
+    <h3>Risk Tiers (R1&ndash;R4)</h3>
+    <div class="tier-grid">
+        <div class="tier" data-tier="R1">
+            <div class="tier-hd"><div class="tier-id">R1</div><div class="tier-badge">Low</div></div>
+            <div class="tier-name">Low consequence</div>
+            <div class="tier-ex">Non-personal content search; internal lookups; low-stakes summarisation.</div>
+            <ul class="tier-ctrls">
+                <li>Basic offline evaluation; usage logs</li>
+                <li>Lightweight privacy &amp; security checks</li>
+                <li>A/B testing only after sign-off</li>
+            </ul>
+        </div>
+        <div class="tier" data-tier="R2">
+            <div class="tier-hd"><div class="tier-id">R2</div><div class="tier-badge">Medium</div></div>
+            <div class="tier-name">Staff productivity / non-critical user advice</div>
+            <div class="tier-ex">Drafting assistants; meeting summarisation affecting decisions; non-binding guidance.</div>
+            <ul class="tier-ctrls">
+                <li>Expanded offline eval; calibration; bias screen</li>
+                <li>Red-team lite</li>
+                <li>Monitoring SLOs and drift alerts</li>
+            </ul>
+        </div>
+        <div class="tier" data-tier="R3">
+            <div class="tier-hd"><div class="tier-id">R3</div><div class="tier-badge">High</div></div>
+            <div class="tier-name">Eligibility, triage, sensitive advice</div>
+            <div class="tier-ex">Benefits triage; case-prioritisation; advice to citizens with real consequence.</div>
+            <ul class="tier-ctrls">
+                <li>Formal validation protocols (E2VT); SME panels</li>
+                <li>Strong privacy &amp; PII controls</li>
+                <li>Comprehensive red-teaming; HITL; change-freeze windows</li>
+            </ul>
+        </div>
+        <div class="tier" data-tier="R4">
+            <div class="tier-hd"><div class="tier-id">R4</div><div class="tier-badge">Critical</div></div>
+            <div class="tier-name">Safety, legal exposure, vulnerable cohorts</div>
+            <div class="tier-ex">Decisions with legal or safety consequence; vulnerable cohorts; statutory functions.</div>
+            <ul class="tier-ctrls">
+                <li>Independent assurance &amp; external audit</li>
+                <li>Formal validation campaigns (E2VT); rigorous canary with kill-switch</li>
+                <li>Full traceability; quarterly re-certification</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>The Nine Risk Categories</h3>
+    <p>Aligned with the <strong>AI Risk Management Toolkit (D02 v1)</strong>. Every assessed AI use case is screened against these nine categories to identify the dominant risk profile and the assurance disciplines required.</p>
+    <div class="cat-grid">
+        <div class="cat" data-c="fin"><div class="cat-t">Financial</div><div class="cat-d">Financial losses from increased operational costs, maintaining AI solutions, or financial implications of automated decisions.</div></div>
+        <div class="cat" data-c="leg"><div class="cat-t">Legal &amp; regulatory compliance</div><div class="cat-d">Failing to meet legal frameworks &mdash; data protection, equality law, EU AI Act, UK GDPR and evolving AI-specific laws.</div></div>
+        <div class="cat" data-c="trn"><div class="cat-t">Appropriate transparency &amp; explainability</div><div class="cat-d">Whether users and those impacted understand how the AI works, its decision-making, and that they are interacting with AI.</div></div>
+        <div class="cat" data-c="fai"><div class="cat-t">Fairness</div><div class="cat-d">Unfair, biased or discriminatory outcomes; impact on individual rights; compliance with equality laws.</div></div>
+        <div class="cat" data-c="acc"><div class="cat-t">Accountability &amp; governance</div><div class="cat-d">Lack of clear accountability; ineffective governance; absent risk management processes, roles and communication.</div></div>
+        <div class="cat" data-c="red"><div class="cat-t">Contestability &amp; redress</div><div class="cat-d">Ability of users or affected parties to contest outputs or seek redress &mdash; accessible, transparent mechanisms.</div></div>
+        <div class="cat" data-c="tec"><div class="cat-t">Technical robustness</div><div class="cat-d">Reliable functioning and sustained performance &mdash; data quality, model reliability, behaviour under unexpected conditions.</div></div>
+        <div class="cat" data-c="sec"><div class="cat-t">Security</div><div class="cat-d">Threats arising from deployment &mdash; data poisoning, leakage, cyber-attacks, prompt injection and adversarial misuse.</div></div>
+        <div class="cat" data-c="peo"><div class="cat-t">People &amp; the environment</div><div class="cat-d">Impact on physical and mental wellbeing, safety of critical infrastructure, and the environment.</div></div>
+    </div>
+
+    <h3>Tier &times; Category cross-walk</h3>
+    <p>Use this view to choose proportionate controls for each of the nine categories at each tier.</p>
+    <table>
+        <thead><tr><th>Category</th><th>R1 Low</th><th>R2 Medium</th><th>R3 High</th><th>R4 Critical</th></tr></thead>
+        <tbody>
+            <tr><td>Financial</td><td>Cost log</td><td>VfM check</td><td>Recurring VfM</td><td>Independent VfM audit</td></tr>
+            <tr><td>Legal &amp; regulatory compliance</td><td>Legal screen</td><td>DPIA</td><td>DPIA + EqIA</td><td>DPIA + EqIA + external counsel</td></tr>
+            <tr><td>Appropriate transparency &amp; explainability</td><td>Internal note</td><td>User notice</td><td>ATRS entry</td><td>ATRS + published model card</td></tr>
+            <tr><td>Fairness</td><td>Bias awareness</td><td>Bias screen</td><td>Sub-group testing</td><td>External fairness audit</td></tr>
+            <tr><td>Accountability &amp; governance</td><td>Product owner</td><td>SRO named</td><td>Assurance board</td><td>Board + minister sighting</td></tr>
+            <tr><td>Contestability &amp; redress</td><td>Email route</td><td>Help channel</td><td>Defined appeal</td><td>Statutory appeal &amp; ombudsman</td></tr>
+            <tr><td>Technical robustness</td><td>Offline eval</td><td>Calibration + drift</td><td>Formal validation + canary</td><td>Independent test campaign</td></tr>
+            <tr><td>Security</td><td>Baseline cyber hygiene</td><td>Threat model + secrets mgmt</td><td>Red-team + prompt-injection tests</td><td>Independent pen-test + continuous monitoring</td></tr>
+            <tr><td>People &amp; the environment</td><td>Low</td><td>Wellbeing check</td><td>Vulnerability &amp; sustainability screen</td><td>Safeguarding partnership + env. impact assessment</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ============ LIFECYCLE ============ -->
+<div id="lifecycle" class="panel">
+    <h2>Service Lifecycle &amp; Phase Gates</h2>
+    <p class="lede">A pilot is not a beta. A beta is not live. Each phase asks a different assurance question and demands different evidence. This view encodes the Level 3 lifecycle, the AI Assurance Questionnaire stages and the Service Standard expectations into one progression.</p>
+
+    <details class="lc-acc" data-ph="pilot" open>
+        <summary><span><span class="pill pilot">Phase 1</span> &nbsp; Pilot &mdash; is this worth pursuing?</span></summary>
+        <div class="lc-body">
+            <h5>Primary assurance question</h5>
+            <p>Is the AI use case valid? Can we identify the risk?</p>
+            <h5>AI-specific focus</h5>
+            <p>User need; feasibility; risk discovery; non-AI alternatives appraised.</p>
+            <h5>Expected evidence</h5>
+            <ul>
+                <li>Use-case rationale (problem &rarr; AI &rarr; outcome)</li>
+                <li>Prototype results; failure-category log</li>
+                <li>Initial risk register &amp; data assessment</li>
+                <li>Comparison with rules-based / manual alternative</li>
+            </ul>
+            <h5>Assessor-style questions</h5>
+            <ul>
+                <li>What user need does the AI capability serve?</li>
+                <li>What non-AI options did you consider?</li>
+                <li>What risky assumptions did the pilot test?</li>
+                <li>What would cause you to stop or redesign the AI use case?</li>
+                <li>Who owns the AI risk at this phase?</li>
+            </ul>
+            <h5>Decision</h5>
+            <p><strong>Proceed</strong> to managed beta preparation &middot; <strong>Pivot</strong> &middot; <strong>Stop</strong></p>
+        </div>
+    </details>
+
+    <details class="lc-acc" data-ph="mbeta">
+        <summary><span><span class="pill mbeta">Phase 2</span> &nbsp; Managed Beta &mdash; safe under controlled conditions?</span></summary>
+        <div class="lc-body">
+            <h5>Primary assurance question</h5>
+            <p>Can the service work safely with limited users under controlled conditions?</p>
+            <h5>AI-specific focus</h5>
+            <p>Human control; monitoring; security &amp; privacy; performance; accessibility; fallback.</p>
+            <h5>Expected evidence</h5>
+            <ul>
+                <li>Evaluation results against representative scenarios</li>
+                <li>DPIA, threat model, model card</li>
+                <li>Test logs; support model; rollback plan</li>
+                <li>Accessibility &amp; fairness testing pre-launch</li>
+            </ul>
+            <h5>Assessor-style questions</h5>
+            <ul>
+                <li>How do users know when AI is involved?</li>
+                <li>Where does meaningful human control happen?</li>
+                <li>What happens when the AI output is wrong?</li>
+                <li>How are prompt injection, adversarial inputs or misuse handled?</li>
+                <li>What is the rollback plan?</li>
+            </ul>
+            <h5>Decision</h5>
+            <p><strong>Proceed</strong> to private/public beta &middot; <strong>Remediate</strong> &middot; <strong>Pause</strong></p>
+        </div>
+    </details>
+
+    <details class="lc-acc" data-ph="beta">
+        <summary><span><span class="pill beta">Phase 3</span> &nbsp; Beta &mdash; safe with real users?</span></summary>
+        <div class="lc-body">
+            <h5>Primary assurance question</h5>
+            <p>Can the service work safely with real users under controlled conditions?</p>
+            <h5>AI-specific focus</h5>
+            <p>Live drift monitoring; supplier risk; sub-group performance; incident response readiness.</p>
+            <h5>Expected evidence</h5>
+            <ul>
+                <li>Pre-production performance dashboard</li>
+                <li>External-AI integration test results &amp; versioning controls</li>
+                <li>Rollback rehearsal log; incident runbook</li>
+                <li>Differential-impact monitoring plan</li>
+            </ul>
+            <h5>Decision</h5>
+            <p><strong>Proceed</strong> to live readiness &middot; <strong>Remediate</strong> &middot; <strong>Pause</strong></p>
+        </div>
+    </details>
+
+    <details class="lc-acc" data-ph="live">
+        <summary><span><span class="pill live">Phase 4</span> &nbsp; Live &mdash; safely operating at scale?</span></summary>
+        <div class="lc-body">
+            <h5>Primary assurance question</h5>
+            <p>Can the service operate safely, reliably and continuously at scale &mdash; including when the AI degrades, fails or changes?</p>
+            <h5>AI-specific focus</h5>
+            <p>Drift monitoring; incident response; model updates; operational ownership; continuous assurance.</p>
+            <h5>Expected evidence</h5>
+            <ul>
+                <li>Runbooks &amp; on-call escalation routes</li>
+                <li>Live dashboards: accuracy, fairness, hallucination, cost</li>
+                <li>Audit logs; retraining / update controls</li>
+                <li>Supplier-failure fallback; sustainability evidence</li>
+                <li>Quarterly re-certification record (R3/R4)</li>
+            </ul>
+            <h5>Assessor-style questions</h5>
+            <ul>
+                <li>Who can pause, disable or roll back the AI component?</li>
+                <li>How are model updates approved?</li>
+                <li>What happens if the AI supplier fails?</li>
+                <li>Is AI still the most cost-effective way to meet the user need?</li>
+                <li>What evidence will be maintained for reassessment or amber review?</li>
+            </ul>
+            <h5>Decision</h5>
+            <p><strong>Go live</strong> &middot; <strong>Limited live</strong> &middot; <strong>Delay</strong> &middot; <strong>Reassess</strong></p>
+        </div>
+    </details>
+</div>
+
+<!-- ============ E2VT ============ -->
+<div id="e2vt" class="panel">
+    <h2>E2VT &amp; Service Standard alignment</h2>
+    <p class="lede">Trust cannot be asserted. It has to be evidenced. The E2VT loop &mdash; <em>Evaluate, Evidence, Validate, Trust</em> &mdash; is the operational discipline applied at every phase gate. It maps onto the 14 Service Standard points so that AI-specific evidence travels through the same assessment route as any other digital service.</p>
+
+    <div class="e2vt">
+        <div class="e2vt-c eval"><h4>Evaluate</h4><p>Test models rigorously against defined criteria. Are outcomes good enough? Is real-world impact assessed?</p></div>
+        <div class="e2vt-c evid"><h4>Evidence</h4><p>Ground every assurance claim in evidence, not assumption. Controls and requirements demonstrably met.</p></div>
+        <div class="e2vt-c vali"><h4>Validate</h4><p>The system meets user, policy and regulatory needs. Are we solving the right problem in the right way?</p></div>
+        <div class="e2vt-c trus"><h4>Trust</h4><p>End-to-end workflows defined; monitoring &amp; incident response live; transparency artefacts published.</p></div>
+    </div>
+
+    <h3>14 Service Standard points &mdash; AI-enabled evidence</h3>
+    <table>
+        <thead><tr><th>Standard point</th><th>AI-enabled service evidence</th><th>Typical owner</th></tr></thead>
+        <tbody>
+            <tr><td>1. Understand users &amp; needs</td><td>Research showing AI solves a real user need (not a tech preference)</td><td>User research lead</td></tr>
+            <tr><td>2. Solve a whole problem</td><td>End-to-end journey showing where the AI boundary starts and stops</td><td>Product / design lead</td></tr>
+            <tr><td>3. Joined-up channels</td><td>Assisted-digital, offline and non-AI fallback journeys defined</td><td>Service designer</td></tr>
+            <tr><td>4. Simple to use</td><td>Explanations, confidence language, user-facing control over AI outputs</td><td>Interaction / content lead</td></tr>
+            <tr><td>5. Everyone can use it</td><td>Accessibility, inclusion and bias testing covering non-standard speech, dialects, disability, low digital confidence</td><td>Design / research lead</td></tr>
+            <tr><td>6. Multidisciplinary team</td><td>Named AI, data, security, policy and service owners</td><td>Service owner</td></tr>
+            <tr><td>7. Agile ways of working</td><td>Iteration log, AI learning loop, decision records</td><td>Delivery manager</td></tr>
+            <tr><td>8. Iterate and improve</td><td>Evaluation cycles, controlled model-update process</td><td>Product / AI lead</td></tr>
+            <tr><td>9. Secure and private</td><td>DPIA, threat model, data minimisation, prompt-injection testing</td><td>Tech / security lead</td></tr>
+            <tr><td>10. Define success</td><td>Service KPIs plus AI accuracy, fairness and safety metrics</td><td>Performance analyst</td></tr>
+            <tr><td>11. Right tools and tech</td><td>AI option appraisal, model-selection rationale, exit plan</td><td>Technical architect</td></tr>
+            <tr><td>12. Open source</td><td>Code, prompts, configs, reusable patterns where appropriate</td><td>Tech lead</td></tr>
+            <tr><td>13. Open standards / components</td><td>Reuse of common platforms, open standards, shared patterns</td><td>Tech / design lead</td></tr>
+            <tr><td>14. Reliable service</td><td>Runbooks, monitoring, fallback, rollback, incident process</td><td>Service / ops lead</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ============ GOVERNANCE ============ -->
+<div id="governance" class="panel">
+    <h2>Governance Structure &amp; RACI</h2>
+    <p class="lede">Governance must be operational, not ceremonial. Each artefact has a single accountable person, a working responsible team, and clearly defined consulted and informed parties. The model layers a strategic AI Governance Board over departmental assurance boards and product-level day-to-day controls.</p>
+
+    <h3>Three-tier governance</h3>
+    <div class="princ-grid">
+        <div class="princ" style="border-top-color: var(--strategic)"><span class="princ-no" style="background:var(--strategic)">L1</span><div class="princ-t">AI Governance Board (strategic)</div><div class="princ-d">Sets risk appetite, approves R-tier policy, owns ATRS publication, commissions external audits. Chaired by senior accountable officer; SIRO and DPO members.</div></div>
+        <div class="princ" style="border-top-color: var(--tactical)"><span class="princ-no" style="background:var(--tactical)">L2</span><div class="princ-t">Assurance Board (departmental)</div><div class="princ-d">Approves go-live, holds phase-gate decisions, owns evaluation standards and shared platforms, runs assurance clinics (Level 1&ndash;3).</div></div>
+        <div class="princ" style="border-top-color: var(--operational)"><span class="princ-no" style="background:var(--operational)">L3</span><div class="princ-t">Product / Service team (operational)</div><div class="princ-d">Executes E2VT, maintains evidence pack, runs monitoring, manages incidents. Day-to-day accountable owner is the Service / Product Owner.</div></div>
+    </div>
+
+    <h3>Operating RACI</h3>
+    <table>
+        <thead><tr><th>Area</th><th>Accountable (A)</th><th>Responsible (R)</th><th>Consulted (C)</th><th>Informed (I)</th></tr></thead>
+        <tbody>
+            <tr><td>Risk Tiering</td><td>Service / Product Owner</td><td>Principal Technologist, Safety Lead</td><td>Legal, DPO</td><td>Team</td></tr>
+            <tr><td>Evaluation Plan</td><td>Principal Technologist</td><td>ML Eng, Data Scientist, QA</td><td>Domain SMEs, UX Researchers</td><td>AI Governance Board</td></tr>
+            <tr><td>Data Provenance</td><td>AI / Data Lead</td><td>ML Eng, Data Scientist</td><td>Domain SMEs, UX Researchers</td><td>AI Governance Board</td></tr>
+            <tr><td>Red Team</td><td>Safety Lead</td><td>Security, Red-Teamers</td><td>Product Owner, Legal</td><td>All</td></tr>
+            <tr><td>DPIA / EqIA</td><td>DPO</td><td>Product Owner, Legal</td><td>SIRO, User Research</td><td>Assurance Board</td></tr>
+            <tr><td>Go-Live decision</td><td>SRO</td><td>Service / Product Owner</td><td>Assurance Board</td><td>Stakeholders</td></tr>
+            <tr><td>Monitoring &amp; Incidents</td><td>Service / Product Owner</td><td>SRE / On-call</td><td>Safety Lead, Comms</td><td>All</td></tr>
+            <tr><td>Re-certification</td><td>SRO</td><td>Principal Technologist</td><td>Assurance Board</td><td>AI Governance Board</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Towards observable maturity</h3>
+    <p>The target operating model is supported by four operational dashboards/registries &mdash; each is a capability that should exist at department or cross-government level:</p>
+    <div class="cat-grid">
+        <div class="cat" data-c="tec"><div class="cat-t">Generic AI Dashboard</div><div class="cat-d">Service-level view of uptake, accuracy, cost, incident count.</div></div>
+        <div class="cat" data-c="leg"><div class="cat-t">Model Registry</div><div class="cat-d">Versioning, provenance, owner, R-tier, ATRS link, exit plan.</div></div>
+        <div class="cat" data-c="fai"><div class="cat-t">Hallucination Detection</div><div class="cat-d">Output quality monitoring with sub-group breakdowns.</div></div>
+        <div class="cat" data-c="red"><div class="cat-t">Incident Management</div><div class="cat-d">Severity, escalation, comms, post-incident learning loop.</div></div>
+    </div>
+</div>
+
+<!-- ============ FAILURE ============ -->
+<div id="failure" class="panel">
+    <h2>AI-enabled Failure-Mode Matrix</h2>
+    <p class="lede">The bigger assessment risk is rarely whether the model works. It is whether the team can show why AI is appropriate, how harms are detected, how humans remain in meaningful control, and how the service operates reliably in live conditions. Stress-test these failure modes before assessment.</p>
+
+    <table class="fm-table">
+        <thead><tr><th>Failure mode</th><th>Pilot intervention</th><th>Managed beta intervention</th><th>Beta / live intervention</th><th>Assessment risk (points)</th></tr></thead>
+        <tbody>
+            <tr><td>AI not justified by user need</td><td>Compare AI vs non-AI options</td><td>Validate with controlled users</td><td>Reassess VfM &amp; user impact</td><td>1, 2, 11</td></tr>
+            <tr><td>Model output wrong or misleading</td><td>Identify failure categories</td><td>Test against representative scenarios</td><td>Monitor accuracy &amp; incidents</td><td>9, 10, 14</td></tr>
+            <tr><td>Bias or exclusion</td><td>Identify protected-characteristic risks</td><td>Accessibility &amp; fairness testing</td><td>Monitor differential impact</td><td>5, 9, 10</td></tr>
+            <tr><td>Prompt injection / adversarial misuse</td><td>Threat-model attack paths</td><td>Test adversarial prompts &amp; abuse</td><td>Monitor abuse, patch controls</td><td>9, 14</td></tr>
+            <tr><td>Weak human control</td><td>Define human role &amp; handoffs</td><td>Test decision handoff &amp; override</td><td>Audit human review &amp; escalation</td><td>4, 6, 9</td></tr>
+            <tr><td>Model drift</td><td>Define baseline</td><td>Monitor pre-live quality changes</td><td>Drift alerts &amp; retraining governance</td><td>8, 10, 14</td></tr>
+            <tr><td>Supplier / model unavailable</td><td>Identify dependency</td><td>Test fallback</td><td>Operate fallback &amp; incident route</td><td>11, 14</td></tr>
+            <tr><td>Governance unclear</td><td>Name accountable owner</td><td>Confirm governance gates</td><td>Maintain live decision log</td><td>6, 8, 14</td></tr>
+            <tr><td>Evidence scattered</td><td>Build evidence map</td><td>Rehearse assessor narrative</td><td>Maintain evidence pack</td><td>All 14</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Answer-quality scoring (for reference)</h3>
+    <table>
+        <thead><tr><th>Score</th><th>Meaning</th><th>Example</th></tr></thead>
+        <tbody>
+            <tr><td><span class="pill r4">1</span></td><td>Assertion only</td><td>&ldquo;We have tested this.&rdquo;</td></tr>
+            <tr><td><span class="pill r3">2</span></td><td>Some evidence</td><td>&ldquo;We ran testing and have results.&rdquo;</td></tr>
+            <tr><td><span class="pill r2">3</span></td><td>Evidence linked to risk</td><td>&ldquo;Testing showed these risks and these controls are in place.&rdquo;</td></tr>
+            <tr><td><span class="pill r1">4</span></td><td>Evidence + control + ownership + learning</td><td>&ldquo;Testing showed X; control Y is owned by Z; we revise on amber review.&rdquo;</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ============ TEMPLATES ============ -->
+<div id="templates" class="panel">
+    <h2>Operating Templates</h2>
+    <p class="lede">Eight reusable templates that turn the operating model into daily artefacts. Edit in-browser, then use the buttons to print or copy. Together they form the minimum evidence pack any AI-enabled service should hold.</p>
+
+    <!-- T1 -->
+    <div class="tmpl" id="t-story">
+        <div class="tmpl-hd"><div class="tmpl-t">T1 &middot; One-page Service Story</div><div class="tmpl-tag">Pilot &rarr; Live</div></div>
+        <div class="tmpl-body">
+            <div class="tmpl-grid">
+                <div class="field"><label>Service name</label><input type="text" placeholder="e.g. Casework triage assistant"></div>
+                <div class="field"><label>Service owner (SRO)</label><input type="text"></div>
+                <div class="field"><label>What problem is the service solving?</label><textarea></textarea></div>
+                <div class="field"><label>Who are the users?</label><textarea></textarea></div>
+                <div class="field"><label>What user need does the AI support?</label><textarea></textarea></div>
+                <div class="field"><label>Decision / recommendation / action the AI influences</label><textarea></textarea></div>
+                <div class="field"><label>Is AI used to build, or part of the output?</label><select><option>Used to build</option><option>Part of the service output</option><option>Both</option></select></div>
+                <div class="field"><label>Non-AI fallback</label><textarea></textarea></div>
+                <div class="field"><label>Harm if AI output is wrong</label><textarea></textarea></div>
+                <div class="field"><label>Risk owner</label><input type="text"></div>
+            </div>
+            <div class="tmpl-actions"><button class="btn" onclick="window.print()">Print</button><button class="btn ghost" onclick="copyTmpl('t-story')">Copy as text</button></div>
+        </div>
+    </div>
+
+    <!-- T2 -->
+    <div class="tmpl" id="t-tier">
+        <div class="tmpl-hd"><div class="tmpl-t">T2 &middot; Risk-tier classification</div><div class="tmpl-tag">All phases</div></div>
+        <div class="tmpl-body">
+            <div class="tmpl-grid">
+                <div class="field"><label>Use case</label><input type="text"></div>
+                <div class="field"><label>Proposed tier</label><select><option>R1 Low</option><option>R2 Medium</option><option>R3 High</option><option>R4 Critical</option></select></div>
+                <div class="field"><label>Dominant risk category</label><select><option>Financial</option><option>Legal &amp; regulatory compliance</option><option>Appropriate transparency &amp; explainability</option><option>Fairness</option><option>Accountability &amp; governance</option><option>Contestability &amp; redress</option><option>Technical robustness</option><option>Security</option><option>People &amp; the environment</option></select></div>
+                <div class="field"><label>Vulnerable cohorts affected?</label><select><option>No</option><option>Possibly</option><option>Yes</option></select></div>
+                <div class="field"><label>Justification for tier</label><textarea></textarea></div>
+                <div class="field"><label>Controls applied</label><textarea></textarea></div>
+                <div class="field"><label>Sign-off (name &amp; role)</label><input type="text"></div>
+                <div class="field"><label>Re-certification date</label><input type="date"></div>
+            </div>
+            <div class="tmpl-actions"><button class="btn" onclick="window.print()">Print</button></div>
+        </div>
+    </div>
+
+    <!-- T3 -->
+    <div class="tmpl" id="t-evidence">
+        <div class="tmpl-hd"><div class="tmpl-t">T3 &middot; Evidence Tracker (14 Standard points)</div><div class="tmpl-tag">Beta &rarr; Live</div></div>
+        <div class="tmpl-body">
+            <table>
+                <thead><tr><th>Standard area</th><th>Claim</th><th>Evidence location</th><th>Owner</th><th>RAG</th></tr></thead>
+                <tbody id="evidence-rows">
+                </tbody>
+            </table>
+            <div class="tmpl-actions"><button class="btn" onclick="window.print()">Print</button></div>
+        </div>
+    </div>
+
+    <!-- T4 -->
+    <div class="tmpl" id="t-failure">
+        <div class="tmpl-hd"><div class="tmpl-t">T4 &middot; Failure-mode card</div><div class="tmpl-tag">Pilot &rarr; Live</div></div>
+        <div class="tmpl-body">
+            <div class="tmpl-grid">
+                <div class="field"><label>Failure mode title</label><input type="text" placeholder="e.g. Model gives incorrect advice"></div>
+                <div class="field"><label>Plausible scenario</label><textarea></textarea></div>
+                <div class="field"><label>How would this be detected?</label><textarea></textarea></div>
+                <div class="field"><label>User-facing safeguard</label><textarea></textarea></div>
+                <div class="field"><label>Human review / appeal route</label><textarea></textarea></div>
+                <div class="field"><label>Incident owner</label><input type="text"></div>
+                <div class="field"><label>Evidence shown to assessor</label><textarea></textarea></div>
+                <div class="field"><label>Likelihood &times; Impact (1&ndash;5)</label><input type="text" placeholder="3 x 4 = 12"></div>
+            </div>
+            <div class="tmpl-actions"><button class="btn" onclick="window.print()">Print</button></div>
+        </div>
+    </div>
+
+    <!-- T5 -->
+    <div class="tmpl" id="t-model-card">
+        <div class="tmpl-hd"><div class="tmpl-t">T5 &middot; Model Card</div><div class="tmpl-tag">Managed beta &rarr; Live</div></div>
+        <div class="tmpl-body">
+            <div class="tmpl-grid">
+                <div class="field"><label>Model name &amp; version</label><input type="text"></div>
+                <div class="field"><label>Supplier / origin</label><input type="text"></div>
+                <div class="field"><label>Intended use</label><textarea></textarea></div>
+                <div class="field"><label>Out-of-scope uses</label><textarea></textarea></div>
+                <div class="field"><label>Training / fine-tuning data summary</label><textarea></textarea></div>
+                <div class="field"><label>Evaluation metrics &amp; results</label><textarea></textarea></div>
+                <div class="field"><label>Sub-group performance</label><textarea></textarea></div>
+                <div class="field"><label>Known limitations &amp; failure modes</label><textarea></textarea></div>
+                <div class="field"><label>Update / retrain process</label><textarea></textarea></div>
+                <div class="field"><label>ATRS reference</label><input type="text"></div>
+            </div>
+            <div class="tmpl-actions"><button class="btn" onclick="window.print()">Print</button></div>
+        </div>
+    </div>
+
+    <!-- T6 -->
+    <div class="tmpl" id="t-phase">
+        <div class="tmpl-hd"><div class="tmpl-t">T6 &middot; Phase-gate decision log</div><div class="tmpl-tag">Every gate</div></div>
+        <div class="tmpl-body">
+            <div class="tmpl-grid">
+                <div class="field"><label>Phase</label><select><option>Pilot &rarr; Managed Beta</option><option>Managed Beta &rarr; Beta</option><option>Beta &rarr; Live</option><option>Live re-certification</option></select></div>
+                <div class="field"><label>Decision date</label><input type="date"></div>
+                <div class="field"><label>Decision</label><select><option>Proceed</option><option>Limited proceed</option><option>Remediate</option><option>Pause</option><option>Stop</option></select></div>
+                <div class="field"><label>Decision maker (SRO)</label><input type="text"></div>
+                <div class="field"><label>Evidence reviewed</label><textarea></textarea></div>
+                <div class="field"><label>Outstanding risks &amp; owners</label><textarea></textarea></div>
+                <div class="field"><label>Conditions of proceed</label><textarea></textarea></div>
+                <div class="field"><label>Next review date</label><input type="date"></div>
+            </div>
+            <div class="tmpl-actions"><button class="btn" onclick="window.print()">Print</button></div>
+        </div>
+    </div>
+
+    <!-- T7 -->
+    <div class="tmpl" id="t-incident">
+        <div class="tmpl-hd"><div class="tmpl-t">T7 &middot; AI Incident Report</div><div class="tmpl-tag">Live</div></div>
+        <div class="tmpl-body">
+            <div class="tmpl-grid">
+                <div class="field"><label>Incident ID</label><input type="text"></div>
+                <div class="field"><label>Severity</label><select><option>Sev 1 (safety / legal)</option><option>Sev 2 (user harm)</option><option>Sev 3 (degraded)</option><option>Sev 4 (minor)</option></select></div>
+                <div class="field"><label>What happened?</label><textarea></textarea></div>
+                <div class="field"><label>How was it detected?</label><textarea></textarea></div>
+                <div class="field"><label>Affected users / cohorts</label><textarea></textarea></div>
+                <div class="field"><label>Containment action</label><textarea></textarea></div>
+                <div class="field"><label>Was kill-switch used?</label><select><option>No</option><option>Partial rollback</option><option>Yes, full disable</option></select></div>
+                <div class="field"><label>Root cause</label><textarea></textarea></div>
+                <div class="field"><label>Notifications (SIRO, DPO, ICO, Minister)</label><textarea></textarea></div>
+                <div class="field"><label>Lessons fed back to operating model</label><textarea></textarea></div>
+            </div>
+            <div class="tmpl-actions"><button class="btn accent" onclick="window.print()">Print</button></div>
+        </div>
+    </div>
+
+    <!-- T8 -->
+    <div class="tmpl" id="t-raci">
+        <div class="tmpl-hd"><div class="tmpl-t">T8 &middot; Service RACI worksheet</div><div class="tmpl-tag">Setup</div></div>
+        <div class="tmpl-body">
+            <table>
+                <thead><tr><th>Activity</th><th>A</th><th>R</th><th>C</th><th>I</th></tr></thead>
+                <tbody id="raci-rows"></tbody>
+            </table>
+            <div class="tmpl-actions"><button class="btn" onclick="window.print()">Print</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ CENTRAL GUIDANCE ============ -->
+<div id="guidance" class="panel">
+    <h2>Centrally Endorsed Guidance for Responsible Deployment</h2>
+    <p class="lede">Departmental approaches to AI assurance are inconsistent today &mdash; some teams over-engineer controls, others under-control. This section sets a <strong>single, written and centrally endorsed</strong> position covering responsible deployment, model-update governance, accuracy expectations and acceptable risk thresholds. It is designed to <em>unblock</em> safe experimentation by making the rules explicit, so teams stop guessing and risk-aversion stops acting as a default veto.</p>
+
+    <div class="quote">
+        &ldquo;A consistent, written deployment standard means innovation can travel safely across government. Where the rules are clear, departments can move faster &mdash; not slower.&rdquo;
+        <cite>&mdash; Reference Operating Model, central guidance principle</cite>
+    </div>
+
+    <h3>G1 &middot; Responsible deployment standard</h3>
+    <p>Every AI-enabled service deployed in the UK public sector must satisfy the following <strong>seven mandatory commitments</strong>, regardless of risk tier or department. Anything below this floor is not a deployment, it is an experiment and must remain inside a controlled environment.</p>
+    <div class="princ-grid">
+        <div class="princ"><span class="princ-no">D1</span><div class="princ-t">Named SRO &amp; risk tier</div><div class="princ-d">A single accountable owner and an explicit R1&ndash;R4 classification recorded against the service. <em>Aligns: Risk Toolkit RACI; AAQ governance stage.</em></div></div>
+        <div class="princ"><span class="princ-no">D2</span><div class="princ-t">DPIA / EqIA completed</div><div class="princ-d">Privacy and equality impact assessments signed off before any real user touches the service. <em>Aligns: AAQ Ethics; Risk Toolkit categories Legal &amp; Fairness.</em></div></div>
+        <div class="princ"><span class="princ-no">D3</span><div class="princ-t">ATRS entry published (R2+)</div><div class="princ-d">Algorithmic Transparency Recording Standard entry live before public exposure for R2 and above. <em>Aligns: Risk Toolkit Transparency category.</em></div></div>
+        <div class="princ"><span class="princ-no">D4</span><div class="princ-t">Meaningful human control</div><div class="princ-d">Override, appeal, fallback and kill-switch routes defined, tested and owned. <em>Aligns: AAQ governance; Service Standard pt 4.</em></div></div>
+        <div class="princ"><span class="princ-no">D5</span><div class="princ-t">Monitoring &amp; drift plan</div><div class="princ-d">Live dashboards for accuracy, fairness, hallucination and cost &mdash; with thresholds defined <em>before</em> launch. <em>Aligns: Toolkit Technical Robustness; AAQ Lifecycle.</em></div></div>
+        <div class="princ"><span class="princ-no">D6</span><div class="princ-t">Inclusion evidence</div><div class="princ-d">Accessibility and sub-group testing covering dialects, accents, low digital confidence and disability. <em>Aligns: Research Assessment; Service Standard pt 5.</em></div></div>
+        <div class="princ"><span class="princ-no">D7</span><div class="princ-t">Evidence pack &amp; decision log</div><div class="princ-d">Single discoverable evidence pack and phase-gate decision log; not held in one person&rsquo;s head. <em>Aligns: Level 3 Evidence Tracker; AAQ v4.3.</em></div></div>
+    </div>
+
+    <h3>G2 &middot; Model update governance</h3>
+    <p>Model behaviour changes &mdash; either intentionally (retrain, prompt edit, version bump) or externally (supplier model swap, fine-tuning). All four trigger the same governance path. The depth of the path is set by R-tier.</p>
+    <table>
+        <thead><tr><th>Update type</th><th>Trigger</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th></tr></thead>
+        <tbody>
+            <tr><td>Prompt / configuration change</td><td>Team-initiated</td><td>Peer review &amp; log</td><td>Peer review + regression suite</td><td>Change Advisory Board + canary</td><td>CAB + change-freeze respected + canary + rollback rehearsal</td></tr>
+            <tr><td>Retrain / fine-tune</td><td>Drift, new data or scheduled</td><td>Baseline diff</td><td>Eval pack rerun</td><td>Full E2VT rerun + SME review</td><td>Independent re-validation + external audit hook</td></tr>
+            <tr><td>Version bump (own model)</td><td>Release process</td><td>Semver + changelog</td><td>Eval rerun + SLO check</td><td>Canary 5 &rarr; 25 &rarr; 100% with kill-switch</td><td>Quarterly re-certification supersedes</td></tr>
+            <tr><td>Supplier model change</td><td>Provider-initiated</td><td>Notify owner</td><td>Regression + bias delta</td><td>Pause flow + revalidate + ATRS update</td><td>Halt service until revalidated &amp; signed off by SRO</td></tr>
+            <tr><td>Knowledge base / RAG update</td><td>Content team</td><td>Quality spot-check</td><td>Hallucination diff vs baseline</td><td>SME panel + factuality eval</td><td>SME + independent eval, with citation audit</td></tr>
+        </tbody>
+    </table>
+    <p><strong>Hard rule for all tiers:</strong> no silent updates. Every model change leaves a record in the Model Registry, the decision log and (R2+) the ATRS entry. Where the change is <em>provider-initiated</em>, the service operates under a <em>presumption to pause</em> until revalidation completes.</p>
+
+    <h3>G3 &middot; Accuracy expectations</h3>
+    <p>Accuracy is not a single number &mdash; and "high accuracy" is not a control. The central position is that each service must declare <strong>four metrics with explicit thresholds</strong>, set <em>before</em> launch and proportionate to tier. Below the lower threshold the service must pause; in the amber band it must remediate; above the green threshold it may operate.</p>
+    <table>
+        <thead><tr><th>Metric family</th><th>What it measures</th><th>R1 floor</th><th>R2 floor</th><th>R3 floor</th><th>R4 floor</th></tr></thead>
+        <tbody>
+            <tr><td>Task accuracy</td><td>Correct outputs on golden / held-out set</td><td>&ge; 70%</td><td>&ge; 85%</td><td>&ge; 92%</td><td>&ge; 95% with CI reported</td></tr>
+            <tr><td>Sub-group parity</td><td>Max gap in accuracy across protected groups</td><td>&le; 15 pp</td><td>&le; 10 pp</td><td>&le; 5 pp</td><td>&le; 3 pp with rationale</td></tr>
+            <tr><td>Hallucination / factuality</td><td>Unsupported claims on representative prompts</td><td>&le; 10%</td><td>&le; 5%</td><td>&le; 2%</td><td>&le; 1% with citation audit</td></tr>
+            <tr><td>Refusal &amp; safety</td><td>Correct refusal of unsafe / out-of-scope queries</td><td>&ge; 80%</td><td>&ge; 90%</td><td>&ge; 95%</td><td>&ge; 98% with red-team set</td></tr>
+        </tbody>
+    </table>
+    <p style="font-size:0.85rem;color:var(--mute);"><em>Thresholds are reference defaults. Departments may set <strong>stricter</strong> values for the same tier; they may not relax them without AI Governance Board approval. pp = percentage points.</em></p>
+
+    <h3>G4 &middot; Acceptable risk thresholds</h3>
+    <p>Mapped to the Orange Book-aligned appetite scale (Averse &rarr; Eager) used in the AI Risk Management Toolkit, against the nine risk categories.</p>
+    <table>
+        <thead><tr><th>Risk category</th><th>Central position</th><th>Floor (will not accept below)</th><th>Trigger for pause</th></tr></thead>
+        <tbody>
+            <tr><td>Financial</td><td>Open</td><td>Project not solvent without AI subsidy</td><td>Run-rate &gt; 1.5&times; business case</td></tr>
+            <tr><td>Legal &amp; regulatory compliance</td><td>Minimal</td><td>Any unresolved legal challenge with material likelihood</td><td>DPIA / EqIA finding above &lsquo;low&rsquo; not remediated</td></tr>
+            <tr><td>Appropriate transparency &amp; explainability</td><td>Cautious</td><td>Users cannot tell they are using AI</td><td>ATRS entry missing / out of date at R2+</td></tr>
+            <tr><td>Fairness</td><td>Minimal</td><td>Sub-group parity gap &gt; G3 floor</td><td>Live monitoring shows widening gap over 2 cycles</td></tr>
+            <tr><td>Accountability &amp; governance</td><td>Cautious</td><td>No named SRO; no decision log</td><td>SRO change without handover within 10 working days</td></tr>
+            <tr><td>Contestability &amp; redress</td><td>Cautious</td><td>No redress channel defined</td><td>Redress SLA breach rate &gt; 5%</td></tr>
+            <tr><td>Technical robustness</td><td>Open</td><td>Below G3 task-accuracy floor</td><td>Drift alert sustained for &gt; 1 cycle without action</td></tr>
+            <tr><td>Security</td><td>Averse</td><td>Unmitigated prompt-injection or data-exfil risk</td><td>Any sev-1 incident; CVE on the model path</td></tr>
+            <tr><td>People &amp; the environment</td><td>Minimal</td><td>Foreseeable harm to vulnerable cohort without safeguard</td><td>Safeguarding incident, or sustainability budget breach</td></tr>
+        </tbody>
+    </table>
+
+    <h3>G5 &middot; Pre-approved deployment routes</h3>
+    <p>To remove the most common cause of departmental risk-aversion &mdash; uncertainty about what is allowed &mdash; the following <strong>pre-approved patterns</strong> may be deployed at R1/R2 using the reference controls only, without bespoke board review:</p>
+    <ul>
+        <li><strong>Pattern A &mdash; Internal staff productivity assistant</strong> (drafting, summarisation, search) on non-personal corporate data. Requires D1, D5, D7.</li>
+        <li><strong>Pattern B &mdash; Internal knowledge retrieval (RAG)</strong> over departmental knowledge base, with citation. Requires D1, D2, D5, D7.</li>
+        <li><strong>Pattern C &mdash; User-facing informational assistant</strong> with explicit "AI-generated" labelling and human-reviewed corpus. Requires D1&ndash;D7.</li>
+        <li><strong>Pattern D &mdash; Caseworker triage / prioritisation</strong> (advisory, not decisional). Requires D1&ndash;D7 and sub-group parity evidence (G3).</li>
+    </ul>
+    <p>Anything outside the pre-approved patterns, or at R3/R4, requires departmental Assurance Board sign-off plus AI Governance Board notification.</p>
+
+    <h3>G6 &middot; Consistency across government</h3>
+    <p>To prevent departmental drift, the following are <strong>common across all departments</strong> and may not be re-defined locally:</p>
+    <div class="cat-grid">
+        <div class="cat" data-c="acc"><div class="cat-t">Risk tiers R1&ndash;R4</div><div class="cat-d">Single definition used across HMG. Departments may add sub-tiers, not redefine the four.</div></div>
+        <div class="cat" data-c="leg"><div class="cat-t">Nine risk categories</div><div class="cat-d">AI Risk Management Toolkit D02 v1 categories used verbatim.</div></div>
+        <div class="cat" data-c="trn"><div class="cat-t">Seven deployment commitments (D1&ndash;D7)</div><div class="cat-d">Floor for any live deployment; departments may add, not subtract.</div></div>
+        <div class="cat" data-c="tec"><div class="cat-t">G3 accuracy floors</div><div class="cat-d">Reference minima per tier; stricter allowed, looser requires AI Gov Board approval.</div></div>
+        <div class="cat" data-c="red"><div class="cat-t">Model-update governance (G2)</div><div class="cat-d">Same five triggers, same four tier responses across departments.</div></div>
+        <div class="cat" data-c="sec"><div class="cat-t">Security baseline</div><div class="cat-d">Appetite = Averse for security; common minimum across HMG.</div></div>
+        <div class="cat" data-c="fai"><div class="cat-t">Fairness floors</div><div class="cat-d">Sub-group parity gap thresholds in G3 are common minima.</div></div>
+        <div class="cat" data-c="peo"><div class="cat-t">Incident notification</div><div class="cat-d">Sev-1 incidents notified to SIRO, DPO and AI Gov Board within 24 hours.</div></div>
+    </div>
+
+    <h3>G7 &middot; How this navigates risk aversion</h3>
+    <p>The most common failure pattern observed in departmental practice is not deploying badly &mdash; it is <em>not deploying at all</em>, because no one is sure what "good enough" looks like. This guidance addresses each pattern:</p>
+    <table>
+        <thead><tr><th>Symptom of risk aversion</th><th>Central guidance response</th></tr></thead>
+        <tbody>
+            <tr><td>&ldquo;We don&rsquo;t know what controls are required.&rdquo;</td><td>D1&ndash;D7 deployment commitments + Tier&times;Category cross-walk are written and endorsed.</td></tr>
+            <tr><td>&ldquo;What accuracy is good enough?&rdquo;</td><td>G3 declares default floors per tier; departments may set stricter, not looser.</td></tr>
+            <tr><td>&ldquo;How do we change the model safely?&rdquo;</td><td>G2 sets the five update triggers and tiered response.</td></tr>
+            <tr><td>&ldquo;What if the supplier changes the model?&rdquo;</td><td>G2 supplier-change row + &lsquo;presumption to pause&rsquo;.</td></tr>
+            <tr><td>&ldquo;Do we need board sign-off for every use case?&rdquo;</td><td>No &mdash; G5 pre-approved patterns are deployable without bespoke review at R1/R2.</td></tr>
+            <tr><td>&ldquo;Our department does it differently to others.&rdquo;</td><td>G6 fixes the non-negotiable common ground; local addition allowed, redefinition not.</td></tr>
+            <tr><td>&ldquo;How do we know when to stop?&rdquo;</td><td>G4 pause triggers + G3 amber/red thresholds are explicit, not judgemental.</td></tr>
+        </tbody>
+    </table>
+
+    <h3>G8 &middot; Where this guidance lives in the operating model</h3>
+    <ul>
+        <li><strong>Strategic layer</strong> &mdash; G1, G4 and G6 sit with the AI Governance Board (L1).</li>
+        <li><strong>Tactical layer</strong> &mdash; G2, G3 and G5 are owned by the departmental Assurance Board (L2) and implemented through shared evaluation standards and the Model Registry.</li>
+        <li><strong>Operational layer</strong> &mdash; D1&ndash;D7 are enforced at phase gates by the Service / Product Owner (L3) using the templates in the <a href="#templates" onclick="goTab('templates')">Templates</a> tab.</li>
+        <li><strong>Assurance layer</strong> &mdash; G7 pause triggers feed directly into the <a href="#failure" onclick="goTab('failure')">Failure-Mode Matrix</a> and the AAQ v4.3 evidence questions.</li>
+    </ul>
+</div>
+
+<!-- ============ SYNERGY ============ -->
+<div id="synergy" class="panel">
+    <h2>Framework Synergy &amp; Critical Alignment</h2>
+    <p class="lede">The five source frameworks each address a slice of the AI assurance problem. The reference operating model integrates them so a single piece of evidence satisfies multiple frameworks simultaneously &mdash; reducing duplication and exposing genuine gaps.</p>
+
+    <div class="syn-grid">
+        <div class="syn"><div class="syn-src">Strategic AI Governance</div><div class="syn-t">Sets ambition &amp; risk appetite</div><div class="syn-d">10 principles, R1&ndash;R4 tiering, leadership choice, target operating model components.</div><div class="syn-link"><strong>Feeds &rarr;</strong> Operating Model L1 (Strategic), Risk Tiering, all phase gates.</div></div>
+        <div class="syn"><div class="syn-src">Level 3 Intervention</div><div class="syn-t">Service-assessment readiness</div><div class="syn-d">Lifecycle integrity (pilot &ne; beta &ne; live), failure-mode drill, assessor-role play, evidence challenge against the 14 points.</div><div class="syn-link"><strong>Feeds &rarr;</strong> Service Lifecycle, Failure Modes, Templates T1/T3/T4/T6.</div></div>
+        <div class="syn"><div class="syn-src">AI Assurance Questionnaire v4.3</div><div class="syn-t">146 evidenced questions</div><div class="syn-d">Question bank mapped to project governance stage, lifecycle stage, risk tier and ethical dimension.</div><div class="syn-link"><strong>Feeds &rarr;</strong> E2VT evaluation step; phase-gate questions; Evidence Tracker T3.</div></div>
+        <div class="syn"><div class="syn-src">AI Risk Management Toolkit</div><div class="syn-t">Risk identification &amp; control</div><div class="syn-d">Nine risk categories (D02 v1), Orange Book-aligned appetite scale, RACI, control taxonomy and mitigation patterns.</div><div class="syn-link"><strong>Feeds &rarr;</strong> Risk Categories, Governance RACI, Templates T2/T7.</div></div>
+        <div class="syn"><div class="syn-src">Research Assessment</div><div class="syn-t">AI in user research</div><div class="syn-d">Hallucination checks on research outputs, synthetic-user validation, dialect &amp; accent coverage.</div><div class="syn-link"><strong>Feeds &rarr;</strong> Standard points 1, 5; failure modes (bias, exclusion); evidence of inclusion.</div></div>
+    </div>
+
+    <h3>Cross-framework synergy matrix</h3>
+    <p>Where the same operating-model area is informed by multiple frameworks, alignment is genuine. Gaps below are where the reference operating model adds bridging guidance.</p>
+    <table>
+        <thead><tr><th>OPM area</th><th>Strategic Gov</th><th>Level 3</th><th>AAQ v4.3</th><th>Risk Toolkit</th><th>Research</th></tr></thead>
+        <tbody>
+            <tr><td>Risk appetite / tiering</td><td>&#x25CF; primary</td><td>&#x25CB;</td><td>&#x25CB;</td><td>&#x25CF;</td><td>&ndash;</td></tr>
+            <tr><td>Service lifecycle gates</td><td>&#x25CB;</td><td>&#x25CF; primary</td><td>&#x25CF;</td><td>&#x25CB;</td><td>&#x25CB;</td></tr>
+            <tr><td>Evidence &amp; questioning</td><td>&#x25CB;</td><td>&#x25CF;</td><td>&#x25CF; primary</td><td>&#x25CB;</td><td>&#x25CB;</td></tr>
+            <tr><td>Failure modes &amp; controls</td><td>&#x25CB;</td><td>&#x25CF;</td><td>&#x25CB;</td><td>&#x25CF; primary</td><td>&#x25CB;</td></tr>
+            <tr><td>User research integrity</td><td>&ndash;</td><td>&#x25CB;</td><td>&#x25CB;</td><td>&ndash;</td><td>&#x25CF; primary</td></tr>
+            <tr><td>Operating dashboards</td><td>&#x25CF; primary</td><td>&ndash;</td><td>&ndash;</td><td>&#x25CB;</td><td>&ndash;</td></tr>
+            <tr><td>RACI &amp; accountability</td><td>&#x25CF;</td><td>&#x25CB;</td><td>&#x25CB;</td><td>&#x25CF; primary</td><td>&ndash;</td></tr>
+        </tbody>
+    </table>
+    <p style="font-size:0.82rem;color:var(--mute);margin-top:6px;">&#x25CF; primary contributor &middot; &#x25CB; reinforcing contributor &middot; &ndash; not in scope</p>
+
+    <h3>Critical observations</h3>
+    <ul>
+        <li><strong>Synergy:</strong> Risk tiering (Strategic Gov) and failure-mode controls (Risk Toolkit) align cleanly &mdash; tier sets depth, toolkit sets shape. Use Templates T2 and T4 together.</li>
+        <li><strong>Synergy:</strong> Level 3 lifecycle phasing and AAQ v4.3 lifecycle stages are isomorphic &mdash; AAQ questions plug directly into the phase-gate accordions on the Lifecycle tab.</li>
+        <li><strong>Gap bridged:</strong> Research Assessment scrutinises hallucinated research outputs but is silent on live operation. The OPM routes its findings into Standard points 1 and 5, then into live drift monitoring.</li>
+        <li><strong>Gap bridged:</strong> Strategic Gov describes target dashboards (registry, hallucination, incident) but not who runs them. The Governance RACI assigns L2 Assurance Board ownership.</li>
+        <li><strong>Risk to mitigate:</strong> All five frameworks treat &ldquo;evidence&rdquo; differently. The Evidence Tracker (T3) consolidates to a single pack per service to prevent scatter &mdash; the most cited Level 3 failure.</li>
+    </ul>
+
+    <div class="quote">
+        &ldquo;The hard part is not access to AI. The hard part is operating model maturity. Without clear governance, assurance and accountability, AI adoption fragments.&rdquo;
+        <cite>&mdash; Strategic AI Governance at Scale</cite>
+    </div>
+</div>
+
+</div><!-- /content -->
+
+<div class="footer">
+    <div class="footer-inner">
+        <div>Reference Operating Model &middot; Synthesised from Level 3 V2.0, Strategic AI Governance, AAQ v4.3, AI Risk Toolkit, Research Assessment.</div>
+        <div>Not a formal assessment artefact. Use alongside DSIT / GDS / departmental approval routes.</div>
+    </div>
+</div>
+
+<script>
+/* ---------- nav ---------- */
+const tabs = document.querySelectorAll('.nav-btn');
+const panels = document.querySelectorAll('.panel');
+function goTab(id) {
+    panels.forEach(p => p.classList.toggle('active', p.id === id));
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+tabs.forEach(t => t.addEventListener('click', () => goTab(t.dataset.tab)));
+
+/* ---------- evidence tracker rows ---------- */
+const standards = [
+    ['1. Understand users &amp; needs', 'User research lead'],
+    ['2. Solve a whole problem', 'Product / design lead'],
+    ['3. Joined-up channels', 'Service designer'],
+    ['4. Simple to use', 'Interaction / content lead'],
+    ['5. Everyone can use it', 'Design / research lead'],
+    ['6. Multidisciplinary team', 'Service owner'],
+    ['7. Agile ways of working', 'Delivery manager'],
+    ['8. Iterate and improve', 'Product / AI lead'],
+    ['9. Secure and private', 'Tech / security lead'],
+    ['10. Define success', 'Performance analyst'],
+    ['11. Right tools and tech', 'Technical architect'],
+    ['12. Open source', 'Tech lead'],
+    ['13. Open standards / components', 'Tech / design lead'],
+    ['14. Reliable service', 'Service / ops lead']
+];
+const eRows = document.getElementById('evidence-rows');
+standards.forEach(s => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${s[0]}</td>
+        <td><input type="text" style="width:100%;padding:4px;border:1px solid #D0D0D0;font-family:inherit;font-size:0.85rem;"></td>
+        <td><input type="text" style="width:100%;padding:4px;border:1px solid #D0D0D0;font-family:inherit;font-size:0.85rem;"></td>
+        <td>${s[1]}</td>
+        <td><select style="padding:4px;border:1px solid #D0D0D0;font-family:inherit;font-size:0.85rem;"><option>Green</option><option>Amber</option><option>Red</option></select></td>`;
+    eRows.appendChild(tr);
+});
+
+/* ---------- RACI worksheet rows ---------- */
+const raciActivities = [
+    'Risk tiering','Use-case appraisal','Data provenance','DPIA / EqIA','Threat modelling',
+    'Evaluation plan','Red-teaming','Model selection','User research','Accessibility testing',
+    'Go-live decision','Monitoring &amp; drift','Incident response','Re-certification','ATRS publication'
+];
+const rRows = document.getElementById('raci-rows');
+raciActivities.forEach(a => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${a}</td>` + ['A','R','C','I'].map(()=>`<td><input type="text" style="width:100%;padding:4px;border:1px solid #D0D0D0;font-family:inherit;font-size:0.85rem;"></td>`).join('');
+    rRows.appendChild(tr);
+});
+
+/* ---------- copy template ---------- */
+function copyTmpl(id) {
+    const el = document.getElementById(id);
+    const fields = el.querySelectorAll('label, input, textarea, select');
+    let out = '';
+    fields.forEach(f => {
+        if (f.tagName === 'LABEL') out += '\n' + f.textContent + ':\n';
+        else out += (f.value || '...') + '\n';
+    });
+    navigator.clipboard.writeText(out.trim()).then(() => {
+        alert('Template copied to clipboard.');
+    });
+}
+</script>
+
+</body>
+</html>

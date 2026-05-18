@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service Assessment Questions — Navigator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Source Sans 3', Arial, sans-serif; color: #1A2B4A; background: #fff; line-height: 1.6; }
+.header { background: #fff; border-bottom: 3px solid #1A1A1A; padding: 20px 40px; display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.header h1 { font-size: 1.6rem; font-weight: 700; color: #1A1A1A; }
+.header span { font-size: 0.9rem; color: #555555; }
+.tab-bar { background: #F5F5F5; border-bottom: 1px solid #D0D0D0; padding: 0 40px; display: flex; gap: 0; overflow-x: auto; position: sticky; top: 0; z-index: 20; }
+.tab-btn { padding: 14px 20px; font-size: 0.9rem; font-weight: 600; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; color: #555555; white-space: nowrap; }
+.tab-btn:hover { color: #1A1A1A; background: #F0F0F0; }
+.tab-btn.active { color: #1A1A1A; border-bottom-color: #1A1A1A; background: #fff; }
+.content { max-width: 1200px; margin: 0 auto; padding: 32px 40px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+h2 { font-size: 1.6rem; color: #1A1A1A; margin-bottom: 16px; font-weight: 700; }
+h3 { font-size: 1.2rem; color: #1A1A1A; margin: 24px 0 10px; font-weight: 700; }
+h4 { font-size: 1rem; color: #1A2B4A; margin: 16px 0 8px; font-weight: 700; }
+p { font-size: 1rem; margin-bottom: 12px; }
+ul, ol { margin: 8px 0 16px 24px; }
+li { margin-bottom: 8px; font-size: 0.95rem; }
+
+.themes { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+.theme-pill { background: #F0F0F0; border: 1px solid #1A1A1A; color: #1A1A1A; padding: 6px 14px; font-size: 0.8rem; font-weight: 600; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 20px 0; }
+.stat { background: #F5F5F5; border-left: 4px solid #1A1A1A; padding: 16px; }
+.stat-num { font-size: 2rem; font-weight: 900; color: #1A1A1A; line-height: 1; }
+.stat-label { font-size: 0.85rem; color: #555; margin-top: 4px; }
+.card { background: #F5F5F5; border-left: 4px solid #1A1A1A; padding: 16px 20px; margin: 16px 0; }
+.card-title { font-weight: 700; color: #1A1A1A; margin-bottom: 6px; }
+
+/* Phase journey */
+.journey { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 20px 0 30px; }
+.journey-step { padding: 18px; text-align: center; color: #fff; cursor: pointer; transition: transform 0.15s; }
+.journey-step:hover { transform: translateY(-2px); }
+.journey-step .jn { font-size: 1.9rem; font-weight: 900; line-height: 1; }
+.journey-step .jl { font-size: 0.9rem; font-weight: 700; margin-top: 6px; }
+.journey-step .jd { font-size: 0.78rem; opacity: 0.9; margin-top: 4px; }
+
+/* Role chips */
+.role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
+.role-tile { padding: 16px; color: #fff; cursor: pointer; transition: transform 0.15s; }
+.role-tile:hover { transform: translateY(-2px); }
+.role-tile .ri { font-size: 1.8rem; }
+.role-tile .rn { font-weight: 700; font-size: 1.05rem; margin-top: 4px; }
+.role-tile .rc { font-size: 0.85rem; opacity: 0.95; margin-top: 4px; }
+
+/* Filter bar */
+.filter-bar { background: #F5F5F5; border: 1px solid #D0D0D0; padding: 16px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.filter-bar label { font-size: 0.78rem; font-weight: 700; color: #1A1A1A; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px; }
+.filter-bar select, .filter-bar input { width: 100%; padding: 8px 10px; font-size: 0.9rem; border: 1px solid #1A1A1A; font-family: inherit; background: #fff; }
+.search-row { grid-column: 1 / -1; }
+.filter-actions { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.btn { background: #1A1A1A; color: #fff; border: none; padding: 8px 16px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn:hover { background: #000; }
+.btn.ghost { background: #fff; color: #1A1A1A; border: 1px solid #1A1A1A; }
+.result-count { font-size: 0.9rem; color: #555; font-weight: 600; }
+
+/* Section blocks */
+.section-block { margin: 24px 0; }
+.section-head { padding: 12px 16px; color: #fff; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+.section-head .sh-count { background: rgba(255,255,255,0.25); padding: 2px 10px; font-family: monospace; font-size: 0.85rem; }
+.std-group { border-left: 3px solid #1A1A1A; padding: 8px 16px; margin: 12px 0; background: #FAFAFA; }
+.std-label { font-weight: 700; font-size: 0.95rem; color: #1A1A1A; margin-bottom: 8px; }
+.std-label.ai-std { color: #6A1B9A; }
+.q-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.q-item { background: #fff; border: 1px solid #E0E0E0; padding: 10px 14px; font-size: 0.92rem; display: flex; gap: 10px; align-items: flex-start; border-left: 3px solid #ccc; }
+.q-item.ai { border-left-color: #6A1B9A; background: #F8F5FC; }
+.q-item .qm { font-size: 0.7rem; padding: 1px 6px; background: #1A1A1A; color: #fff; font-weight: 700; margin-right: 6px; }
+.q-item.ai .qm { background: #6A1B9A; }
+.q-text { flex: 1; }
+
+/* Full search results */
+.q-card { background: #fff; border: 1px solid #D0D0D0; border-left: 4px solid #1A1A1A; padding: 14px 16px; }
+.q-card.ai { border-left-color: #6A1B9A; }
+.q-tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+.tag { font-size: 0.72rem; font-weight: 600; padding: 3px 8px; border: 1px solid #D0D0D0; background: #FAFAFA; }
+.tag.phase { color: #fff; border: none; }
+.tag.role { background: #ECEFF1; border-color: #455A64; color: #263238; }
+.tag.std { background: #F3E5F5; border-color: #6A1B9A; color: #4A148C; }
+.tag.ai-tag { background: #EDE7F6; border-color: #6A1B9A; color: #4A148C; font-weight: 700; }
+
+.legend { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0 20px; align-items: center; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+.legend-swatch { width: 16px; height: 16px; }
+
+/* Matrix */
+.matrix-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.85rem; }
+.matrix-table th, .matrix-table td { border: 1px solid #DDD; padding: 10px; text-align: center; }
+.matrix-table th { background: #1A1A1A; color: #fff; font-weight: 700; }
+.matrix-table th.row-head { background: #455A64; text-align: left; }
+.matrix-table td.row-head { background: #ECEFF1; text-align: left; font-weight: 700; color: #1A1A1A; }
+.heat-0 { background: #FAFAFA; color: #999; }
+.heat-low { background: #C8E6C9; color: #1B5E20; font-weight: 700; }
+.heat-med { background: #FFE082; color: #E65100; font-weight: 700; }
+.heat-high { background: #EF9A9A; color: #B71C1C; font-weight: 700; }
+.heat-vhigh { background: #1A1A1A; color: #fff; font-weight: 700; }
+
+@media (max-width: 768px) {
+    .journey { grid-template-columns: repeat(2, 1fr); }
+    .role-grid { grid-template-columns: 1fr; }
+}
+@media print {
+    .header, .tab-bar, .filter-bar { display: none; }
+    .tab-panel { display: block !important; page-break-before: always; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Service Assessment Questions &mdash; Navigator</h1>
+    <span>Service Standard &middot; Alpha, Beta, Live &middot; AI questions updated Mar 2026</span>
+</div>
+
+<div class="tab-bar"><button class="tab-btn active" onclick="showTab('overview', event)">Overview</button><button class="tab-btn" onclick="showTab('search', event)">Search all</button><button class="tab-btn" onclick="showTab('phase-Alpha', event)" style="border-bottom-color:transparent;">Alpha</button><button class="tab-btn" onclick="showTab('phase-Beta', event)" style="border-bottom-color:transparent;">Beta</button><button class="tab-btn" onclick="showTab('phase-Live', event)" style="border-bottom-color:transparent;">Live</button><button class="tab-btn" onclick="showTab('phase-Tech-pre-call', event)" style="border-bottom-color:transparent;">Tech pre-call</button><button class="tab-btn" onclick="showTab('matrix', event)">Coverage Matrix</button></div>
+
+<div class="content">
+
+<div id="overview" class="tab-panel active">
+    <h2>Service Assessment Question Bank</h2>
+    <p>Sample questions based on the GOV.UK Service Standard, with AI-specific prompts added across the Alpha, Beta and Live phases plus a dedicated Tech pre-call set. Questions tagged <strong style="color:#6A1B9A;">AI</strong> highlight prompts that probe AI-specific risks (bias, hallucination, drift, fallback, oversight).</p>
+
+    <div class="themes">
+        <span class="theme-pill">5 Assessor Roles</span>
+        <span class="theme-pill">4 Phases</span>
+        <span class="theme-pill">AI &amp; Standards layered</span>
+        <span class="theme-pill">Service Standard aligned</span>
+    </div>
+
+    <h3>At a glance</h3>
+    <div class="stat-grid">
+<div class="stat"><div class="stat-num">272</div><div class="stat-label">Total question prompts</div></div>
+<div class="stat"><div class="stat-num">64</div><div class="stat-label">Alpha</div></div>
+<div class="stat"><div class="stat-num">53</div><div class="stat-label">Beta</div></div>
+<div class="stat"><div class="stat-num">49</div><div class="stat-label">Live</div></div>
+<div class="stat"><div class="stat-num">106</div><div class="stat-label">Tech pre-call</div></div>
+<div class="stat"><div class="stat-num">45</div><div class="stat-label">AI-specific</div></div>
+</div>
+
+    <h3>Phase journey &mdash; click to explore</h3>
+    <div class="journey"><div class="journey-step" style="background:#2E7D32;" onclick="showTab('phase-Alpha', null, this)"><div class="jn">64</div><div class="jl">Alpha</div><div class="jd">Discovery prototypes & risky assumptions</div></div><div class="journey-step" style="background:#F57C00;" onclick="showTab('phase-Beta', null, this)"><div class="jn">53</div><div class="jl">Beta</div><div class="jd">Build, test, accessibility, monitoring</div></div><div class="journey-step" style="background:#1565C0;" onclick="showTab('phase-Live', null, this)"><div class="jn">49</div><div class="jl">Live</div><div class="jd">Operate, iterate, sustain</div></div><div class="journey-step" style="background:#6A1B9A;" onclick="showTab('phase-Tech-pre-call', null, this)"><div class="jn">106</div><div class="jl">Tech pre-call</div><div class="jd">Deep technical scrutiny</div></div></div>
+
+    <h3>Assessor roles &mdash; click to filter</h3>
+    <div class="role-grid"><div class="role-tile" style="background:#1976D2;" onclick="filterRole('User Research')"><div class="ri">🔍</div><div class="rn">User Research</div><div class="rc">38 questions across phases</div></div><div class="role-tile" style="background:#7B1FA2;" onclick="filterRole('Design')"><div class="ri">🎨</div><div class="rn">Design</div><div class="rc">31 questions across phases</div></div><div class="role-tile" style="background:#00838F;" onclick="filterRole('Performance Analytics')"><div class="ri">📊</div><div class="rn">Performance Analytics</div><div class="rc">29 questions across phases</div></div><div class="role-tile" style="background:#388E3C;" onclick="filterRole('Technology')"><div class="ri">⚙️</div><div class="rn">Technology</div><div class="rc">45 questions across phases</div></div><div class="role-tile" style="background:#E65100;" onclick="filterRole('Lead Assessor')"><div class="ri">👥</div><div class="rn">Lead Assessor</div><div class="rc">23 questions across phases</div></div></div>
+
+    <div class="card">
+        <div class="card-title">How AI questions are surfaced</div>
+        <p>Any question that mentions AI capabilities, hallucination, drift, agentic behaviour, prompts or LLMs is tagged <strong>AI</strong> and shown with a purple left-border. Questions grouped under a "Standard X" or "Sub-phase" heading are also surfaced as AI-specific because they were added to the standard interview script for AI services.</p>
+    </div>
+
+    <h3>How to use this navigator</h3>
+    <ul>
+        <li><strong>Search all</strong> &mdash; free-text search and combined filters across all 272 prompts.</li>
+        <li><strong>Alpha / Beta / Live / Tech pre-call</strong> &mdash; the original document order, grouped by assessor role.</li>
+        <li><strong>Coverage Matrix</strong> &mdash; cross-tab of roles against phases showing where assurance attention sits.</li>
+    </ul>
+</div>
+
+<div id="search" class="tab-panel">
+    <h2>Search all questions</h2>
+    <p>Combine filters to drill into the question bank. All filters are AND-combined.</p>
+    <div class="filter-bar">
+        <div class="search-row">
+            <label for="f-search">Search</label>
+            <input type="text" id="f-search" placeholder="Search question text, role, phase..." oninput="renderQuestions()">
+        </div>
+        <div><label for="f-phase">Phase</label><select id="f-phase" onchange="renderQuestions()"><option value="">All phases</option><option value="Alpha">Alpha (64)</option><option value="Beta">Beta (53)</option><option value="Live">Live (49)</option><option value="Tech pre-call">Tech pre-call (106)</option></select></div>
+        <div><label for="f-role">Role / Topic</label><select id="f-role" onchange="renderQuestions()"><option value="">All roles</option><option value="Design">Design (31)</option><option value="Lead Assessor">Lead Assessor (23)</option><option value="Performance Analytics">Performance Analytics (29)</option><option value="Tech Pre-call">Tech Pre-call (106)</option><option value="Technology">Technology (45)</option><option value="User Research">User Research (38)</option></select></div>
+        <div>
+            <label for="f-ai">Question type</label>
+            <select id="f-ai" onchange="renderQuestions()">
+                <option value="">All questions</option>
+                <option value="ai">AI-specific only</option>
+                <option value="general">General only</option>
+            </select>
+        </div>
+        <div class="filter-actions">
+            <span class="result-count" id="result-count">Showing 272 of 272 questions</span>
+            <button class="btn ghost" onclick="clearFilters()">Clear filters</button>
+        </div>
+    </div>
+    <div id="q-results" style="display:flex;flex-direction:column;gap:10px;"></div>
+</div>
+
+<div id="phase-Alpha" class="tab-panel"><h2 style="color:#2E7D32;">Alpha assessment questions</h2>
+<p>64 question prompts across 5 role groupings. AI-specific questions are highlighted in purple.</p>
+<div class="section-block">
+<div class="section-head" style="background:#1976D2;"><span>🔍 User needs</span><span class="sh-count">20 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">Who are your users?</span></li>
+<li class="q-item "><span class="q-text">What are your users’ lives like?</span></li>
+<li class="q-item "><span class="q-text">Why do they need the thing you’re planning to build or buy?</span></li>
+<li class="q-item "><span class="q-text">Why has your department asked you to solve the problem you’re solving?</span></li>
+<li class="q-item "><span class="q-text">How did you decide that the problem was worth solving?</span></li>
+<li class="q-item "><span class="q-text">How did you identify which risky assumption(s) to test?</span></li>
+<li class="q-item "><span class="q-text">How did you test those assumptions?</span></li>
+<li class="q-item "><span class="q-text">What do you know about the offline parts of your users’ journey?</span></li>
+<li class="q-item "><span class="q-text">How will you know your service joins up with those offline elements?</span></li>
+<li class="q-item "><span class="q-text">Who are you inviting to your user research sessions?</span></li>
+<li class="q-item "><span class="q-text">What are your plans for user research through the private beta stage? Is the budget sufficient?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 1: Understand users and their needs</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">If using AI for user research, what checks have they done to make sure it's representative of humans and not biased.</span></li>
+<li class="q-item ai"><span class="q-text">If they are using AI to synthesise research data, how have they verified that the "themes" it identifies accurately reflect the raw user feedback without losing nuance?</span></li>
+<li class="q-item ai"><span class="q-text">What checks have they done to make sure the AI’s analysis is representative of humans and hasn’t introduced “hallucinations” or false insights?</span></li>
+<li class="q-item ai"><span class="q-text">Are they using AI-generated “synthetic users” or personas? If so, how have they validated those findings against real-world testing with actual citizens?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 5: Make sure everyone can use the service</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">How have they audited their research tools for bias, particularly concerning marginalised groups or protected characteristics?</span></li>
+<li class="q-item ai"><span class="q-text">If using AI for transcription or sentiment analysis, how does the tool handle diverse accents, dialects, or non-standard speech patterns?</span></li>
+<li class="q-item ai"><span class="q-text">How have they tested for understandability for users, technological literacy and needs around impaired vision, hearing and others?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 9: Create a secure service which protects users’ privacy</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">Have they obtained explicit consent from research participants for their data (video, audio or notes) to be processed by an AI tool?</span></li>
+<li class="q-item ai"><span class="q-text">Is the AI tool processing PII from research sessions, if so, how is that data being anonymised or deleted after analysis?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#7B1FA2;"><span>🎨 Service design, content design, interaction design</span><span class="sh-count">11 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What constraints are you working within? What are the barriers to removing or reducing the impact of those constraints?</span></li>
+<li class="q-item "><span class="q-text">How do you know a service is the right way to solve the problem you’re looking at?</span></li>
+<li class="q-item "><span class="q-text">How do you know you’ve got the scope of the service right?</span></li>
+<li class="q-item "><span class="q-text">Talk us through a few of the prototype ideas you tested - and explain why you rejected them.</span></li>
+<li class="q-item "><span class="q-text">How would the journey from GOV.UK work?</span></li>
+<li class="q-item "><span class="q-text">What are you doing to make sure users don’t have to provide the same information multiple times?</span></li>
+<li class="q-item "><span class="q-text">How are you planning to make sure the service doesn't exclude any existing or potential users?</span></li>
+<li class="q-item "><span class="q-text">What is your approach to access needs and assisted digital needs?</span></li>
+<li class="q-item "><span class="q-text">What support will you offer to users who have problems with the digital part of the service?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 13: Use and contribute to open standards, components and patterns</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">Are they using existing government AI patterns (i.e. for chatbots or data processing) rather than building a custom solution from scratch?</span></li>
+<li class="q-item ai"><span class="q-text">How are they ensuring data follow open standards to allow for future interoperability?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#00838F;"><span>📊 Service performance</span><span class="sh-count">8 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What key performance indicators (KPIs) have you identified so far, beyond the mandatory 4?</span></li>
+<li class="q-item "><span class="q-text">What existing data sources did you use to decide on your KPIs?</span></li>
+<li class="q-item "><span class="q-text">How will you know your service is meeting your users’ needs?</span></li>
+<li class="q-item "><span class="q-text">How will you know your service is successfully meeting its objectives, and what are the quantifiable measures that will demonstrate?</span></li>
+<li class="q-item "><span class="q-text">How will you check the service is doing what your department needs it to?</span></li>
+<li class="q-item "><span class="q-text">What data are you collecting and how are you using it to improve your service?</span></li>
+<li class="q-item "><span class="q-text">What management and governance do you have? (for example senior information risk owner (SIRO) approval, not collecting personal data, retained a raw backup data view)</span></li>
+<li class="q-item "><span class="q-text">Have you considered how you will report KPIs on data.gov.uk?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#388E3C;"><span>⚙️ Technology</span><span class="sh-count">16 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What technical choices have you made and why? (for example language, framework, deployment, integration, third parties)</span></li>
+<li class="q-item "><span class="q-text">Are there any potential conflicts with standards or guidance (like dependence on JavaScript)? How will you resolve these in beta?</span></li>
+<li class="q-item "><span class="q-text">What other distinct options have you tried/tested?</span></li>
+<li class="q-item "><span class="q-text">How do you plan to make the service open - open source, open standards, open data, common platforms, ownership of intellectual property?</span></li>
+<li class="q-item "><span class="q-text">How will you maximise reuse of existing code, data and platforms? Are you engaging with services like GOV.UK Notify, GOV.UK Account, GOV.UK Pay, GOV.UK PaaS?</span></li>
+<li class="q-item "><span class="q-text">How will you ensure the service is safe for users - data privacy, security threats, fraud vectors?</span></li>
+<li class="q-item "><span class="q-text">What is the minimum amount of personal information the service needs to collect?</span></li>
+<li class="q-item "><span class="q-text">Does your service need an authentication solution?</span></li>
+<li class="q-item "><span class="q-text">What plans do you have if your service is unavailable for any length of time?</span></li>
+<li class="q-item "><span class="q-text">Have you spoken to your department’s data protection officer about the decisions you’ve made?</span></li>
+<li class="q-item "><span class="q-text">What are your technology plans for private beta?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 9: Create a secure service which protects users’ privacy</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">What are the perceived threats to their AI service (e.g., prompt injection, data poisoning) and how is the prototype mitigating them?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 11: Choose the right tools & Tech</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">What distinct AI options or models have they prototyped, and why did they settle on this specific approach (e.g., LLM vs. rules-based)?</span></li>
+<li class="q-item ai"><span class="q-text">How have they validated that AI is the "right tool for the job" rather than a simpler, more deterministic solution?</span></li>
+<li class="q-item ai"><span class="q-text">If using a novel or complex model (i.e. not tested by the department previously), how are they ensuring its outputs will be explainable to users and the department?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 12 & 13: Open source and standards</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">How do they plan to make the AI implementation open?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#E65100;"><span>👥 Team and agile ways of working</span><span class="sh-count">9 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">Who’s in your team?</span></li>
+<li class="q-item "><span class="q-text">How are you engaging outside of your team, for example, inside or outside your department, or with the ops and policy professions?</span></li>
+<li class="q-item "><span class="q-text">Has the team disagreed on anything and if so how was that resolved?</span></li>
+<li class="q-item "><span class="q-text">How are you using agile methods?</span></li>
+<li class="q-item "><span class="q-text">How does governance work? Are there any issues you’ve had to escalate?</span></li>
+<li class="q-item "><span class="q-text">Did you discover anything that will make it difficult to design the service your users’ need? If so, what are your plans to address the issues you found?</span></li>
+<li class="q-item "><span class="q-text">What will the team look like moving into private beta?</span></li>
+<li class="q-item "><span class="q-text">What are you doing to make sure other teams know what you’re working on?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 6: Have a multidisciplinary team</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">Who in the team is responsible for making the final technical decisions regarding the AI?</span></li>
+</ul></div>
+</div></div><div id="phase-Beta" class="tab-panel"><h2 style="color:#F57C00;">Beta assessment questions</h2>
+<p>53 question prompts across 5 role groupings. AI-specific questions are highlighted in purple.</p>
+<div class="section-block">
+<div class="section-head" style="background:#1976D2;"><span>🔍 User needs</span><span class="sh-count">10 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">Who are your users?</span></li>
+<li class="q-item "><span class="q-text">What are your users’ lives like?</span></li>
+<li class="q-item "><span class="q-text">Why do they need the thing you’re planning to build or buy?</span></li>
+<li class="q-item "><span class="q-text">How did you define the MVP?</span></li>
+<li class="q-item "><span class="q-text">What do you know about the offline parts of your user’s journey?</span></li>
+<li class="q-item "><span class="q-text">How will you know your service joins up with those offline elements?</span></li>
+<li class="q-item "><span class="q-text">Who are you inviting to your user research sessions?</span></li>
+<li class="q-item "><span class="q-text">What are your plans for user research through the public beta stage? Is the budget sufficient?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 1: Understand users and their needs</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">Have they tested the AI’s outputs with the team to ensure they don’t lead to a “pre-selected” solution that ignores outlier user needs?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 6: Have a multidisciplinary team</div>
+<ul class="q-list">
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 7: Use agile ways of working</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">How are they iterating on their use of AI in research? Have they changed tools or prompts based on the quality of insights produced in Alpha?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#7B1FA2;"><span>🎨 Service design, content design, interaction design</span><span class="sh-count">13 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What constraints are you working within? What are the barriers to removing or reducing the impact of those constraints?</span></li>
+<li class="q-item "><span class="q-text">How do you know a service is the right way to solve the problem you’re looking at?</span></li>
+<li class="q-item "><span class="q-text">How do you know you’ve got the scope of the service right?</span></li>
+<li class="q-item "><span class="q-text">Talk us through a few of the design iterations you tested - and explain why you rejected them</span></li>
+<li class="q-item "><span class="q-text">How will users find the service initially?</span></li>
+<li class="q-item "><span class="q-text">What are you doing to make sure users don’t have to provide the same information multiple times and reusing data from across government ?</span></li>
+<li class="q-item "><span class="q-text">How are you planning to make sure that the service doesn't exclude any existing or potential users of your service?</span></li>
+<li class="q-item "><span class="q-text">How are you improving users’ experience across different channels?</span></li>
+<li class="q-item "><span class="q-text">How are you implementing recommendations from the Accessibility audit on your service?</span></li>
+<li class="q-item "><span class="q-text">What is your approach to access needs and assisted digital needs?</span></li>
+<li class="q-item "><span class="q-text">What support will you offer to users who have problems with the digital part of the service?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 13: Use and contribute to open standards, components and patterns</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">Are they using common platforms (like GOV.UK Notify) to deliver AI outputs to users?</span></li>
+<li class="q-item ai"><span class="q-text">Have they identified any “AI patterns” they’ve developed (like a specific prompt structure for eligibility checks) that could be contributed back to the government community?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#00838F;"><span>📊 Service performance</span><span class="sh-count">7 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What key performance indicators (KPIs) have you identified so far, beyond the mandatory four?</span></li>
+<li class="q-item "><span class="q-text">What existing data sources did you use to decide on your KPIs?</span></li>
+<li class="q-item "><span class="q-text">Which metrics demonstrate  your service is meeting your users’ needs?</span></li>
+<li class="q-item "><span class="q-text">How will you check the service is doing what your department needs it to?</span></li>
+<li class="q-item "><span class="q-text">What data are you collecting and how are you using it to improve your service?</span></li>
+<li class="q-item "><span class="q-text">What management and governance do you have? (for example senior information risk owner (SIRO) approval, not collecting personal data, retained a raw backup data view)</span></li>
+<li class="q-item "><span class="q-text">Which KPIs will you publish on data.gov.uk?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#E65100;"><span>👥 Team and agile ways of working</span><span class="sh-count">8 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">Which roles are in your team?</span></li>
+<li class="q-item "><span class="q-text">How are you engaging outside of your team? For example, inside or outside your department, or with the ops and policy professions?</span></li>
+<li class="q-item "><span class="q-text">Has the team disagreed on anything and if so how was that resolved?</span></li>
+<li class="q-item "><span class="q-text">How are you using agile methods?</span></li>
+<li class="q-item "><span class="q-text">How does governance work? Are there any issues you’ve had to escalate?</span></li>
+<li class="q-item "><span class="q-text">Did you discover anything that will make it difficult to design the service your users need? If so, what are your plans to address the issues you found?</span></li>
+<li class="q-item "><span class="q-text">Is the team sustainable moving into public beta and beyond to live?</span></li>
+<li class="q-item "><span class="q-text">What are you doing to make sure other teams know what you’re working on?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#388E3C;"><span>⚙️ Technology</span><span class="sh-count">15 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What technical choices have you made and why - language, framework, deployment, integration, third parties?</span></li>
+<li class="q-item "><span class="q-text">What other distinct options have you tried/tested?</span></li>
+<li class="q-item "><span class="q-text">How have you resolved  conflicts with standards or guidance in your tech choices? (for example JavaScript dependence)?</span></li>
+<li class="q-item "><span class="q-text">How are you making the service open - open source, open standards, open data, common platforms, ownership of intellectual property?</span></li>
+<li class="q-item "><span class="q-text">Have you maximised reuse of existing code, data and platforms? Are you engaging with services like GOV.UK Notify, GOV.UK Account, GOV.UK Pay, GOV.UK PaaS?</span></li>
+<li class="q-item "><span class="q-text">How will you ensure the service is safe for users - data privacy, security threats, fraud vectors?</span></li>
+<li class="q-item "><span class="q-text">What is the minimum amount of personal information the service needs to collect?</span></li>
+<li class="q-item "><span class="q-text">Does your service need an authentication solution?</span></li>
+<li class="q-item "><span class="q-text">What plans do you have if your service is unavailable for any length of time?</span></li>
+<li class="q-item "><span class="q-text">Have you spoken to your department’s data protection officer about the decisions you’ve made?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 8: Iterate and improve frequently</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">How do they determine if an AI deployment has succeeded, and what is the "roll-back" plan if the model starts producing unexpected results?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 9: Create a secure service which protects users’ privacy</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">How is the team managing "meaningful human "? At what stage does a human "double-check" the AI's decision before it impacts a user?</span></li>
+<li class="q-item ai"><span class="q-text">Have they ed  specifically targeting the AI's vulnerabilities, such as adversarial attacks?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 11: Choose the right tools and technology</div>
+<ul class="q-list">
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 14: Operate a reliable service</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">If the AI provider or model becomes unavailable, what is the fallback experience for the user?</span></li>
+<li class="q-item ai"><span class="q-text">What data exists in the pre-production environments for training/testing, and is it appropriately anonymised?</span></li>
+</ul></div>
+</div></div><div id="phase-Live" class="tab-panel"><h2 style="color:#1565C0;">Live assessment questions</h2>
+<p>49 question prompts across 5 role groupings. AI-specific questions are highlighted in purple.</p>
+<div class="section-block">
+<div class="section-head" style="background:#1976D2;"><span>🔍 User needs</span><span class="sh-count">8 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">Who are your users?</span></li>
+<li class="q-item "><span class="q-text">What are your users’ lives like?</span></li>
+<li class="q-item "><span class="q-text">Why do they need the thing you’re building or buying?</span></li>
+<li class="q-item "><span class="q-text">Why has your department asked you to solve the problem you’re solving?</span></li>
+<li class="q-item "><span class="q-text">What do you know about the offline parts of your user’s journey?</span></li>
+<li class="q-item "><span class="q-text">How do you know your service joins up with those offline elements?</span></li>
+<li class="q-item "><span class="q-text">Who are you inviting to your user research sessions?</span></li>
+<li class="q-item "><span class="q-text">What are your continued plans for user research post-live? Is the budget sufficient?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 12: Make new source code open</div>
+<ul class="q-list">
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#7B1FA2;"><span>🎨 Service design, content design, interaction design</span><span class="sh-count">7 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What/how have the constraints you’re working within changed? What are the barriers to removing or reducing the impact of those constraints?</span></li>
+<li class="q-item "><span class="q-text">How will you continue to ensure the service is scoped in a way that makes sense to users?</span></li>
+<li class="q-item "><span class="q-text">What are you doing to ensure users don’t have to provide the same information multiple times?</span></li>
+<li class="q-item "><span class="q-text">How do you make sure that the service doesn't exclude any existing or potential users of your service?</span></li>
+<li class="q-item "><span class="q-text">What have you learnt about your approach to access needs and assisted digital needs?</span></li>
+<li class="q-item "><span class="q-text">What support do you offer to users who have problems with the digital part of the service?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 13: Use and contribute to open stadnards, common components and patterns</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">How are they handling updates to their AI components? If an open standard or framework (such as pytorch) was used for the specific AI models evolves, can their service adapt without a total rebuild?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#00838F;"><span>📊 Service performance</span><span class="sh-count">14 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">How are the key performance indicators (KPIs) you have identified improving the service?</span></li>
+<li class="q-item "><span class="q-text">What existing data sources did you use to decide on your KPIs?</span></li>
+<li class="q-item "><span class="q-text">How do you know your service is meeting your users’ needs?</span></li>
+<li class="q-item "><span class="q-text">How do you check the service is doing what your department needs it to?</span></li>
+<li class="q-item "><span class="q-text">What data are you collecting and how are you using it to improve your service?</span></li>
+<li class="q-item "><span class="q-text">What management and governance do you have? (for example senior information risk owner (SIRO)  approval, not collecting personal data, retained a raw backup data view)</span></li>
+<li class="q-item "><span class="q-text">Which KPIs are being published on data.gov.uk, has there been addition or change since launch ?</span></li>
+<li class="q-item "><span class="q-text">Once live, how will you measure change over time?</span></li>
+<li class="q-item "><span class="q-text">How do you know you’ve got appropriate metrics in place to measure the success of the service, based on what you’ve learned during public beta?</span></li>
+<li class="q-item "><span class="q-text">How will you continue to use data to improve your service post-live?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 8: Iterate and improve frequently</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">How frequently are they retraining or updating the AI model, and how do they ensure these updates improve the user experience?</span></li>
+<li class="q-item ai"><span class="q-text">What is their process for keeping the AI's "knowledge" or training data up to date "hallucinations" or outdated advice?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 10: Define Success and publish performance data</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">What metrics are they using to measure the AI's accuracy and fairness in a live environment?</span></li>
+<li class="q-item ai"><span class="q-text">How do they measure the “accuracy” of AI-assisted research over time? Do they have a metric for “researcher-to-AI" agreement?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#E65100;"><span>👥 Team and agile ways of working</span><span class="sh-count">6 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What, if anything, is different in your Live team, compared to the Beta team?</span></li>
+<li class="q-item "><span class="q-text">How are you engaging outside of your team? For example, inside or outside your department, or with the ops and policy professions?</span></li>
+<li class="q-item "><span class="q-text">Has the team disagreed on anything and if so how was that resolved?</span></li>
+<li class="q-item "><span class="q-text">How are you using agile methods and how will you continue post-live?</span></li>
+<li class="q-item "><span class="q-text">How does governance work? Are there any issues you’ve had to escalate?</span></li>
+<li class="q-item "><span class="q-text">What are you doing to make sure other teams know what you’re working on?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#388E3C;"><span>⚙️ Technology</span><span class="sh-count">14 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What technical choices have you made and why - language, framework, deployment, integration, third parties?</span></li>
+<li class="q-item "><span class="q-text">What other distinct options have you tried/tested?</span></li>
+<li class="q-item "><span class="q-text">How are you managing your open source repository? How is it being shared with other teams who may need to use similar solutions? - open standards, open data, common platforms, ownership of Intellectual Property?*</span></li>
+<li class="q-item "><span class="q-text">How do  you ensure the service is safe for users - data privacy, security threats, fraud vectors?</span></li>
+<li class="q-item "><span class="q-text">What is the minimum amount of personal information the service needs to collect?</span></li>
+<li class="q-item "><span class="q-text">Does your service need an authentication solution?</span></li>
+<li class="q-item "><span class="q-text">What are the plans (in place) if your service is unavailable for any length of time?</span></li>
+<li class="q-item "><span class="q-text">Have you spoken to your department’s data protection officer about the decisions you’ve made?</span></li>
+<li class="q-item "><span class="q-text">Have your technology plans changed and/or is there significant activity planned for modifying or upgrading the technology used?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 9: Create a secure service which protects users’ privacy</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">How are they staying aware of new security updates and emerging threats to the specific AI models they are using?</span></li>
+<li class="q-item ai"><span class="q-text">Do they have an intelligence component or "audit trail" for analysts to review AI patterns and identify potential fraud?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 11: Choose the right tools and technology</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">How are they managing the sustainability of the service? Does the energy consumption of the AI infrastructure align with the department's goals?</span></li>
+<li class="q-item ai"><span class="q-text">Is AI still the most cost-effective way to meet the user need, or have changing requirements made a simpler solution viable?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Standard 13</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">Is their implementation of AI “vendor-neutral”, or are they locked-into a proprietary pattern that makes it difficult to switch providers in the future?</span></li>
+</ul></div>
+</div></div><div id="phase-Tech-pre-call" class="tab-panel"><h2 style="color:#6A1B9A;">Tech pre-call assessment questions</h2>
+<p>106 question prompts across 7 topic groupings. AI-specific questions are highlighted in purple.</p>
+<div class="section-block">
+<div class="section-head" style="background:#5D4037;"><span>🛠️ Have a multidisciplinary team</span><span class="sh-count">4 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">Who is the technical architect / technical lead on the team?</span></li>
+<li class="q-item "><span class="q-text">Who makes technical decisions?</span></li>
+<li class="q-item ai"><span class="q-text">Does the team possess the specific data science or AI engineering skills needed to implement and manage the chose model?</span></li>
+<li class="q-item ai"><span class="q-text">Who is responsible for the ongoing monitoring and ethical oversight of the AI’s ?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#5D4037;"><span>🛠️ Iterate and improve frequently</span><span class="sh-count">13 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What external integrations do you have?</span></li>
+<li class="q-item "><span class="q-text">Have you tested and de-risked them?</span></li>
+<li class="q-item "><span class="q-text">Are you in touch with the relevant departments or external providers with these, and have they been included in your performance tests?</span></li>
+<li class="q-item "><span class="q-text">Do you have a delivery pipeline?</span></li>
+<li class="q-item "><span class="q-text">Are you doing continuous integration or continuous deployment? If not, why not?</span></li>
+<li class="q-item "><span class="q-text">What tools and testing techniques are you using to ensure quality?</span></li>
+<li class="q-item "><span class="q-text">Is the system available 24/7?  Does it need to be?</span></li>
+<li class="q-item "><span class="q-text">Is there user impacting downtime required for deployments?</span></li>
+<li class="q-item "><span class="q-text">How many releases per day are deployed into your production environment?</span></li>
+<li class="q-item "><span class="q-text">How do you monitor that a deployment improves user experience (performance testing etc)?</span></li>
+<li class="q-item "><span class="q-text">How do you determine if a deployment has succeeded, and what do you do if it fails / goes wrong?</span></li>
+<li class="q-item "><span class="q-text">If they’re using third party APIs (i.e. Azure, OpenAI, Anthropic, Google, etc), how are they managing the risk of model versioning or service changes?</span></li>
+<li class="q-item ai"><span class="q-text">How do they monitor for ‘model drift’ or changes in the quality of AI outputs over time?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#5D4037;"><span>🛠️ Choose the right tools and technology</span><span class="sh-count">9 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">Describe the languages, frameworks, and other technical choices you've made</span></li>
+<li class="q-item ai"><span class="q-text">Are they using AI in a Category A (productivity aid to BUILD) or a Category B (AI integrated into the Service OUTPUT) manner?</span></li>
+<li class="q-item ai"><span class="q-text">Why was this specific AI model or approach chosen over a standard, non-algorithmic solution?</span></li>
+<li class="q-item "><span class="q-text">Have they ruled out the current stack and are going to investigate?</span></li>
+<li class="q-item "><span class="q-text">Are they following a standard tech stack?</span></li>
+<li class="q-item "><span class="q-text">Describe the development tool chain that you have selected</span></li>
+<li class="q-item "><span class="q-text">How will you know if the service is healthy?</span></li>
+<li class="q-item "><span class="q-text">Do they have monitoring, alerts and logging?</span></li>
+<li class="q-item "><span class="q-text">How easy is it to rebuild the service if necessary, i.e. are they using configuration management and tools for provisioning?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#5D4037;"><span>🛠️ Make the source code open and 13 Use and contribute to open standards, common components and patterns</span><span class="sh-count">7 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">Describe how you are making new source code open and reusable?</span></li>
+<li class="q-item "><span class="q-text">Describe how a team in another department can reuse your code?</span></li>
+<li class="q-item ai"><span class="q-text">Are they sharing AI-specific assets such as prompts, model configuations, or training datasets with the wider government?</span></li>
+<li class="q-item "><span class="q-text">What code from other teams/services are you using?</span></li>
+<li class="q-item "><span class="q-text">How are you handling updates and bug fixes to the code?</span></li>
+<li class="q-item "><span class="q-text">Describe your use of common government platforms</span></li>
+<li class="q-item "><span class="q-text">Describe the integration mechanisms with any external systems</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#5D4037;"><span>🛠️ Operate a reliable service</span><span class="sh-count">15 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What environments do you have?</span></li>
+<li class="q-item "><span class="q-text">Where are you hosted?</span></li>
+<li class="q-item "><span class="q-text">How do you create environments?</span></li>
+<li class="q-item "><span class="q-text">What data exists in your pre-production environments?</span></li>
+<li class="q-item ai"><span class="q-text">If the AI component fails (i.e. API downtime or model error), what is the fallback mechanism for the user?</span></li>
+<li class="q-item "><span class="q-text">How are you gaining confidence that your service, and connected systems, will perform under expected loads?</span></li>
+<li class="q-item ai"><span class="q-text">Have they considered the environmental  and energy consumption of their AI infrastructure?</span></li>
+<li class="q-item "><span class="q-text">What sorts of loads do they expect on a regular basis?</span></li>
+<li class="q-item "><span class="q-text">How did they come up with those numbers?</span></li>
+<li class="q-item "><span class="q-text">Have they considered peak events as well as normal loads?</span></li>
+<li class="q-item "><span class="q-text">How confident are they about their impact on existing connected systems, either legacy systems or SaaS/PaaS that they are utilising?</span></li>
+<li class="q-item "><span class="q-text">How will supplier failures affect you?</span></li>
+<li class="q-item "><span class="q-text">Have you considered DDoS and protected yourself?</span></li>
+<li class="q-item "><span class="q-text">What sort of runbook exists for issues?</span></li>
+<li class="q-item "><span class="q-text">What is your data recovery strategy and how often are you testing it?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#5D4037;"><span>🛠️ Security and privacy</span><span class="sh-count">52 questions</span></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Sub-phase: Alpha</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">Describe the perceived threats to your service and how you are designing the prototype to mitigate them</span></li>
+<li class="q-item ai"><span class="q-text">Does the AI tool make final decisions autonomously,</span></li>
+<li class="q-item ai"><span class="q-text">Are they aware of the OFFICIAL threat model and the security classification at OFFICIAL?</span></li>
+<li class="q-item ai"><span class="q-text">If the service disburses money, what criminal elements might be interested?</span></li>
+<li class="q-item ai"><span class="q-text">Does the service use PII or protected characteristics to train or fine-tune the model?</span></li>
+<li class="q-item ai"><span class="q-text">If the service holds large amounts of personal data, who might want to steal it?</span></li>
+<li class="q-item ai"><span class="q-text">What fraud vectors exist and what controls are you prototyping?</span></li>
+<li class="q-item ai"><span class="q-text">Does the service either give a citizen/business money or an entitlement to money? If so, fraud is a risk</span></li>
+<li class="q-item ai"><span class="q-text">How are they identifying users?</span></li>
+<li class="q-item ai"><span class="q-text">Do they have an awareness of common fraud vectors?</span></li>
+<li class="q-item ai"><span class="q-text">Do they have an idea for an intelligence component for analysts to look at common patterns?</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Sub-phase: Beta</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">Describe your team’s approach to security and risk management</span></li>
+<li class="q-item ai"><span class="q-text">Is the whole team aware of and owning security?</span></li>
+<li class="q-item ai"><span class="q-text">Who owns the risks in the service?  Does the team respect the risk appetite?</span></li>
+<li class="q-item ai"><span class="q-text">How frequently are they penetration testing?</span></li>
+<li class="q-item ai"><span class="q-text">Describe the threats to your service</span></li>
+<li class="q-item ai"><span class="q-text">Are there threats that are specific to them rather than just OFFICIAL threats?</span></li>
+<li class="q-item ai"><span class="q-text">How are they dealing with the threats?</span></li>
+<li class="q-item ai"><span class="q-text">How widely is the team aware of the threat landscape?  Are decisions made by fully informed people?</span></li>
+<li class="q-item ai"><span class="q-text">Can the service be used as part of a jigsaw attack?</span></li>
+<li class="q-item ai"><span class="q-text">What fraud vectors exist and what controls are you putting in place</span></li>
+<li class="q-item ai"><span class="q-text">What reports are they generating for the business?</span></li>
+<li class="q-item ai"><span class="q-text">Are lines of business joined up? (i.e. claiming petrol tax but not vehicle tax?)</span></li>
+<li class="q-item ai"><span class="q-text">[Can we ask how much fraud is acceptable?]</span></li>
+<li class="q-item ai"><span class="q-text">Describe your interactions with the business and information risk teams, for example senior information risk owner (SIRO), IAB, Data Guardians</span></li>
+<li class="q-item ai"><span class="q-text">Are they meeting on a regular basis?</span></li>
+<li class="q-item ai"><span class="q-text">Are the stakeholders highly engaged or just reading a report?</span></li>
+<li class="q-item ai"><span class="q-text">Can the stakeholders actually input to the service design, and change anything?</span></li>
+<li class="q-item ai"><span class="q-text">Describe any outstanding legal concerns for example data protection or data sharing</span></li>
+<li class="q-item ai"><span class="q-text">Do they share or hold data that they shouldn’t?</span></li>
+<li class="q-item ai"><span class="q-text">Do they make clear what data they process and why?</span></li>
+<li class="q-item ai"><span class="q-text">Describe your cookie and privacy policy and how you arrived at it?</span></li>
+<li class="q-item ai"><span class="q-text">Do they have a cookie policy?</span></li>
+<li class="q-item ai"><span class="q-text">Do they have a privacy policy?</span></li>
+<li class="q-item ai"><span class="q-text">Is it copied from GOV.UK?</span></li>
+<li class="q-item ai"><span class="q-text">Does it match the cookies actually set by the service, for example Google Analytics</span></li>
+</ul></div>
+<div class="std-group" style="border-left-color:#6A1B9A;"><div class="std-label ai-std">Sub-phase: Live</div>
+<ul class="q-list">
+<li class="q-item ai"><span class="q-text">Describe your teams approach to security and risk management</span></li>
+<li class="q-item ai"><span class="q-text">Is the whole team aware of and owning security?</span></li>
+<li class="q-item ai"><span class="q-text">Who owns the risks in the service? Does the team respect the risk appetite?</span></li>
+<li class="q-item ai"><span class="q-text">How frequently are they penetration testing?</span></li>
+<li class="q-item ai"><span class="q-text">Describe your ongoing interactions with the business and information risk teams, for example senior information risk owner (SIRO), IAB, Data Guardians</span></li>
+<li class="q-item ai"><span class="q-text">Are they meeting on a regular basis?</span></li>
+<li class="q-item ai"><span class="q-text">Are the stakeholders highly engaged or just reading a report?</span></li>
+<li class="q-item ai"><span class="q-text">Can the stakeholders actually input to the service design, and change anything?</span></li>
+<li class="q-item ai"><span class="q-text">Describe any outstanding legal concerns for example data protection or data sharing</span></li>
+<li class="q-item ai"><span class="q-text">Do they share or hold data that they shouldn’t?</span></li>
+<li class="q-item ai"><span class="q-text">Do they make clear what data they process and why?</span></li>
+<li class="q-item ai"><span class="q-text">How are you keeping your understanding of the threats to your service up to date?  Have the threats changed since the beta?</span></li>
+<li class="q-item ai"><span class="q-text">How are you keeping your cookie and privacy policy up to date?</span></li>
+<li class="q-item ai"><span class="q-text">How are you staying aware of security updates to your systems and how quickly can you respond?</span></li>
+<li class="q-item ai"><span class="q-text">How do they apply patches for security updates</span></li>
+<li class="q-item ai"><span class="q-text">What does a security release entail?</span></li>
+</ul></div>
+</div>
+<div class="section-block">
+<div class="section-head" style="background:#5D4037;"><span>🛠️ During assessment day: cover these points beyond the tech pre-call</span><span class="sh-count">6 questions</span></div>
+<div class="std-group" style="border-left-color:#1A1A1A;"><div class="std-label">General prompts</div>
+<ul class="q-list">
+<li class="q-item "><span class="q-text">What technical choices have you made and why - language, framework, deployment, integration, third parties?</span></li>
+<li class="q-item "><span class="q-text">How do you plan to make the service open - open source, open standards, open data, common platforms?</span></li>
+<li class="q-item "><span class="q-text">How will you ensure the service is safe for users - data privacy, security threats, fraud vectors?</span></li>
+<li class="q-item "><span class="q-text">What other distinct options have you tried / tested?</span></li>
+<li class="q-item "><span class="q-text">[Alpha] What are your technology plans for private beta?</span></li>
+<li class="q-item "><span class="q-text">What plans do you have if your service is unavailable for any length of time?</span></li>
+</ul></div>
+</div></div>
+
+<div id="matrix" class="tab-panel">
+    <h2>Coverage Matrix &mdash; Role &times; Phase</h2>
+    <p>Number of question prompts at each intersection of assessor role and assessment phase. Darker cells indicate higher concentration.</p>
+
+    <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:#C8E6C9;"></span> Low</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#FFE082;"></span> Medium</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#EF9A9A;"></span> High</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:#1A1A1A;"></span> Very high</div>
+    </div>
+
+    <table class="matrix-table"><thead><tr><th class="row-head">Role / Topic</th><th style="background:#2E7D32;">Alpha</th><th style="background:#F57C00;">Beta</th><th style="background:#1565C0;">Live</th><th style="background:#6A1B9A;">Tech pre-call</th><th>Total</th></tr></thead><tbody><tr><td class="row-head">Design</td><td class="heat-low">11</td><td class="heat-low">13</td><td class="heat-low">7</td><td class="heat-0"></td><td><strong>31</strong></td></tr><tr><td class="row-head">Lead Assessor</td><td class="heat-low">9</td><td class="heat-low">8</td><td class="heat-low">6</td><td class="heat-0"></td><td><strong>23</strong></td></tr><tr><td class="row-head">Performance Analytics</td><td class="heat-low">8</td><td class="heat-low">7</td><td class="heat-low">14</td><td class="heat-0"></td><td><strong>29</strong></td></tr><tr><td class="row-head">Tech Pre-call</td><td class="heat-0"></td><td class="heat-0"></td><td class="heat-0"></td><td class="heat-vhigh">106</td><td><strong>106</strong></td></tr><tr><td class="row-head">Technology</td><td class="heat-low">16</td><td class="heat-low">15</td><td class="heat-low">14</td><td class="heat-0"></td><td><strong>45</strong></td></tr><tr><td class="row-head">User Research</td><td class="heat-low">20</td><td class="heat-low">10</td><td class="heat-low">8</td><td class="heat-0"></td><td><strong>38</strong></td></tr><tr><td class="row-head">Total</td><td><strong>64</strong></td><td><strong>53</strong></td><td><strong>49</strong></td><td><strong>106</strong></td><td><strong>272</strong></td></tr></tbody></table>
+
+    <div class="card">
+        <div class="card-title">Reading the matrix</div>
+        <p>The Technology role and Tech pre-call topics dominate the bank, reflecting the depth of AI-specific technical probing introduced in March 2026. User research and design get focused but proportionate attention across the Service Standard lifecycle.</p>
+    </div>
+</div>
+
+</div>
+
+<script>
+const QUESTIONS = [{"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "", "q": "Who are your users?", "ai": false}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "", "q": "What are your users’ lives like?", "ai": false}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "", "q": "Why do they need the thing you’re planning to build or buy?", "ai": false}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "", "q": "Why has your department asked you to solve the problem you’re solving?", "ai": false}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "", "q": "How did you decide that the problem was worth solving?", "ai": false}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "", "q": "How did you identify which risky assumption(s) to test?", "ai": false}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "", "q": "How did you test those assumptions?", "ai": false}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "", "q": "What do you know about the offline parts of your users’ journey?", "ai": false}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "", "q": "How will you know your service joins up with those offline elements?", "ai": false}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "", "q": "Who are you inviting to your user research sessions?", "ai": false}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "", "q": "What are your plans for user research through the private beta stage? Is the budget sufficient?", "ai": false}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "Standard 1: Understand users and their needs", "q": "If using AI for user research, what checks have they done to make sure it's representative of humans and not biased.", "ai": true}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "Standard 1: Understand users and their needs", "q": "If they are using AI to synthesise research data, how have they verified that the \"themes\" it identifies accurately reflect the raw user feedback without losing nuance?", "ai": true}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "Standard 1: Understand users and their needs", "q": "What checks have they done to make sure the AI’s analysis is representative of humans and hasn’t introduced “hallucinations” or false insights?", "ai": true}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "Standard 1: Understand users and their needs", "q": "Are they using AI-generated “synthetic users” or personas? If so, how have they validated those findings against real-world testing with actual citizens?", "ai": true}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "Standard 5: Make sure everyone can use the service", "q": "How have they audited their research tools for bias, particularly concerning marginalised groups or protected characteristics?", "ai": true}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "Standard 5: Make sure everyone can use the service", "q": "If using AI for transcription or sentiment analysis, how does the tool handle diverse accents, dialects, or non-standard speech patterns?", "ai": true}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "Standard 5: Make sure everyone can use the service", "q": "How have they tested for understandability for users, technological literacy and needs around impaired vision, hearing and others?", "ai": true}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "Standard 9: Create a secure service which protects users’ privacy", "q": "Have they obtained explicit consent from research participants for their data (video, audio or notes) to be processed by an AI tool?", "ai": true}, {"phase": "Alpha", "section": "User needs", "role": "User Research", "std": "Standard 9: Create a secure service which protects users’ privacy", "q": "Is the AI tool processing PII from research sessions, if so, how is that data being anonymised or deleted after analysis?", "ai": true}, {"phase": "Alpha", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What constraints are you working within? What are the barriers to removing or reducing the impact of those constraints?", "ai": false}, {"phase": "Alpha", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How do you know a service is the right way to solve the problem you’re looking at?", "ai": false}, {"phase": "Alpha", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How do you know you’ve got the scope of the service right?", "ai": false}, {"phase": "Alpha", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "Talk us through a few of the prototype ideas you tested - and explain why you rejected them.", "ai": false}, {"phase": "Alpha", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How would the journey from GOV.UK work?", "ai": false}, {"phase": "Alpha", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What are you doing to make sure users don’t have to provide the same information multiple times?", "ai": false}, {"phase": "Alpha", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How are you planning to make sure the service doesn't exclude any existing or potential users?", "ai": false}, {"phase": "Alpha", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What is your approach to access needs and assisted digital needs?", "ai": false}, {"phase": "Alpha", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What support will you offer to users who have problems with the digital part of the service?", "ai": false}, {"phase": "Alpha", "section": "Service design, content design, interaction design", "role": "Design", "std": "Standard 13: Use and contribute to open standards, components and patterns", "q": "Are they using existing government AI patterns (i.e. for chatbots or data processing) rather than building a custom solution from scratch?", "ai": true}, {"phase": "Alpha", "section": "Service design, content design, interaction design", "role": "Design", "std": "Standard 13: Use and contribute to open standards, components and patterns", "q": "How are they ensuring data follow open standards to allow for future interoperability?", "ai": true}, {"phase": "Alpha", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "What key performance indicators (KPIs) have you identified so far, beyond the mandatory 4?", "ai": false}, {"phase": "Alpha", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "What existing data sources did you use to decide on your KPIs?", "ai": false}, {"phase": "Alpha", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "How will you know your service is meeting your users’ needs?", "ai": false}, {"phase": "Alpha", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "How will you know your service is successfully meeting its objectives, and what are the quantifiable measures that will demonstrate?", "ai": false}, {"phase": "Alpha", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "How will you check the service is doing what your department needs it to?", "ai": false}, {"phase": "Alpha", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "What data are you collecting and how are you using it to improve your service?", "ai": false}, {"phase": "Alpha", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "What management and governance do you have? (for example senior information risk owner (SIRO) approval, not collecting personal data, retained a raw backup data view)", "ai": false}, {"phase": "Alpha", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "Have you considered how you will report KPIs on data.gov.uk?", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "", "q": "What technical choices have you made and why? (for example language, framework, deployment, integration, third parties)", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "", "q": "Are there any potential conflicts with standards or guidance (like dependence on JavaScript)? How will you resolve these in beta?", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "", "q": "What other distinct options have you tried/tested?", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "", "q": "How do you plan to make the service open - open source, open standards, open data, common platforms, ownership of intellectual property?", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "", "q": "How will you maximise reuse of existing code, data and platforms? Are you engaging with services like GOV.UK Notify, GOV.UK Account, GOV.UK Pay, GOV.UK PaaS?", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "", "q": "How will you ensure the service is safe for users - data privacy, security threats, fraud vectors?", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "", "q": "What is the minimum amount of personal information the service needs to collect?", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "", "q": "Does your service need an authentication solution?", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "", "q": "What plans do you have if your service is unavailable for any length of time?", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "", "q": "Have you spoken to your department’s data protection officer about the decisions you’ve made?", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "", "q": "What are your technology plans for private beta?", "ai": false}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "Standard 9: Create a secure service which protects users’ privacy", "q": "What are the perceived threats to their AI service (e.g., prompt injection, data poisoning) and how is the prototype mitigating them?", "ai": true}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "Standard 11: Choose the right tools & Tech", "q": "What distinct AI options or models have they prototyped, and why did they settle on this specific approach (e.g., LLM vs. rules-based)?", "ai": true}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "Standard 11: Choose the right tools & Tech", "q": "How have they validated that AI is the \"right tool for the job\" rather than a simpler, more deterministic solution?", "ai": true}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "Standard 11: Choose the right tools & Tech", "q": "If using a novel or complex model (i.e. not tested by the department previously), how are they ensuring its outputs will be explainable to users and the department?", "ai": true}, {"phase": "Alpha", "section": "Technology", "role": "Technology", "std": "Standard 12 & 13: Open source and standards", "q": "How do they plan to make the AI implementation open?", "ai": true}, {"phase": "Alpha", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "Who’s in your team?", "ai": false}, {"phase": "Alpha", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "How are you engaging outside of your team, for example, inside or outside your department, or with the ops and policy professions?", "ai": false}, {"phase": "Alpha", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "Has the team disagreed on anything and if so how was that resolved?", "ai": false}, {"phase": "Alpha", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "How are you using agile methods?", "ai": false}, {"phase": "Alpha", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "How does governance work? Are there any issues you’ve had to escalate?", "ai": false}, {"phase": "Alpha", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "Did you discover anything that will make it difficult to design the service your users’ need? If so, what are your plans to address the issues you found?", "ai": false}, {"phase": "Alpha", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "What will the team look like moving into private beta?", "ai": false}, {"phase": "Alpha", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "What are you doing to make sure other teams know what you’re working on?", "ai": false}, {"phase": "Alpha", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "Standard 6: Have a multidisciplinary team", "q": "Who in the team is responsible for making the final technical decisions regarding the AI?", "ai": true}, {"phase": "Beta", "section": "User needs", "role": "User Research", "std": "", "q": "Who are your users?", "ai": false}, {"phase": "Beta", "section": "User needs", "role": "User Research", "std": "", "q": "What are your users’ lives like?", "ai": false}, {"phase": "Beta", "section": "User needs", "role": "User Research", "std": "", "q": "Why do they need the thing you’re planning to build or buy?", "ai": false}, {"phase": "Beta", "section": "User needs", "role": "User Research", "std": "", "q": "How did you define the MVP?", "ai": false}, {"phase": "Beta", "section": "User needs", "role": "User Research", "std": "", "q": "What do you know about the offline parts of your user’s journey?", "ai": false}, {"phase": "Beta", "section": "User needs", "role": "User Research", "std": "", "q": "How will you know your service joins up with those offline elements?", "ai": false}, {"phase": "Beta", "section": "User needs", "role": "User Research", "std": "", "q": "Who are you inviting to your user research sessions?", "ai": false}, {"phase": "Beta", "section": "User needs", "role": "User Research", "std": "", "q": "What are your plans for user research through the public beta stage? Is the budget sufficient?", "ai": false}, {"phase": "Beta", "section": "User needs", "role": "User Research", "std": "Standard 1: Understand users and their needs", "q": "Have they tested the AI’s outputs with the team to ensure they don’t lead to a “pre-selected” solution that ignores outlier user needs?", "ai": true}, {"phase": "Beta", "section": "User needs", "role": "User Research", "std": "Standard 7: Use agile ways of working", "q": "How are they iterating on their use of AI in research? Have they changed tools or prompts based on the quality of insights produced in Alpha?", "ai": true}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What constraints are you working within? What are the barriers to removing or reducing the impact of those constraints?", "ai": false}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How do you know a service is the right way to solve the problem you’re looking at?", "ai": false}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How do you know you’ve got the scope of the service right?", "ai": false}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "Talk us through a few of the design iterations you tested - and explain why you rejected them", "ai": false}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How will users find the service initially?", "ai": false}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What are you doing to make sure users don’t have to provide the same information multiple times and reusing data from across government ?", "ai": false}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How are you planning to make sure that the service doesn't exclude any existing or potential users of your service?", "ai": false}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How are you improving users’ experience across different channels?", "ai": false}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How are you implementing recommendations from the Accessibility audit on your service?", "ai": false}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What is your approach to access needs and assisted digital needs?", "ai": false}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What support will you offer to users who have problems with the digital part of the service?", "ai": false}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "Standard 13: Use and contribute to open standards, components and patterns", "q": "Are they using common platforms (like GOV.UK Notify) to deliver AI outputs to users?", "ai": true}, {"phase": "Beta", "section": "Service design, content design, interaction design", "role": "Design", "std": "Standard 13: Use and contribute to open standards, components and patterns", "q": "Have they identified any “AI patterns” they’ve developed (like a specific prompt structure for eligibility checks) that could be contributed back to the government community?", "ai": true}, {"phase": "Beta", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "What key performance indicators (KPIs) have you identified so far, beyond the mandatory four?", "ai": false}, {"phase": "Beta", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "What existing data sources did you use to decide on your KPIs?", "ai": false}, {"phase": "Beta", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "Which metrics demonstrate  your service is meeting your users’ needs?", "ai": false}, {"phase": "Beta", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "How will you check the service is doing what your department needs it to?", "ai": false}, {"phase": "Beta", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "What data are you collecting and how are you using it to improve your service?", "ai": false}, {"phase": "Beta", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "What management and governance do you have? (for example senior information risk owner (SIRO) approval, not collecting personal data, retained a raw backup data view)", "ai": false}, {"phase": "Beta", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "Which KPIs will you publish on data.gov.uk?", "ai": false}, {"phase": "Beta", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "Which roles are in your team?", "ai": false}, {"phase": "Beta", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "How are you engaging outside of your team? For example, inside or outside your department, or with the ops and policy professions?", "ai": false}, {"phase": "Beta", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "Has the team disagreed on anything and if so how was that resolved?", "ai": false}, {"phase": "Beta", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "How are you using agile methods?", "ai": false}, {"phase": "Beta", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "How does governance work? Are there any issues you’ve had to escalate?", "ai": false}, {"phase": "Beta", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "Did you discover anything that will make it difficult to design the service your users need? If so, what are your plans to address the issues you found?", "ai": false}, {"phase": "Beta", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "Is the team sustainable moving into public beta and beyond to live?", "ai": false}, {"phase": "Beta", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "What are you doing to make sure other teams know what you’re working on?", "ai": false}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "", "q": "What technical choices have you made and why - language, framework, deployment, integration, third parties?", "ai": false}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "", "q": "What other distinct options have you tried/tested?", "ai": false}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "", "q": "How have you resolved  conflicts with standards or guidance in your tech choices? (for example JavaScript dependence)?", "ai": false}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "", "q": "How are you making the service open - open source, open standards, open data, common platforms, ownership of intellectual property?", "ai": false}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "", "q": "Have you maximised reuse of existing code, data and platforms? Are you engaging with services like GOV.UK Notify, GOV.UK Account, GOV.UK Pay, GOV.UK PaaS?", "ai": false}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "", "q": "How will you ensure the service is safe for users - data privacy, security threats, fraud vectors?", "ai": false}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "", "q": "What is the minimum amount of personal information the service needs to collect?", "ai": false}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "", "q": "Does your service need an authentication solution?", "ai": false}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "", "q": "What plans do you have if your service is unavailable for any length of time?", "ai": false}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "", "q": "Have you spoken to your department’s data protection officer about the decisions you’ve made?", "ai": false}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "Standard 8: Iterate and improve frequently", "q": "How do they determine if an AI deployment has succeeded, and what is the \"roll-back\" plan if the model starts producing unexpected results?", "ai": true}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "Standard 9: Create a secure service which protects users’ privacy", "q": "How is the team managing \"meaningful human \"? At what stage does a human \"double-check\" the AI's decision before it impacts a user?", "ai": true}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "Standard 9: Create a secure service which protects users’ privacy", "q": "Have they ed  specifically targeting the AI's vulnerabilities, such as adversarial attacks?", "ai": true}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "Standard 14: Operate a reliable service", "q": "If the AI provider or model becomes unavailable, what is the fallback experience for the user?", "ai": true}, {"phase": "Beta", "section": "Technology", "role": "Technology", "std": "Standard 14: Operate a reliable service", "q": "What data exists in the pre-production environments for training/testing, and is it appropriately anonymised?", "ai": true}, {"phase": "Live", "section": "User needs", "role": "User Research", "std": "", "q": "Who are your users?", "ai": false}, {"phase": "Live", "section": "User needs", "role": "User Research", "std": "", "q": "What are your users’ lives like?", "ai": false}, {"phase": "Live", "section": "User needs", "role": "User Research", "std": "", "q": "Why do they need the thing you’re building or buying?", "ai": false}, {"phase": "Live", "section": "User needs", "role": "User Research", "std": "", "q": "Why has your department asked you to solve the problem you’re solving?", "ai": false}, {"phase": "Live", "section": "User needs", "role": "User Research", "std": "", "q": "What do you know about the offline parts of your user’s journey?", "ai": false}, {"phase": "Live", "section": "User needs", "role": "User Research", "std": "", "q": "How do you know your service joins up with those offline elements?", "ai": false}, {"phase": "Live", "section": "User needs", "role": "User Research", "std": "", "q": "Who are you inviting to your user research sessions?", "ai": false}, {"phase": "Live", "section": "User needs", "role": "User Research", "std": "", "q": "What are your continued plans for user research post-live? Is the budget sufficient?", "ai": false}, {"phase": "Live", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What/how have the constraints you’re working within changed? What are the barriers to removing or reducing the impact of those constraints?", "ai": false}, {"phase": "Live", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How will you continue to ensure the service is scoped in a way that makes sense to users?", "ai": false}, {"phase": "Live", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What are you doing to ensure users don’t have to provide the same information multiple times?", "ai": false}, {"phase": "Live", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "How do you make sure that the service doesn't exclude any existing or potential users of your service?", "ai": false}, {"phase": "Live", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What have you learnt about your approach to access needs and assisted digital needs?", "ai": false}, {"phase": "Live", "section": "Service design, content design, interaction design", "role": "Design", "std": "", "q": "What support do you offer to users who have problems with the digital part of the service?", "ai": false}, {"phase": "Live", "section": "Service design, content design, interaction design", "role": "Design", "std": "Standard 13: Use and contribute to open stadnards, common components and patterns", "q": "How are they handling updates to their AI components? If an open standard or framework (such as pytorch) was used for the specific AI models evolves, can their service adapt without a total rebuild?", "ai": true}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "How are the key performance indicators (KPIs) you have identified improving the service?", "ai": false}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "What existing data sources did you use to decide on your KPIs?", "ai": false}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "How do you know your service is meeting your users’ needs?", "ai": false}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "How do you check the service is doing what your department needs it to?", "ai": false}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "What data are you collecting and how are you using it to improve your service?", "ai": false}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "What management and governance do you have? (for example senior information risk owner (SIRO)  approval, not collecting personal data, retained a raw backup data view)", "ai": false}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "Which KPIs are being published on data.gov.uk, has there been addition or change since launch ?", "ai": false}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "Once live, how will you measure change over time?", "ai": false}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "How do you know you’ve got appropriate metrics in place to measure the success of the service, based on what you’ve learned during public beta?", "ai": false}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "", "q": "How will you continue to use data to improve your service post-live?", "ai": false}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "Standard 8: Iterate and improve frequently", "q": "How frequently are they retraining or updating the AI model, and how do they ensure these updates improve the user experience?", "ai": true}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "Standard 8: Iterate and improve frequently", "q": "What is their process for keeping the AI's \"knowledge\" or training data up to date \"hallucinations\" or outdated advice?", "ai": true}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "Standard 10: Define Success and publish performance data", "q": "What metrics are they using to measure the AI's accuracy and fairness in a live environment?", "ai": true}, {"phase": "Live", "section": "Service performance", "role": "Performance Analytics", "std": "Standard 10: Define Success and publish performance data", "q": "How do they measure the “accuracy” of AI-assisted research over time? Do they have a metric for “researcher-to-AI\" agreement?", "ai": true}, {"phase": "Live", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "What, if anything, is different in your Live team, compared to the Beta team?", "ai": false}, {"phase": "Live", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "How are you engaging outside of your team? For example, inside or outside your department, or with the ops and policy professions?", "ai": false}, {"phase": "Live", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "Has the team disagreed on anything and if so how was that resolved?", "ai": false}, {"phase": "Live", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "How are you using agile methods and how will you continue post-live?", "ai": false}, {"phase": "Live", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "How does governance work? Are there any issues you’ve had to escalate?", "ai": false}, {"phase": "Live", "section": "Team and agile ways of working", "role": "Lead Assessor", "std": "", "q": "What are you doing to make sure other teams know what you’re working on?", "ai": false}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "", "q": "What technical choices have you made and why - language, framework, deployment, integration, third parties?", "ai": false}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "", "q": "What other distinct options have you tried/tested?", "ai": false}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "", "q": "How are you managing your open source repository? How is it being shared with other teams who may need to use similar solutions? - open standards, open data, common platforms, ownership of Intellectual Property?*", "ai": false}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "", "q": "How do  you ensure the service is safe for users - data privacy, security threats, fraud vectors?", "ai": false}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "", "q": "What is the minimum amount of personal information the service needs to collect?", "ai": false}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "", "q": "Does your service need an authentication solution?", "ai": false}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "", "q": "What are the plans (in place) if your service is unavailable for any length of time?", "ai": false}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "", "q": "Have you spoken to your department’s data protection officer about the decisions you’ve made?", "ai": false}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "", "q": "Have your technology plans changed and/or is there significant activity planned for modifying or upgrading the technology used?", "ai": false}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "Standard 9: Create a secure service which protects users’ privacy", "q": "How are they staying aware of new security updates and emerging threats to the specific AI models they are using?", "ai": true}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "Standard 9: Create a secure service which protects users’ privacy", "q": "Do they have an intelligence component or \"audit trail\" for analysts to review AI patterns and identify potential fraud?", "ai": true}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "Standard 11: Choose the right tools and technology", "q": "How are they managing the sustainability of the service? Does the energy consumption of the AI infrastructure align with the department's goals?", "ai": true}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "Standard 11: Choose the right tools and technology", "q": "Is AI still the most cost-effective way to meet the user need, or have changing requirements made a simpler solution viable?", "ai": true}, {"phase": "Live", "section": "Technology", "role": "Technology", "std": "Standard 13", "q": "Is their implementation of AI “vendor-neutral”, or are they locked-into a proprietary pattern that makes it difficult to switch providers in the future?", "ai": true}, {"phase": "Tech pre-call", "section": "Have a multidisciplinary team", "role": "Tech Pre-call", "std": "", "q": "Who is the technical architect / technical lead on the team?", "ai": false}, {"phase": "Tech pre-call", "section": "Have a multidisciplinary team", "role": "Tech Pre-call", "std": "", "q": "Who makes technical decisions?", "ai": false}, {"phase": "Tech pre-call", "section": "Have a multidisciplinary team", "role": "Tech Pre-call", "std": "", "q": "Does the team possess the specific data science or AI engineering skills needed to implement and manage the chose model?", "ai": true}, {"phase": "Tech pre-call", "section": "Have a multidisciplinary team", "role": "Tech Pre-call", "std": "", "q": "Who is responsible for the ongoing monitoring and ethical oversight of the AI’s ?", "ai": true}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "What external integrations do you have?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "Have you tested and de-risked them?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "Are you in touch with the relevant departments or external providers with these, and have they been included in your performance tests?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "Do you have a delivery pipeline?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "Are you doing continuous integration or continuous deployment? If not, why not?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "What tools and testing techniques are you using to ensure quality?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "Is the system available 24/7?  Does it need to be?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "Is there user impacting downtime required for deployments?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "How many releases per day are deployed into your production environment?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "How do you monitor that a deployment improves user experience (performance testing etc)?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "How do you determine if a deployment has succeeded, and what do you do if it fails / goes wrong?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "If they’re using third party APIs (i.e. Azure, OpenAI, Anthropic, Google, etc), how are they managing the risk of model versioning or service changes?", "ai": false}, {"phase": "Tech pre-call", "section": "Iterate and improve frequently", "role": "Tech Pre-call", "std": "", "q": "How do they monitor for ‘model drift’ or changes in the quality of AI outputs over time?", "ai": true}, {"phase": "Tech pre-call", "section": "Choose the right tools and technology", "role": "Tech Pre-call", "std": "", "q": "Describe the languages, frameworks, and other technical choices you've made", "ai": false}, {"phase": "Tech pre-call", "section": "Choose the right tools and technology", "role": "Tech Pre-call", "std": "", "q": "Are they using AI in a Category A (productivity aid to BUILD) or a Category B (AI integrated into the Service OUTPUT) manner?", "ai": true}, {"phase": "Tech pre-call", "section": "Choose the right tools and technology", "role": "Tech Pre-call", "std": "", "q": "Why was this specific AI model or approach chosen over a standard, non-algorithmic solution?", "ai": true}, {"phase": "Tech pre-call", "section": "Choose the right tools and technology", "role": "Tech Pre-call", "std": "", "q": "Have they ruled out the current stack and are going to investigate?", "ai": false}, {"phase": "Tech pre-call", "section": "Choose the right tools and technology", "role": "Tech Pre-call", "std": "", "q": "Are they following a standard tech stack?", "ai": false}, {"phase": "Tech pre-call", "section": "Choose the right tools and technology", "role": "Tech Pre-call", "std": "", "q": "Describe the development tool chain that you have selected", "ai": false}, {"phase": "Tech pre-call", "section": "Choose the right tools and technology", "role": "Tech Pre-call", "std": "", "q": "How will you know if the service is healthy?", "ai": false}, {"phase": "Tech pre-call", "section": "Choose the right tools and technology", "role": "Tech Pre-call", "std": "", "q": "Do they have monitoring, alerts and logging?", "ai": false}, {"phase": "Tech pre-call", "section": "Choose the right tools and technology", "role": "Tech Pre-call", "std": "", "q": "How easy is it to rebuild the service if necessary, i.e. are they using configuration management and tools for provisioning?", "ai": false}, {"phase": "Tech pre-call", "section": "Make the source code open and 13 Use and contribute to open standards, common components and patterns", "role": "Tech Pre-call", "std": "", "q": "Describe how you are making new source code open and reusable?", "ai": false}, {"phase": "Tech pre-call", "section": "Make the source code open and 13 Use and contribute to open standards, common components and patterns", "role": "Tech Pre-call", "std": "", "q": "Describe how a team in another department can reuse your code?", "ai": false}, {"phase": "Tech pre-call", "section": "Make the source code open and 13 Use and contribute to open standards, common components and patterns", "role": "Tech Pre-call", "std": "", "q": "Are they sharing AI-specific assets such as prompts, model configuations, or training datasets with the wider government?", "ai": true}, {"phase": "Tech pre-call", "section": "Make the source code open and 13 Use and contribute to open standards, common components and patterns", "role": "Tech Pre-call", "std": "", "q": "What code from other teams/services are you using?", "ai": false}, {"phase": "Tech pre-call", "section": "Make the source code open and 13 Use and contribute to open standards, common components and patterns", "role": "Tech Pre-call", "std": "", "q": "How are you handling updates and bug fixes to the code?", "ai": false}, {"phase": "Tech pre-call", "section": "Make the source code open and 13 Use and contribute to open standards, common components and patterns", "role": "Tech Pre-call", "std": "", "q": "Describe your use of common government platforms", "ai": false}, {"phase": "Tech pre-call", "section": "Make the source code open and 13 Use and contribute to open standards, common components and patterns", "role": "Tech Pre-call", "std": "", "q": "Describe the integration mechanisms with any external systems", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "What environments do you have?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "Where are you hosted?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "How do you create environments?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "What data exists in your pre-production environments?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "If the AI component fails (i.e. API downtime or model error), what is the fallback mechanism for the user?", "ai": true}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "How are you gaining confidence that your service, and connected systems, will perform under expected loads?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "Have they considered the environmental  and energy consumption of their AI infrastructure?", "ai": true}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "What sorts of loads do they expect on a regular basis?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "How did they come up with those numbers?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "Have they considered peak events as well as normal loads?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "How confident are they about their impact on existing connected systems, either legacy systems or SaaS/PaaS that they are utilising?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "How will supplier failures affect you?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "Have you considered DDoS and protected yourself?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "What sort of runbook exists for issues?", "ai": false}, {"phase": "Tech pre-call", "section": "Operate a reliable service", "role": "Tech Pre-call", "std": "", "q": "What is your data recovery strategy and how often are you testing it?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Alpha", "q": "Describe the perceived threats to your service and how you are designing the prototype to mitigate them", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Alpha", "q": "Does the AI tool make final decisions autonomously,", "ai": true}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Alpha", "q": "Are they aware of the OFFICIAL threat model and the security classification at OFFICIAL?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Alpha", "q": "If the service disburses money, what criminal elements might be interested?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Alpha", "q": "Does the service use PII or protected characteristics to train or fine-tune the model?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Alpha", "q": "If the service holds large amounts of personal data, who might want to steal it?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Alpha", "q": "What fraud vectors exist and what controls are you prototyping?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Alpha", "q": "Does the service either give a citizen/business money or an entitlement to money? If so, fraud is a risk", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Alpha", "q": "How are they identifying users?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Alpha", "q": "Do they have an awareness of common fraud vectors?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Alpha", "q": "Do they have an idea for an intelligence component for analysts to look at common patterns?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Describe your team’s approach to security and risk management", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Is the whole team aware of and owning security?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Who owns the risks in the service?  Does the team respect the risk appetite?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "How frequently are they penetration testing?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Describe the threats to your service", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Are there threats that are specific to them rather than just OFFICIAL threats?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "How are they dealing with the threats?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "How widely is the team aware of the threat landscape?  Are decisions made by fully informed people?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Can the service be used as part of a jigsaw attack?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "What fraud vectors exist and what controls are you putting in place", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "What reports are they generating for the business?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Are lines of business joined up? (i.e. claiming petrol tax but not vehicle tax?)", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "[Can we ask how much fraud is acceptable?]", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Describe your interactions with the business and information risk teams, for example senior information risk owner (SIRO), IAB, Data Guardians", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Are they meeting on a regular basis?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Are the stakeholders highly engaged or just reading a report?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Can the stakeholders actually input to the service design, and change anything?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Describe any outstanding legal concerns for example data protection or data sharing", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Do they share or hold data that they shouldn’t?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Do they make clear what data they process and why?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Describe your cookie and privacy policy and how you arrived at it?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Do they have a cookie policy?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Do they have a privacy policy?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Is it copied from GOV.UK?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Beta", "q": "Does it match the cookies actually set by the service, for example Google Analytics", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "Describe your teams approach to security and risk management", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "Is the whole team aware of and owning security?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "Who owns the risks in the service? Does the team respect the risk appetite?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "How frequently are they penetration testing?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "Describe your ongoing interactions with the business and information risk teams, for example senior information risk owner (SIRO), IAB, Data Guardians", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "Are they meeting on a regular basis?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "Are the stakeholders highly engaged or just reading a report?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "Can the stakeholders actually input to the service design, and change anything?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "Describe any outstanding legal concerns for example data protection or data sharing", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "Do they share or hold data that they shouldn’t?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "Do they make clear what data they process and why?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "How are you keeping your understanding of the threats to your service up to date?  Have the threats changed since the beta?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "How are you keeping your cookie and privacy policy up to date?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "How are you staying aware of security updates to your systems and how quickly can you respond?", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "How do they apply patches for security updates", "ai": false}, {"phase": "Tech pre-call", "section": "Security and privacy", "role": "Tech Pre-call", "std": "Sub-phase: Live", "q": "What does a security release entail?", "ai": false}, {"phase": "Tech pre-call", "section": "During assessment day: cover these points beyond the tech pre-call", "role": "Tech Pre-call", "std": "", "q": "What technical choices have you made and why - language, framework, deployment, integration, third parties?", "ai": false}, {"phase": "Tech pre-call", "section": "During assessment day: cover these points beyond the tech pre-call", "role": "Tech Pre-call", "std": "", "q": "How do you plan to make the service open - open source, open standards, open data, common platforms?", "ai": false}, {"phase": "Tech pre-call", "section": "During assessment day: cover these points beyond the tech pre-call", "role": "Tech Pre-call", "std": "", "q": "How will you ensure the service is safe for users - data privacy, security threats, fraud vectors?", "ai": false}, {"phase": "Tech pre-call", "section": "During assessment day: cover these points beyond the tech pre-call", "role": "Tech Pre-call", "std": "", "q": "What other distinct options have you tried / tested?", "ai": false}, {"phase": "Tech pre-call", "section": "During assessment day: cover these points beyond the tech pre-call", "role": "Tech Pre-call", "std": "", "q": "[Alpha] What are your technology plans for private beta?", "ai": false}, {"phase": "Tech pre-call", "section": "During assessment day: cover these points beyond the tech pre-call", "role": "Tech Pre-call", "std": "", "q": "What plans do you have if your service is unavailable for any length of time?", "ai": false}];
+const PHASE_COLOR = {"Alpha": "#2E7D32", "Beta": "#F57C00", "Live": "#1565C0", "Tech pre-call": "#6A1B9A"};
+
+function showTab(tabId, event, srcEl) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const panel = document.getElementById(tabId);
+    if (panel) panel.classList.add('active');
+    if (event && event.currentTarget) event.currentTarget.classList.add('active');
+    else if (srcEl) {
+        // activate matching tab btn by tabId
+        const btn = document.querySelector('.tab-btn[onclick*="' + tabId + '"]');
+        if (btn) btn.classList.add('active');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function escapeHTML(s) {
+    return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderCard(q) {
+    const phColor = PHASE_COLOR[q.phase] || '#1A1A1A';
+    let tags = '<span class="tag phase" style="background:' + phColor + ';">' + escapeHTML(q.phase) + '</span>';
+    tags += '<span class="tag role">' + escapeHTML(q.role) + '</span>';
+    if (q.std) tags += '<span class="tag std">' + escapeHTML(q.std) + '</span>';
+    if (q.ai) tags += '<span class="tag ai-tag">AI</span>';
+    return '<div class="q-card ' + (q.ai ? 'ai' : '') + '"><div>' + escapeHTML(q.q) + '</div><div class="q-tags">' + tags + '</div></div>';
+}
+
+function renderQuestions() {
+    const s = document.getElementById('f-search').value.toLowerCase().trim();
+    const ph = document.getElementById('f-phase').value;
+    const r = document.getElementById('f-role').value;
+    const ai = document.getElementById('f-ai').value;
+    const filtered = QUESTIONS.filter(q => {
+        if (ph && q.phase !== ph) return false;
+        if (r && q.role !== r) return false;
+        if (ai === 'ai' && !q.ai) return false;
+        if (ai === 'general' && q.ai) return false;
+        if (s) {
+            const blob = (q.q + ' ' + q.phase + ' ' + q.role + ' ' + q.std).toLowerCase();
+            if (blob.indexOf(s) === -1) return false;
+        }
+        return true;
+    });
+    document.getElementById('result-count').textContent = 'Showing ' + filtered.length + ' of ' + QUESTIONS.length + ' questions';
+    const html = filtered.length ? filtered.map(renderCard).join('') : '<div style="padding:30px;text-align:center;color:#777;background:#F5F5F5;">No questions match the current filters.</div>';
+    document.getElementById('q-results').innerHTML = html;
+}
+
+function clearFilters() {
+    ['f-search','f-phase','f-role','f-ai'].forEach(id => document.getElementById(id).value = '');
+    renderQuestions();
+}
+
+function filterRole(role) {
+    showTab('search', null);
+    document.querySelector('.tab-btn[onclick*="search"]').classList.add('active');
+    document.querySelector('.tab-btn[onclick*="overview"]').classList.remove('active');
+    document.getElementById('f-role').value = role;
+    renderQuestions();
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', renderQuestions);
+</script>
+</body>
+</html>
