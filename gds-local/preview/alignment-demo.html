@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en" class="govuk-template govuk-template--rebranded">
+<head>
+    <meta charset="utf-8">
+    <title>Architecture Alignment Demo - Local Government Architecture Model - GOV.UK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#1d70b8">
+    <link rel="icon" sizes="48x48" href="https://gov.uk/assets/frontend/favicon-24f9fbe064118d58937932e73edafd1d50cb60f7bd84f52308382a309bc2d655.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/govuk-frontend.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        :root {
+            --govuk-assets-path: "https://unpkg.com/govuk-frontend@5.13.0/dist/govuk/assets/";
+            --govuk-black: #0b0c0c;
+            --govuk-blue: #1d70b8;
+            --govuk-yellow: #ffdd00;
+            --govuk-green: #00703c;
+            --govuk-red: #d4351c;
+            --govuk-light-grey: #f3f2f1;
+            --govuk-dark-grey: #505a5f;
+            --layer-capabilities: #000080;
+            --layer-business: #0000FF;
+            --layer-corporate: #696969;
+            --layer-ft: #008080;
+            --layer-integration: #6B6B00;
+            --layer-security: #CC0000;
+            --layer-data: #800000;
+        }
+
+        .app-service-nav { background: #f3f2f1; border-bottom: 1px solid #b1b4b6; }
+        .app-service-nav__list { list-style: none; margin: 0; padding: 0; display: flex; }
+        .app-service-nav__link { display: block; padding: 15px 20px; color: #1d70b8; text-decoration: none; font-family: "GDS Transport", arial, sans-serif; font-size: 16px; }
+        .app-service-nav__link:hover { background: #fff; text-decoration: underline; }
+        .app-service-nav__link--active { background: #fff; font-weight: 700; border-bottom: 4px solid #1d70b8; }
+
+        .app-service-nav__link--active { background: #fff; font-weight: 700; border-bottom: 4px solid #1d70b8; padding-bottom: 11px; }
+
+        /* Three-pane grid */
+        .register-grid { display: grid; grid-template-columns: 260px 1fr 320px; min-height: calc(100vh - 100px); border-top: 1px solid #b1b4b6; }
+        .register-pane { font-family: "GDS Transport", arial, sans-serif; }
+        .register-pane--left { background: #f3f2f1; border-right: 1px solid #b1b4b6; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; }
+        .register-pane--centre { background: #ffffff; padding: 30px 40px; }
+        .register-pane--right { background: #f8f8f8; border-left: 1px solid #b1b4b6; padding: 24px 20px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+
+        /* Left pane */
+        .register-search { padding: 12px 15px; border-bottom: 1px solid #b1b4b6; flex-shrink: 0; }
+        .register-search input { width: 100%; padding: 8px 10px; border: 2px solid #0b0c0c; border-radius: 0; font-family: "GDS Transport", arial, sans-serif; font-size: 14px; }
+        .register-search input:focus { outline: 3px solid #ffdd00; outline-offset: 0; box-shadow: inset 0 0 0 2px #0b0c0c; }
+        .register-coverage { padding: 10px 15px; font-size: 12px; color: #505a5f; border-bottom: 1px solid #dee2e6; display: flex; flex-wrap: wrap; gap: 4px 8px; flex-shrink: 0; }
+        .register-coverage-item { display: flex; align-items: center; gap: 4px; white-space: nowrap; cursor: pointer; border: none; background: none; font-family: "GDS Transport", arial, sans-serif; font-size: 12px; color: #505a5f; padding: 2px 4px; }
+        .register-coverage-item:hover { background: #dee2e6; color: #0b0c0c; }
+        .register-coverage-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        #systemList { flex: 1; overflow-y: auto; }
+        .register-layer-group { border-bottom: 1px solid #dee2e6; }
+        .register-layer-header { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 10px 15px; border: none; border-left: 4px solid; background: none; cursor: pointer; font-family: "GDS Transport", arial, sans-serif; font-size: 13px; font-weight: 700; color: #0b0c0c; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; }
+        .register-layer-header:hover { background: #e8e8e8; }
+        .register-layer-header:focus { outline: 3px solid #ffdd00; outline-offset: 0; box-shadow: inset 0 0 0 2px #0b0c0c; }
+        .register-layer-count { background: #dee2e6; padding: 1px 8px; font-size: 12px; font-weight: 400; }
+        .register-subdomain-label { padding: 6px 15px 4px 28px; font-size: 11px; font-weight: 600; color: #505a5f; text-transform: uppercase; letter-spacing: 0.3px; }
+        .register-system-item { display: block; width: 100%; padding: 8px 15px 8px 28px; border: none; background: none; cursor: pointer; text-align: left; font-family: "GDS Transport", arial, sans-serif; }
+        .register-system-item:hover { background: #ffffff; }
+        .register-system-item:focus { outline: 3px solid #ffdd00; outline-offset: 0; box-shadow: inset 0 0 0 2px #0b0c0c; }
+        .register-system-item[aria-pressed="true"] { background: #ffffff; border-left: 4px solid #1d70b8; padding-left: 24px; }
+        .register-system-item__row { display: flex; align-items: center; justify-content: space-between; }
+        .register-system-name { font-size: 14px; font-weight: 600; color: #0b0c0c; }
+        .register-system-domain { font-size: 11px; color: #505a5f; margin-top: 1px; }
+        .register-lifecycle { font-size: 14px; flex-shrink: 0; }
+        .register-lifecycle--live { color: #00703c; }
+        .register-lifecycle--retiring { color: #f47738; }
+        .register-lifecycle--planned { color: #505a5f; }
+        .register-lifecycle--retired { color: #d4351c; }
+        .register-layer-items--hidden { display: none; }
+
+        /* Centre pane */
+        .register-system-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; font-family: "GDS Transport", arial, sans-serif; }
+        .register-system-desc { font-size: 16px; color: #505a5f; margin-bottom: 16px; line-height: 1.4; font-family: "GDS Transport", arial, sans-serif; }
+        .register-context-map { display: grid; grid-template-columns: 1fr 1fr auto; grid-template-rows: repeat(7, auto); gap: 2px; width: 100%; }
+        .register-context-map__item { padding: 4px 6px; font-size: 9px; font-weight: 700; font-family: "GDS Transport", arial, sans-serif; color: #ffffff; text-align: center; opacity: 0.5; line-height: 1.3; display: flex; align-items: center; justify-content: center; }
+        .register-context-map__item--active { opacity: 1; box-shadow: inset 0 0 0 2px #0b0c0c; }
+        .register-context-map__item--wide { grid-column: 1 / 3; }
+        .register-context-map__item--ft { grid-column: 3; grid-row: 1 / 8; writing-mode: vertical-rl; text-orientation: mixed; padding: 6px 4px; }
+        .register-section-heading { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #505a5f; margin: 28px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #dee2e6; font-family: "GDS Transport", arial, sans-serif; }
+        .register-section-heading:first-of-type { margin-top: 0; }
+        .register-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .register-field-row--three { grid-template-columns: 1fr 1fr 1fr; }
+        .register-field-card { background: #f3f2f1; border: 1px solid #dee2e6; padding: 14px 16px; }
+        .register-field-label { display: block; font-size: 11px; font-weight: 700; color: #505a5f; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px; font-family: "GDS Transport", arial, sans-serif; }
+        .register-field-value { font-size: 15px; color: #0b0c0c; font-family: "GDS Transport", arial, sans-serif; }
+        .register-field-value--empty { color: #b1b4b6; font-style: italic; font-size: 14px; }
+        .register-field-hint { font-size: 12px; color: #505a5f; margin-top: 8px; padding-top: 8px; border-top: 1px solid #dee2e6; line-height: 1.4; font-family: "GDS Transport", arial, sans-serif; }
+        .register-segmented { display: flex; gap: 0; flex-wrap: wrap; }
+        .register-segment { padding: 7px 14px; font-size: 13px; border: 1px solid #b1b4b6; background: #ffffff; font-family: "GDS Transport", arial, sans-serif; }
+        .register-segment:first-child { }
+        .register-segment:last-child { }
+        .register-segment + .register-segment { border-left: none; }
+        .register-segment--selected { background: #1d70b8; color: #ffffff; border-color: #1d70b8; font-weight: 700; }
+        .register-segment--selected + .register-segment { border-left: 1px solid #b1b4b6; }
+        .register-dropdown-display { font-size: 14px; padding: 7px 12px; border: 1px solid #b1b4b6; background: #ffffff; font-family: "GDS Transport", arial, sans-serif; display: inline-block; }
+        .register-domain-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+        .register-domain-tag { display: inline-block; padding: 3px 10px; font-size: 12px; font-weight: 500; color: #ffffff; font-family: "GDS Transport", arial, sans-serif; }
+        .register-lifecycle-badge { display: inline-block; padding: 3px 10px; font-size: 12px; font-weight: 700; text-transform: uppercase; font-family: "GDS Transport", arial, sans-serif; }
+        .register-lifecycle-badge--live { background: #cce2d8; color: #005a30; }
+        .register-lifecycle-badge--retiring { background: #fde5cc; color: #6e3619; }
+        .register-lifecycle-badge--planned { background: #e8e8e8; color: #383f43; }
+        .register-lifecycle-badge--retired { background: #f6d7d2; color: #942514; }
+
+        /* Right pane */
+        .register-right-heading { font-size: 16px; font-weight: 700; margin-bottom: 20px; font-family: "GDS Transport", arial, sans-serif; }
+        .register-relationship-section { margin-bottom: 24px; }
+        .register-relationship-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #505a5f; margin-bottom: 10px; font-family: "GDS Transport", arial, sans-serif; }
+        .register-cap-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+        .register-cap-pill { padding: 4px 12px; font-size: 12px; font-weight: 500; font-family: "GDS Transport", arial, sans-serif; }
+        .register-cap-pill--provides { background: #000080; color: #ffffff; }
+        .register-cap-pill--suggested { background: #ffffff; color: #505a5f; border: 1px dashed #b1b4b6; }
+        .register-cap-pill--uses { background: #f3f2f1; color: #0b0c0c; border: 1px solid #b1b4b6; }
+        .register-suggestion-hint { font-size: 11px; color: #b1b4b6; font-style: italic; margin-top: 8px; font-family: "GDS Transport", arial, sans-serif; }
+        .register-gaps-section { margin-top: 24px; padding: 16px; background: #fef7f7; border-left: 4px solid #d4351c; }
+        .register-gaps-section .register-relationship-label { color: #d4351c; }
+        .register-gap-item { font-size: 13px; padding: 6px 0; border-bottom: 1px solid #f0e0e0; font-family: "GDS Transport", arial, sans-serif; color: #0b0c0c; font-weight: 600; }
+        .register-gap-item:last-child { border-bottom: none; }
+        .register-gap-layer { font-size: 11px; color: #505a5f; }
+        .register-related-system { padding: 10px 12px; border: 1px solid #b1b4b6; margin-bottom: 8px; background: #ffffff; cursor: pointer; }
+        .register-related-system:hover { border-color: #1d70b8; }
+        .register-related-name { font-size: 14px; font-weight: 600; display: block; font-family: "GDS Transport", arial, sans-serif; color: #1d70b8; }
+        .register-related-via { font-size: 12px; color: #505a5f; margin-top: 3px; display: block; font-family: "GDS Transport", arial, sans-serif; }
+        .register-empty-state { font-size: 14px; color: #b1b4b6; font-style: italic; padding: 8px 0; font-family: "GDS Transport", arial, sans-serif; }
+
+        /* View tabs */
+        .register-view-tabs { display: flex; gap: 0; border-bottom: 1px solid #b1b4b6; background: #f3f2f1; }
+        .register-view-tab { padding: 12px 20px; border: none; background: none; font-family: "GDS Transport", arial, sans-serif; font-size: 16px; color: #1d70b8; cursor: pointer; border-bottom: 4px solid transparent; margin-bottom: -1px; }
+        .register-view-tab:hover { background: #ffffff; }
+        .register-view-tab--active { background: #ffffff; font-weight: 700; border-bottom-color: #1d70b8; }
+        .register-view--hidden { display: none; }
+        #graphContainer { width: 100%; height: calc(100vh - 150px); border: 2px solid #b1b4b6; background: #ffffff; position: relative; }
+        .graph-popup { position: absolute; background: #ffffff; border: 2px solid #0b0c0c; padding: 16px 20px; max-width: 320px; font-family: "GDS Transport", arial, sans-serif; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .graph-popup__title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .graph-popup__desc { font-size: 14px; color: #505a5f; margin-bottom: 8px; line-height: 1.4; }
+        .graph-popup__layer { font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+        .graph-popup__btn { display: inline-block; padding: 8px 16px; background: #00703c; color: #ffffff; font-family: "GDS Transport", arial, sans-serif; font-size: 14px; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 2px 0 #002d18; }
+        .graph-popup__btn:hover { background: #005a30; }
+        .graph-popup__close { position: absolute; top: 8px; right: 12px; border: none; background: none; font-size: 18px; cursor: pointer; color: #505a5f; padding: 4px; }
+
+        /* Toolbar */
+        .register-toolbar { display: flex; gap: 8px; padding: 10px 15px; border-bottom: 1px solid #b1b4b6; background: #ffffff; align-items: center; flex-wrap: wrap; }
+        .register-toolbar__btn { padding: 6px 14px; font-family: "GDS Transport", arial, sans-serif; font-size: 14px; font-weight: 700; border: none; cursor: pointer; }
+        .register-toolbar__btn--primary { background: #00703c; color: #ffffff; box-shadow: 0 2px 0 #002d18; }
+        .register-toolbar__btn--primary:hover { background: #005a30; }
+        .register-toolbar__btn--secondary { background: #ffffff; color: #0b0c0c; border: 2px solid #0b0c0c; }
+        .register-toolbar__btn--secondary:hover { background: #f3f2f1; }
+        .register-toolbar__btn--warning { background: #ffffff; color: #d4351c; border: 2px solid #d4351c; }
+        .register-toolbar__btn--warning:hover { background: #f6d7d2; }
+        .register-toolbar__spacer { flex: 1; }
+        .register-toolbar__status { font-size: 12px; color: #505a5f; font-family: "GDS Transport", arial, sans-serif; }
+        .register-edit-btn { padding: 4px 12px; font-family: "GDS Transport", arial, sans-serif; font-size: 13px; font-weight: 700; background: #f3f2f1; border: 1px solid #b1b4b6; cursor: pointer; }
+        .register-edit-btn:hover { background: #dee2e6; }
+        .register-edit-btn--delete { color: #d4351c; border-color: #d4351c; }
+        .register-edit-btn--delete:hover { background: #f6d7d2; }
+        .register-edit-btn--save { background: #00703c; color: #ffffff; border-color: #00703c; }
+        .register-edit-btn--save:hover { background: #005a30; }
+        .register-edit-input { padding: 6px 10px; border: 2px solid #0b0c0c; font-family: "GDS Transport", arial, sans-serif; font-size: 14px; width: 100%; }
+        .register-edit-input:focus { outline: 3px solid #ffdd00; outline-offset: 0; }
+        .register-edit-textarea { padding: 6px 10px; border: 2px solid #0b0c0c; font-family: "GDS Transport", arial, sans-serif; font-size: 14px; width: 100%; min-height: 60px; resize: vertical; }
+        .register-edit-textarea:focus { outline: 3px solid #ffdd00; outline-offset: 0; }
+        .register-edit-select { padding: 6px 10px; border: 2px solid #0b0c0c; font-family: "GDS Transport", arial, sans-serif; font-size: 14px; width: 100%; }
+        .register-confirm-bar { padding: 16px; background: #fef7f7; border: 2px solid #d4351c; margin-top: 16px; }
+        .register-confirm-bar p { font-family: "GDS Transport", arial, sans-serif; font-size: 14px; margin-bottom: 12px; }
+
+        /* Focus styles */
+        a:focus, button:focus, [tabindex]:focus { outline: 3px solid #ffdd00 !important; outline-offset: 0 !important; box-shadow: inset 0 0 0 2px #0b0c0c !important; text-decoration: none !important; }
+
+        /* CDN asset path fix */
+        .govuk-footer__copyright-logo::before { background-image: url("https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/assets/images/govuk-crest.svg") !important; }
+        @supports ((-webkit-mask-position:initial) or (mask-position:initial)) { .govuk-footer__copyright-logo::before { -webkit-mask-image: url("https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/assets/images/govuk-crest.svg") !important; mask-image: url("https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/assets/images/govuk-crest.svg") !important; } }
+        @media (min-resolution: 2dppx) { .govuk-footer__copyright-logo::before { background-image: url("https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/assets/images/govuk-crest-2x.png") !important; } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .register-grid { grid-template-columns: 1fr; min-height: auto; }
+            .register-pane--left { position: static; height: auto; max-height: 350px; border-right: none; border-bottom: 1px solid #b1b4b6; overflow-y: auto; }
+            .register-pane--centre { padding: 20px; }
+            .register-pane--right { position: static; height: auto; border-left: none; border-top: 1px solid #b1b4b6; }
+            .register-field-row, .register-field-row--three { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="govuk-template__body">
+    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+    <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+    <header class="govuk-header" data-module="govuk-header">
+        <div class="govuk-header__container govuk-width-container">
+            <div class="govuk-header__logo">
+                <a href="https://www.gov.uk" class="govuk-header__link govuk-header__link--homepage">
+                    <svg focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 324 60" height="30" width="162" fill="currentcolor" class="govuk-header__logotype" aria-label="GOV.UK">
+                        <title>GOV.UK</title>
+                        <g><circle cx="20" cy="17.6" r="3.7"/><circle cx="10.2" cy="23.5" r="3.7"/><circle cx="3.7" cy="33.2" r="3.7"/><circle cx="31.7" cy="30.6" r="3.7"/><circle cx="43.3" cy="17.6" r="3.7"/><circle cx="53.2" cy="23.5" r="3.7"/><circle cx="59.7" cy="33.2" r="3.7"/><circle cx="31.7" cy="30.6" r="3.7"/><path d="M33.1,9.8c.2-.1.3-.3.5-.5l4.6,2.4v-6.8l-4.6,1.5c-.1-.2-.3-.3-.5-.5l1.9-5.9h-6.7l1.9,5.9c-.2.1-.3.3-.5.5l-4.6-1.5v6.8l4.6-2.4c.1.2.3.3.5.5l-2.6,8c-.9,2.8,1.2,5.7,4.1,5.7h0c3,0,5.1-2.9,4.1-5.7l-2.6-8ZM37,37.9s-3.4,3.8-4.1,6.1c2.2,0,4.2-.5,6.4-2.8l-.7,8.5c-2-2.8-4.4-4.1-5.7-3.8.1,3.1.5,6.7,5.8,7.2,3.7.3,6.7-1.5,7-3.8.4-2.6-2-4.3-3.7-1.6-1.4-4.5,2.4-6.1,4.9-3.2-1.9-4.5-1.8-7.7,2.4-10.9,3,4,2.6,7.3-1.2,11.1,2.4-1.3,6.2,0,4,4.6-1.2-2.8-3.7-2.2-4.2.2-.3,1.7.7,3.7,3,4.2,1.9.3,4.7-.9,7-5.9-1.3,0-2.4.7-3.9,1.7l2.4-8c.6,2.3,1.4,3.7,2.2,4.5.6-1.6.5-2.8,0-5.3l5,1.8c-2.6,3.6-5.2,8.7-7.3,17.5-7.4-1.1-15.7-1.7-24.5-1.7h0c-8.8,0-17.1.6-24.5,1.7-2.1-8.9-4.7-13.9-7.3-17.5l5-1.8c-.5,2.5-.6,3.7,0,5.3.8-.8,1.6-2.3,2.2-4.5l2.4,8c-1.5-1-2.6-1.7-3.9-1.7,2.3,5,5.2,6.2,7,5.9,2.3-.4,3.3-2.4,3-4.2-.5-2.4-3-3.1-4.2-.2-2.2-4.6,1.6-6,4-4.6-3.7-3.7-4.2-7.1-1.2-11.1,4.2,3.2,4.3,6.4,2.4,10.9,2.5-2.8,6.3-1.3,4.9,3.2-1.8-2.7-4.1-1-3.7,1.6.3,2.3,3.3,4.1,7,3.8,5.4-.5,5.7-4.2,5.8-7.2-1.3-.2-3.7,1-5.7,3.8l-.7-8.5c2.2,2.3,4.2,2.7,6.4,2.8-.7-2.3-4.1-6.1-4.1-6.1h10.6,0Z"/></g>
+                        <circle class="govuk-logo-dot" cx="226" cy="36" r="7.3"/>
+                        <path d="M93.94 41.25c.4 1.81 1.2 3.21 2.21 4.62 1 1.4 2.21 2.41 3.61 3.21s3.21 1.2 5.22 1.2 3.61-.4 4.82-1c1.4-.6 2.41-1.4 3.21-2.41.8-1 1.4-2.01 1.61-3.01s.4-2.01.4-3.01v.14h-10.86v-7.02h20.07v24.08h-8.03v-5.56c-.6.8-1.38 1.61-2.19 2.41-.8.8-1.81 1.2-2.81 1.81-1 .4-2.21.8-3.41 1.2s-2.41.4-3.81.4a18.56 18.56 0 0 1-14.65-6.63c-1.6-2.01-3.01-4.41-3.81-7.02s-1.4-5.62-1.4-8.83.4-6.02 1.4-8.83a20.45 20.45 0 0 1 19.46-13.65c3.21 0 4.01.2 5.82.8 1.81.4 3.61 1.2 5.02 2.01 1.61.8 2.81 2.01 4.01 3.21s2.21 2.61 2.81 4.21l-7.63 4.41c-.4-1-1-1.81-1.61-2.61-.6-.8-1.4-1.4-2.21-2.01-.8-.6-1.81-1-2.81-1.4-1-.4-2.21-.4-3.61-.4-2.01 0-3.81.4-5.22 1.2-1.4.8-2.61 1.81-3.61 3.21s-1.61 2.81-2.21 4.62c-.4 1.81-.6 3.71-.6 5.42s.8 5.22.8 5.22Zm57.8-27.9c3.21 0 6.22.6 8.63 1.81 2.41 1.2 4.82 2.81 6.62 4.82S170.2 24.39 171 27s1.4 5.62 1.4 8.83-.4 6.02-1.4 8.83-2.41 5.02-4.01 7.02-4.01 3.61-6.62 4.82-5.42 1.81-8.63 1.81-6.22-.6-8.63-1.81-4.82-2.81-6.42-4.82-3.21-4.41-4.01-7.02-1.4-5.62-1.4-8.83.4-6.02 1.4-8.83 2.41-5.02 4.01-7.02 4.01-3.61 6.42-4.82 5.42-1.81 8.63-1.81Zm0 36.73c1.81 0 3.61-.4 5.02-1s2.61-1.81 3.61-3.01 1.81-2.81 2.21-4.41c.4-1.81.8-3.61.8-5.62 0-2.21-.2-4.21-.8-6.02s-1.2-3.21-2.21-4.62c-1-1.2-2.21-2.21-3.61-3.01s-3.21-1-5.02-1-3.61.4-5.02 1c-1.4.8-2.61 1.81-3.61 3.01s-1.81 2.81-2.21 4.62c-.4 1.81-.8 3.61-.8 5.62 0 2.41.2 4.21.8 6.02.4 1.81 1.2 3.21 2.21 4.41s2.21 2.21 3.61 3.01c1.4.8 3.21 1 5.02 1Zm36.32 7.96-12.24-44.15h9.83l8.43 32.77h.4l8.23-32.77h9.83L200.3 58.04h-12.24Zm74.14-7.96c2.18 0 3.51-.6 3.51-.6 1.2-.6 2.01-1 2.81-1.81s1.4-1.81 1.81-2.81a13 13 0 0 0 .8-4.01V13.9h8.63v28.15c0 2.41-.4 4.62-1.4 6.62-.8 2.01-2.21 3.61-3.61 5.02s-3.41 2.41-5.62 3.21-4.62 1.2-7.02 1.2-5.02-.4-7.02-1.2c-2.21-.8-4.01-1.81-5.62-3.21s-2.81-3.01-3.61-5.02-1.4-4.21-1.4-6.62V13.9h8.63v26.95c0 1.61.2 3.01.8 4.01.4 1.2 1.2 2.21 2.01 2.81.8.8 1.81 1.4 2.81 1.81 0 0 1.34.6 3.51.6Zm34.22-36.18v18.92l15.65-18.92h10.82l-15.03 17.32 16.03 26.83h-10.21l-11.44-20.21-5.62 6.22v13.99h-8.83V13.9"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="govuk-header__content">
+                <a href="index.html" class="govuk-header__link govuk-header__service-name">Local Government Architecture Model</a>
+            </div>
+        </div>
+    </header>
+
+    <nav class="app-service-nav" aria-label="Service">
+        <div class="govuk-width-container">
+            <ul class="app-service-nav__list">
+                <li><a class="app-service-nav__link" href="index.html">Documentation</a></li>
+                <li><a class="app-service-nav__link app-service-nav__link--active" href="alignment-demo.html">Architecture Alignment Demo</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="register-view-tabs" role="tablist">
+        <button class="register-view-tab register-view-tab--active" role="tab" aria-selected="true" data-view="register" id="tabRegister">Model</button>
+        <button class="register-view-tab" role="tab" aria-selected="false" data-view="graph" id="tabGraph">Graph</button>
+        <button class="register-view-tab" role="tab" aria-selected="false" data-view="about" id="tabAbout">About</button>
+    </div>
+
+    <div class="register-toolbar" id="modelToolbar">
+        <button class="register-toolbar__btn register-toolbar__btn--primary" id="btnAddSystem">+ Add system</button>
+        <button class="register-toolbar__btn register-toolbar__btn--secondary" id="btnImport">Import JSON</button>
+        <button class="register-toolbar__btn register-toolbar__btn--secondary" id="btnExport">Export JSON</button>
+        <span class="register-toolbar__spacer"></span>
+        <span class="register-toolbar__status" id="toolbarStatus"></span>
+        <button class="register-toolbar__btn register-toolbar__btn--warning" id="btnReset">Reset</button>
+        <input type="file" id="fileImport" accept=".json" style="display:none">
+    </div>
+
+    <div class="register-grid" id="main-content" role="tabpanel" aria-labelledby="tabRegister">
+        <nav class="register-pane register-pane--left" aria-label="System list">
+            <div class="register-search">
+                <label for="systemSearch" class="govuk-visually-hidden">Search systems</label>
+                <input type="text" id="systemSearch" placeholder="Search systems...">
+            </div>
+            <div class="register-coverage" id="coverageSummary" aria-label="Coverage summary"></div>
+            <div id="systemList" role="listbox" aria-label="Systems"></div>
+        </nav>
+        <main class="register-pane register-pane--centre" id="paneCentre" aria-live="polite">
+            <p class="register-empty-state">Select a system from the list to view its properties.</p>
+        </main>
+        <aside class="register-pane register-pane--right" id="paneRight" aria-label="System relationships">
+            <p class="register-empty-state">Select a system to view its relationships.</p>
+        </aside>
+    </div>
+
+    <div class="register-view--hidden" id="graphView" role="tabpanel" aria-labelledby="tabGraph">
+        <div id="graphContainer"></div>
+    </div>
+
+    <div class="register-view--hidden" id="aboutView" role="tabpanel" aria-labelledby="tabAbout">
+        <div class="govuk-width-container" style="padding: 40px 0; max-width: 720px;">
+            <h2 class="govuk-heading-l">About this demo</h2>
+            <p class="govuk-body">This is an interactive demonstration of how the <strong>Local Government Architecture Model (LGAM)</strong> can be used as a shared framework for understanding a council's technology landscape.</p>
+
+            <h3 class="govuk-heading-m">What it shows</h3>
+            <p class="govuk-body">The LGAM describes local government technology across 9 layers -from the channels citizens use to reach a council, through the capabilities and business systems that deliver services, down to the infrastructure, security, and data platforms that underpin everything.</p>
+            <p class="govuk-body">This demo maps <strong>archetypal systems</strong> (the kinds of technology a typical council operates) against those layers, and uses the LGAM's relationship model to derive how they connect. It surfaces:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li><strong>Layer position</strong> - where each system sits in the overall architecture</li>
+                <li><strong>Derived dependencies</strong> - which systems depend on which, based on the LGAM's domain-level relationship graph</li>
+                <li><strong>Coverage gaps</strong> - which areas of the model have no system mapped against them</li>
+                <li><strong>Capability suggestions</strong> - what capabilities the LGAM suggests are typically needed for systems in that layer</li>
+            </ul>
+
+            <h3 class="govuk-heading-m">How it relates to the LGAM</h3>
+            <p class="govuk-body">The LGAM is a reference architecture -a shared vocabulary and structure. This demo explores what it looks like to <strong>align a council's actual technology landscape to that reference</strong>. The taxonomy (layers, domains, capabilities) comes directly from the LGAM. The relationships between systems are derived from the LGAM's own dependency graph, not hand-authored.</p>
+            <p class="govuk-body">The reference data uses generic archetypes ("Social Care System", "IAM Platform") rather than specific vendor products. A council using this approach would map their own specific systems into the same structure.</p>
+
+            <h3 class="govuk-heading-m">What this is not</h3>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>This is not a procurement tool or product directory</li>
+                <li>This is not a maturity model or scoring framework</li>
+                <li>This is not a replacement for enterprise architecture tooling</li>
+                <li>This is not an official recommendation - it is an exploration of what alignment to the LGAM could look like in practice</li>
+            </ul>
+
+            <h3 class="govuk-heading-m">Technical notes</h3>
+            <p class="govuk-body">This runs entirely in the browser with no backend. The data model is a JSON structure that could be exported and shared. The relationship derivation uses domain-level dependencies from the <a href="https://architect.rumens.uk" class="govuk-link">LGAM graph model</a>. The demo is built with GOV.UK Frontend and vanilla JavaScript.</p>
+        </div>
+    </div>
+
+    <footer class="govuk-footer">
+        <div class="govuk-width-container">
+            <div class="govuk-footer__meta">
+                <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+                    <h2 class="govuk-visually-hidden">Support links</h2>
+                    <ul class="govuk-footer__inline-list">
+                        <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="mailto:gdslocal-info@dsit.gov.uk">Contact</a></li>
+                        <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="accessibility-statement.html">Accessibility statement</a></li>
+                    </ul>
+                    <svg aria-hidden="true" focusable="false" class="govuk-footer__licence-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 483.2 195.7" height="17" width="41">
+                        <path fill="currentColor" d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"/>
+                    </svg>
+                    <span class="govuk-footer__licence-description">All content is available under the <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</span>
+                </div>
+                <div class="govuk-footer__meta-item">
+                    <a class="govuk-footer__link govuk-footer__copyright-logo" href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">© Crown copyright</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initAll } from 'https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/govuk-frontend.min.js';
+        initAll();
+
+        let selectedSystemId = null;
+
+        const REFERENCE_DATA = {"meta":{"version":"1.0","exported":"2026-05-22T00:00:00Z","council":"LGAM Reference"},"taxonomy":{"layers":[{"id":"channels","label":"Public Channels","colour":"#CC00CC","collapsed":true},{"id":"interfaces","label":"Council Interfaces","colour":"#800080","collapsed":true},{"id":"capabilities","label":"Capabilities","colour":"#000080"},{"id":"business","label":"Business Areas","colour":"#0000FF"},{"id":"corporate","label":"Corporate Areas","colour":"#696969"},{"id":"foundational-technology","label":"Foundational Technology","colour":"#008080","subdomains":[{"id":"ai","label":"AI & Automation"},{"id":"devops","label":"DevOps"},{"id":"end-user","label":"End User & Productivity"},{"id":"service-management","label":"Service Management"},{"id":"infrastructure","label":"Infrastructure & Hosting"}]},{"id":"integration","label":"Integration","colour":"#6B6B00"},{"id":"security","label":"Security","colour":"#CC0000"},{"id":"data","label":"Data & Information","colour":"#800000"}],"domains":[{"id":"FG_AdultSocial","label":"Adult Social Care","layer":"business"},{"id":"FG_ChildSocial","label":"Children's Social Care","layer":"business"},{"id":"FG_Democratic","label":"Democratic Services","layer":"business"},{"id":"FG_Education","label":"Education","layer":"business"},{"id":"FG_Highways","label":"Highways / Transport","layer":"business"},{"id":"FG_Housing","label":"Housing","layer":"business"},{"id":"FG_Leisure","label":"Leisure / Culture","layer":"business"},{"id":"FG_Licensing","label":"Licensing / Regulation","layer":"business"},{"id":"FG_Planning","label":"Planning / Development","layer":"business"},{"id":"FG_PublicHealth","label":"Public Health","layer":"business"},{"id":"FG_RevsBens","label":"Revenues / Benefits","layer":"business"},{"id":"FG_Waste","label":"Waste Management","layer":"business"},{"id":"FG_BizPlanning","label":"Business Planning / Performance","layer":"corporate"},{"id":"FG_Comms","label":"Communications / PR","layer":"corporate"},{"id":"FG_Governance","label":"Corporate Governance / Risk","layer":"corporate"},{"id":"FG_CustRel","label":"Customer Relationship / B2C","layer":"corporate"},{"id":"FG_Facilities","label":"Facilities","layer":"corporate"},{"id":"FG_Financial","label":"Financial","layer":"corporate"},{"id":"FG_GIS","label":"Geographical","layer":"corporate"},{"id":"FG_Legal","label":"Legal / Compliance","layer":"corporate"},{"id":"FG_HR","label":"Human Resource / Workforce","layer":"corporate"},{"id":"FG_Procurement","label":"Procurement / B2B","layer":"corporate"},{"id":"CH_Online","label":"Online","layer":"channels"},{"id":"CH_Phone","label":"Phone","layer":"channels"},{"id":"CH_InPerson","label":"In Person","layer":"channels"},{"id":"CH_Letter","label":"Letter","layer":"channels"},{"id":"CH_SMS","label":"SMS / Messaging","layer":"channels"},{"id":"CH_Email","label":"Email","layer":"channels"},{"id":"CH_SocialMedia","label":"Social Media","layer":"channels"},{"id":"CH_SmartDevice","label":"Smart Device","layer":"channels"},{"id":"CH_ThirdParty","label":"Third Party","layer":"channels"},{"id":"CH_Video","label":"Video","layer":"channels"},{"id":"CI_Website","label":"Website","layer":"interfaces"},{"id":"CI_App","label":"App","layer":"interfaces"},{"id":"CI_APIGateway","label":"API Gateway","layer":"interfaces"},{"id":"CI_Human","label":"Human (Staff)","layer":"interfaces"},{"id":"CI_AutoPhone","label":"Automated Phone","layer":"interfaces"},{"id":"CI_PublicDevice","label":"Public Device","layer":"interfaces"},{"id":"CAP_Payments","label":"Payments","layer":"capabilities"},{"id":"CAP_Forms","label":"Forms","layer":"capabilities"},{"id":"CAP_Notifications","label":"Notifications (SMS/Email)","layer":"capabilities"},{"id":"CAP_Identity","label":"Identity","layer":"capabilities"},{"id":"CAP_Booking","label":"Booking","layer":"capabilities"},{"id":"INT_ApiMgmt","label":"API Management & Gateways","layer":"integration"},{"id":"INT_DataPipelines","label":"Data Integration & Pipelines","layer":"integration"},{"id":"INT_Middleware","label":"Message-oriented Middleware","layer":"integration"},{"id":"INT_FileTransfer","label":"File Transfer Management","layer":"integration"},{"id":"INT_B2B","label":"Partner (B2B) Integration","layer":"integration"},{"id":"SEC_IAM","label":"Identity & Access Management","layer":"security"},{"id":"SEC_SOC","label":"Security Operations (SIEM/SOC)","layer":"security"},{"id":"SEC_Endpoint","label":"Network & Endpoint Security","layer":"security"},{"id":"SEC_Vulnerability","label":"Vulnerability Management","layer":"security"},{"id":"SEC_AppData","label":"Application & Data Security","layer":"security"},{"id":"DATA_BI","label":"BI & Analytics","layer":"data"},{"id":"DATA_Governance","label":"Data Governance","layer":"data"},{"id":"DATA_Storage","label":"Data Storage & Warehousing","layer":"data"},{"id":"DATA_GIS","label":"Geospatial Data","layer":"data"},{"id":"DATA_Documents","label":"Document & Records Management","layer":"data"},{"id":"CAP_Workflow","label":"Workflow","layer":"capabilities"},{"id":"CAP_Email","label":"Email","layer":"capabilities"},{"id":"CAP_Telephony","label":"Telephony / Fax","layer":"capabilities"},{"id":"CAP_AgenticAI","label":"Agentic AI","layer":"capabilities"},{"id":"INT_EventStreaming","label":"Event-driven & Streaming","layer":"integration"},{"id":"INT_Governance","label":"Integration Governance & Tooling","layer":"integration"},{"id":"SEC_Forensics","label":"Incident Forensics","layer":"security"},{"id":"SEC_Physical","label":"Physical Security & Access Control","layer":"security"},{"id":"DATA_Catalogue","label":"Data Catalogue & Metadata","layer":"data"},{"id":"DATA_Science","label":"Data Science & ML Ops","layer":"data"},{"id":"DATA_Search","label":"Enterprise Search","layer":"data"},{"id":"FT_AIEnablement","label":"AI Enablement","layer":"foundational-technology","subdomain":"ai"},{"id":"FT_ConversationalAI","label":"Conversational AI","layer":"foundational-technology","subdomain":"ai"},{"id":"FT_GenerativeAI","label":"Generative AI","layer":"foundational-technology","subdomain":"ai"},{"id":"FT_IntelligentAuto","label":"Intelligent Automation","layer":"foundational-technology","subdomain":"ai"},{"id":"FT_MachineLearning","label":"Machine Learning","layer":"foundational-technology","subdomain":"ai"},{"id":"FT_ReleaseMgmt","label":"Release Management","layer":"foundational-technology","subdomain":"devops"},{"id":"FT_Monitoring","label":"Monitoring & Observability","layer":"foundational-technology","subdomain":"devops"},{"id":"FT_UnifiedComms","label":"Unified Communications","layer":"foundational-technology","subdomain":"end-user"},{"id":"FT_EndUserDevices","label":"End-user Devices","layer":"foundational-technology","subdomain":"end-user"},{"id":"FT_KnowledgeMgmt","label":"Knowledge Management","layer":"foundational-technology","subdomain":"end-user"},{"id":"FT_Productivity","label":"Productivity","layer":"foundational-technology","subdomain":"end-user"},{"id":"FT_AppPortfolio","label":"Application Portfolio","layer":"foundational-technology","subdomain":"service-management"},{"id":"FT_ITOps","label":"IT Operations & Service Desk","layer":"foundational-technology","subdomain":"service-management"},{"id":"FT_SWAsset","label":"Software Asset & Licence","layer":"foundational-technology","subdomain":"service-management"},{"id":"FT_Compute","label":"Compute, Storage & Network Services","layer":"foundational-technology","subdomain":"infrastructure"},{"id":"FT_Connectivity","label":"Connectivity & Network Hardware","layer":"foundational-technology","subdomain":"infrastructure"},{"id":"FT_Virtualisation","label":"Virtualisation & Platform Enablement","layer":"foundational-technology","subdomain":"infrastructure"}],"capabilities":[{"id":"Cap_Payments","label":"Payments"},{"id":"Cap_Forms","label":"Forms"},{"id":"Cap_Workflow","label":"Workflow"},{"id":"Cap_Identity","label":"Identity"},{"id":"Cap_Booking","label":"Booking"},{"id":"Cap_SMS","label":"SMS"},{"id":"Cap_Email","label":"Email"},{"id":"Cap_Telephony","label":"Telephony"},{"id":"Cap_AgenticAI","label":"Agentic AI"}]},"systems":[{"id":"SYS_OnlineChannel","name":"Online","domains":["CH_Online"],"description":"Digital access enabling users to self-serve via websites, portals, and apps at any time.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_PhoneChannel","name":"Phone","domains":["CH_Phone"],"description":"Voice calls allowing users to speak directly with council staff for support and enquiries.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_InPersonChannel","name":"In Person","domains":["CH_InPerson"],"description":"Face-to-face interactions at council offices, households, or other locations.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"segmented","portability":"high","supportModel":"in-house"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_LetterChannel","name":"Letter","domains":["CH_Letter"],"description":"Postal communication for formal notifications, legal correspondence, or where physical record is required.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"high","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_SMSChannel","name":"SMS / Messaging","domains":["CH_SMS"],"description":"Text messaging for updates, reminders, and quick interactions with citizens.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_EmailChannel","name":"Email","domains":["CH_Email"],"description":"Asynchronous written communication via email for enquiries and correspondence.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_SocialChannel","name":"Social Media","domains":["CH_SocialMedia"],"description":"Engagement via social media platforms to share information and respond to enquiries.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"in-house"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_SmartDeviceChannel","name":"Smart Device","domains":["CH_SmartDevice"],"description":"Access through IoT or smart devices enabling automated interaction where appropriate.","lifecycle":"planned","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_ThirdPartyChannel","name":"Third Party","domains":["CH_ThirdParty"],"description":"Access via proxy such as local MPs, local media, or advocacy organisations.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"in-house"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_VideoChannel","name":"Video","domains":["CH_Video"],"description":"Video calls for remote face-to-face service delivery without in-person attendance.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":["Cap_Telephony"],"consumers":[],"dependencies":[]},{"id":"SYS_PublicDevice","name":"Public Device","domains":["CI_PublicDevice"],"description":"Council-owned devices in public locations such as touch-screens in libraries, kiosks, or IoT devices in public spaces.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"segmented","portability":"med","supportModel":"in-house"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_APIGateway","name":"API Gateway","domains":["CI_APIGateway"],"description":"Machine-to-machine interface handling third-party integrations and smart device inputs.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_Website","name":"Website","domains":["CI_Website"],"description":"The primary council web portal, forms, and digital content interfaces.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_App","name":"App","domains":["CI_App"],"description":"Native or cross-platform mobile application providing dedicated services to citizens.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_ContactCentre","name":"Human","domains":["CI_Human"],"description":"Customer service representatives or specialist officers handling queries directly with citizens.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_AutoPhone","name":"Automated Phone","domains":["CI_AutoPhone"],"description":"Automated telephony system, such as IVR or conversational voicebots.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_PaymentsPlatform","name":"Payments Platform","domains":["CAP_Payments"],"description":"Shared platform providing online payment processing for council services.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Payments"],"consumers":["SYS_RevsBens","SYS_Leisure","SYS_Highways","SYS_Waste"],"dependencies":[]},{"id":"SYS_FormsPlatform","name":"Forms Platform","domains":["CAP_Forms"],"description":"Shared platform for building and managing citizen-facing digital forms.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Forms"],"consumers":["SYS_CRM","SYS_RevsBens","SYS_Housing","SYS_Planning"],"dependencies":[]},{"id":"SYS_NotifyService","name":"Notification Service","domains":["CAP_Notifications"],"description":"Shared service for sending SMS, email, and letter notifications to citizens.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_SMS","Cap_Email"],"consumers":["SYS_Care","SYS_RevsBens","SYS_Waste","SYS_CRM"],"dependencies":[]},{"id":"SYS_IdentityPlatform","name":"Identity Platform","domains":["CAP_Identity"],"description":"Shared platform for citizen identity verification and authentication.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Identity"],"consumers":["SYS_Care","SYS_RevsBens","SYS_Housing"],"dependencies":[]},{"id":"SYS_BookingPlatform","name":"Booking Platform","domains":["CAP_Booking"],"description":"Shared platform for managing citizen appointments and service slot bookings.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"shared-service","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Booking"],"consumers":["SYS_Leisure","SYS_EnvHealth","SYS_Highways"],"dependencies":[]},{"id":"SYS_Care","name":"Social Care System","domains":["FG_AdultSocial","FG_ChildSocial"],"description":"Core case management system for Adult and Children's statutory social care.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"line-of-business","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Workflow","Cap_Forms"],"consumers":["SYS_Income"],"dependencies":["SYS_ERP"]},{"id":"SYS_Waste","name":"Waste System","domains":["FG_Waste"],"description":"Operational system for managing domestic/commercial waste collection and fleet routing.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"line-of-business","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"monolithic","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Forms","Cap_Booking"],"consumers":[],"dependencies":["SYS_GIS"]},{"id":"SYS_Elections","name":"Electoral System","domains":["FG_Democratic"],"description":"Specialist system for electoral registration and ballot management.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"line-of-business","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Forms"],"consumers":[],"dependencies":[]},{"id":"SYS_RevsBens","name":"Revenues & Benefits System","domains":["FG_RevsBens"],"description":"System for processing council tax, business rates, and housing benefits.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"line-of-business","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Forms","Cap_Payments"],"consumers":[],"dependencies":["SYS_ERP","SYS_Income"]},{"id":"SYS_EnvHealth","name":"Environmental Health System","domains":["FG_Licensing"],"description":"Regulatory system for environmental protection, trading standards, and food safety.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"line-of-business","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"monolithic","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Forms","Cap_Booking"],"consumers":[],"dependencies":["SYS_GIS"]},{"id":"SYS_Housing","name":"Housing Management System","domains":["FG_Housing"],"description":"System covering tenancies, allocations, rents, and repairs.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"line-of-business","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Forms","Cap_Workflow"],"consumers":[],"dependencies":["SYS_ERP"]},{"id":"SYS_Leisure","name":"Leisure Management System","domains":["FG_Leisure"],"description":"Booking and facility management platform for leisure centres and cultural venues.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"line-of-business","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Booking","Cap_Payments"],"consumers":[],"dependencies":[]},{"id":"SYS_Planning","name":"Planning & Building Control System","domains":["FG_Planning"],"description":"System managing spatial planning applications and building control.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"line-of-business","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Forms"],"consumers":[],"dependencies":["SYS_GIS"]},{"id":"SYS_Highways","name":"Highways Management System","domains":["FG_Highways"],"description":"Asset management system for roads, street lighting, and parking.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"line-of-business","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"hybrid","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Forms","Cap_Booking","Cap_Payments"],"consumers":[],"dependencies":["SYS_GIS"]},{"id":"SYS_Lib","name":"Library Management System","domains":["FG_Leisure"],"description":"System for cataloguing, loans, and membership management.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"line-of-business","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"shared"},"compliance":[],"capabilities":["Cap_Booking"],"consumers":[],"dependencies":[]},{"id":"SYS_Education","name":"Education Management System","domains":["FG_Education"],"description":"Management information system for schools, pupil admissions, and early years.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"line-of-business","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"monolithic","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Forms"],"consumers":[],"dependencies":[]},{"id":"SYS_ERP","name":"Corporate ERP","domains":["FG_Financial","FG_Procurement"],"description":"Enterprise Resource Planning for core back-office finance and procurement.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"corporate","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Payments","Cap_Workflow"],"consumers":["SYS_Care","SYS_RevsBens","SYS_Housing"],"dependencies":[]},{"id":"SYS_CRM","name":"Corporate CRM","domains":["FG_CustRel"],"description":"Centralised system for managing citizen interactions and service requests.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"corporate","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Forms","Cap_Workflow"],"consumers":[],"dependencies":[]},{"id":"SYS_HRPayroll","name":"HR & Payroll System","domains":["FG_HR"],"description":"Human resources, staff management, recruitment, and payroll processing.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"corporate","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Workflow"],"consumers":[],"dependencies":["SYS_ERP"]},{"id":"SYS_Income","name":"Income Management System","domains":["FG_Financial"],"description":"Corporate income management, receipting, and cash management platform.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"corporate","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Payments"],"consumers":[],"dependencies":["SYS_ERP"]},{"id":"SYS_GIS","name":"GIS Platform","domains":["FG_GIS","DATA_GIS"],"description":"Geographic information system for mapping, spatial analysis, and gazetteer management.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"corporate","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":["SYS_Planning","SYS_Highways","SYS_Waste","SYS_EnvHealth"],"dependencies":[]},{"id":"SYS_CloudPlatform","name":"Cloud Platform","domains":["FT_Compute"],"description":"Primary cloud infrastructure platform (IaaS/PaaS) for hosting council workloads.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_HCI","name":"On-Premises Infrastructure","domains":["FT_Compute"],"description":"Hyperconverged or traditional server infrastructure for on-premises workloads.","lifecycle":"retiring","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"low","supportModel":"in-house"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_ITSM","name":"ITSM Platform","domains":["FT_ITOps"],"description":"IT Service Management platform for service desk, change, and incident management.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Workflow"],"consumers":[],"dependencies":[]},{"id":"SYS_UC","name":"Unified Communications","domains":["FT_UnifiedComms"],"description":"Collaboration and communication platform (Teams, Zoom, etc.) for staff.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_Telephony"],"consumers":[],"dependencies":[]},{"id":"SYS_MDM","name":"Device Management","domains":["FT_UnifiedComms"],"description":"Mobile device management and endpoint provisioning for council devices.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":["SYS_IAM"]},{"id":"SYS_AIML","name":"AI/ML Platform","domains":["FT_AIEnablement"],"description":"Platform for building, training, and deploying AI/ML models and automation.","lifecycle":"planned","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":[],"capabilities":["Cap_AgenticAI"],"consumers":[],"dependencies":["SYS_CloudPlatform"]},{"id":"SYS_CICD","name":"CI/CD Platform","domains":["FT_Monitoring"],"description":"Continuous integration and deployment pipeline for council applications.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"in-house"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":["SYS_CloudPlatform"]},{"id":"SYS_Monitoring","name":"Monitoring & Observability","domains":["FT_Monitoring"],"description":"Platform for application and infrastructure monitoring, alerting, and logging.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_iPaaS","name":"Integration Platform","domains":["INT_ApiMgmt","INT_DataPipelines"],"description":"Integration platform-as-a-service for connecting systems via APIs and data pipelines.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":["SYS_CloudPlatform"]},{"id":"SYS_MFT","name":"Managed File Transfer","domains":["INT_FileTransfer"],"description":"Secure file transfer system for exchanging data with partners and government bodies.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_IAM","name":"IAM Platform","domains":["SEC_IAM"],"description":"Identity and access management for staff: directory services, SSO, MFA, conditional access.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":["cyber-essentials"],"capabilities":["Cap_Identity"],"consumers":[],"dependencies":[]},{"id":"SYS_SIEM","name":"SIEM / SOC Platform","domains":["SEC_SOC"],"description":"Security information and event management for threat detection and incident response.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"managed-service"},"compliance":["cyber-essentials"],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_EDR","name":"Endpoint Protection","domains":["SEC_Endpoint"],"description":"Endpoint detection and response (EDR) and network security platform.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":["cyber-essentials"],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_VulnScan","name":"Vulnerability Scanner","domains":["SEC_Vulnerability"],"description":"Automated vulnerability scanning and patch compliance assessment tool.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"high","supportModel":"vendor-supported"},"compliance":["cyber-essentials"],"capabilities":[],"consumers":[],"dependencies":[]},{"id":"SYS_DataWarehouse","name":"Data Warehouse","domains":["DATA_Storage","DATA_BI"],"description":"Central data warehouse or lakehouse for analytics, reporting, and statutory returns.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"in-house"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":["SYS_CloudPlatform"]},{"id":"SYS_BI","name":"BI & Reporting Platform","domains":["DATA_BI"],"description":"Business intelligence and data visualisation platform for council reporting.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"cloud","dataModel":"segmented","portability":"med","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":["SYS_DataWarehouse"]},{"id":"SYS_DMS","name":"Document Management System","domains":["DATA_Documents"],"description":"Electronic document and records management for council correspondence and files.","lifecycle":"live","identity":{"vendor":"","users":null,"category":"platform","businessOwner":"","technicalOwner":""},"contract":{"annualCost":null,"contractEnd":null,"noticePeriod":null},"technical":{"hosting":"on-prem","dataModel":"monolithic","portability":"low","supportModel":"vendor-supported"},"compliance":[],"capabilities":[],"consumers":[],"dependencies":[]}]};
+
+        let data = JSON.parse(JSON.stringify(REFERENCE_DATA));
+
+        function loadData() {
+            const saved = localStorage.getItem('lgam-alignment-data');
+            if (saved) { try { data = JSON.parse(saved); } catch(e) {} }
+        }
+
+        function saveData() {
+            data.meta.exported = new Date().toISOString();
+            localStorage.setItem('lgam-alignment-data', JSON.stringify(data));
+        }
+
+        function fullRender() {
+            renderCoverage();
+            renderLeftPane();
+            if (selectedSystemId && getSystemById(selectedSystemId)) selectSystem(selectedSystemId, false);
+            else if (data.systems.length > 0) selectSystem(data.systems[0].id, false);
+        }
+
+        function init() {
+            loadData();
+            renderCoverage();
+            renderLeftPane();
+            selectSystem(data.systems[0].id);
+        }
+
+        function getDomainById(id) {
+            return data.taxonomy.domains.find(d => d.id === id);
+        }
+
+        function getLayerById(id) {
+            return data.taxonomy.layers.find(l => l.id === id);
+        }
+
+        function getCapabilityById(id) {
+            return data.taxonomy.capabilities.find(c => c.id === id);
+        }
+
+        function getSystemById(id) {
+            return data.systems.find(s => s.id === id);
+        }
+
+        function getLayerForSystem(system) {
+            const domain = getDomainById(system.domains[0]);
+            return domain ? getLayerById(domain.layer) : null;
+        }
+
+        function groupSystemsByLayer() {
+            const groups = {};
+            data.taxonomy.layers.forEach(layer => { groups[layer.id] = []; });
+            data.systems.forEach(sys => {
+                const domain = getDomainById(sys.domains[0]);
+                if (domain) groups[domain.layer].push(sys);
+            });
+            return groups;
+        }
+
+        function renderCoverage() {
+            const el = document.getElementById('coverageSummary');
+            const html = data.taxonomy.layers.map(layer => {
+                const domainsInLayer = data.taxonomy.domains.filter(d => d.layer === layer.id);
+                const coveredDomains = new Set();
+                data.systems.forEach(sys => {
+                    sys.domains.forEach(dId => {
+                        const dom = getDomainById(dId);
+                        if (dom && dom.layer === layer.id) coveredDomains.add(dId);
+                    });
+                });
+                return `<button class="register-coverage-item" data-layer="${layer.id}" type="button"><span class="register-coverage-dot" style="background:${layer.colour}"></span>${layer.label.split(' ')[0]}: ${coveredDomains.size}/${domainsInLayer.length}</button>`;
+            }).join('');
+            el.innerHTML = html;
+
+            el.querySelectorAll('.register-coverage-item').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const layerId = btn.dataset.layer;
+                    const header = document.querySelector(`[data-layer="${layerId}"].register-layer-header`);
+                    if (header) {
+                        if (header.getAttribute('aria-expanded') === 'false') header.click();
+                        header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        }
+
+        function renderLeftPane(filter = '') {
+            const el = document.getElementById('systemList');
+            const groups = groupSystemsByLayer();
+            const filterLower = filter.toLowerCase();
+
+            let html = '';
+            data.taxonomy.layers.forEach(layer => {
+                let systems = groups[layer.id];
+                if (filterLower) systems = systems.filter(s => s.name.toLowerCase().includes(filterLower));
+                if (systems.length === 0 && filterLower) return;
+
+                const isCollapsed = layer.collapsed === true;
+                html += `<div class="register-layer-group">`;
+                html += `<button class="register-layer-header" style="border-left-color:${layer.colour}" aria-expanded="${!isCollapsed}" data-layer="${layer.id}">`;
+                html += `<span>${layer.label}</span><span class="register-layer-count">${systems.length}</span>`;
+                html += `</button>`;
+                html += `<div class="register-layer-items${isCollapsed ? ' register-layer-items--hidden' : ''}" id="layer-${layer.id}">`;
+
+                if (layer.id === 'foundational-technology' && layer.subdomains) {
+                    layer.subdomains.forEach(sd => {
+                        const sdSystems = systems.filter(s => {
+                            const dom = getDomainById(s.domains[0]);
+                            return dom && dom.subdomain === sd.id;
+                        });
+                        if (sdSystems.length === 0) return;
+                        html += `<div class="register-subdomain-label">${sd.label}</div>`;
+                        sdSystems.forEach(sys => { html += renderSystemItem(sys); });
+                    });
+                } else {
+                    systems.forEach(sys => { html += renderSystemItem(sys); });
+                }
+
+                html += `</div></div>`;
+            });
+            el.innerHTML = html;
+
+            el.querySelectorAll('.register-layer-header').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const items = btn.nextElementSibling;
+                    const expanded = btn.getAttribute('aria-expanded') === 'true';
+                    btn.setAttribute('aria-expanded', !expanded);
+                    items.classList.toggle('register-layer-items--hidden');
+                });
+            });
+
+            el.querySelectorAll('.register-system-item').forEach(btn => {
+                btn.addEventListener('click', () => selectSystem(btn.dataset.systemId));
+            });
+
+            if (selectedSystemId) {
+                const selected = el.querySelector(`[data-system-id="${selectedSystemId}"]`);
+                if (selected) selected.setAttribute('aria-pressed', 'true');
+            }
+        }
+
+        function renderSystemItem(sys) {
+            const domain = getDomainById(sys.domains[0]);
+            const lifecycleIcons = { live: '✓', retiring: '⚠', planned: '○', retired: '✗' };
+            const pressed = sys.id === selectedSystemId ? 'true' : 'false';
+            return `<button class="register-system-item" role="option" data-system-id="${sys.id}" aria-pressed="${pressed}">
+                <div class="register-system-item__row">
+                    <span class="register-system-name">${sys.name}</span>
+                    <span class="register-lifecycle register-lifecycle--${sys.lifecycle}">${lifecycleIcons[sys.lifecycle] || ''}</span>
+                </div>
+                <span class="register-system-domain">${domain ? domain.label : ''}</span>
+            </button>`;
+        }
+
+        function selectSystem(id, updateHash = true) {
+            selectedSystemId = id;
+            document.querySelectorAll('.register-system-item').forEach(el => {
+                el.setAttribute('aria-pressed', el.dataset.systemId === id ? 'true' : 'false');
+            });
+            const sys = getSystemById(id);
+            if (sys) {
+                renderCentrePane(sys);
+                renderRightPane(sys);
+                if (updateHash) history.replaceState(null, '', `#model/${id}`);
+            }
+        }
+
+        function renderCentrePane(sys) {
+            const el = document.getElementById('paneCentre');
+            const layer = getLayerForSystem(sys);
+
+            if (layer && (layer.id === 'channels' || layer.id === 'interfaces')) {
+                const domainTags = sys.domains.map(dId => {
+                    const dom = getDomainById(dId);
+                    const lay = dom ? getLayerById(dom.layer) : null;
+                    return `<span class="register-domain-tag" style="background:${lay ? lay.colour : '#505a5f'}">${dom ? dom.label : dId}</span>`;
+                }).join('');
+                const layerLabel = layer.id === 'channels' ? 'Public Channel' : 'Council Interface';
+                el.innerHTML = `
+                    <h2 class="register-system-title">${sys.name}</h2>
+                    <p class="register-system-desc">${sys.description}</p>
+                    <div class="register-field-row" style="margin-top:20px;">
+                        <div class="register-field-card">
+                            <span class="register-field-label">${layerLabel}</span>
+                            <div class="register-domain-tags">${domainTags}</div>
+                        </div>
+                        <div class="register-context-map" aria-label="Position in LGAM layers">
+                            ${(() => {
+                                const activeId = layer.id;
+                                const act = (id) => id === activeId ? ' register-context-map__item--active' : '';
+                                return `
+                                    <div class="register-context-map__item register-context-map__item--wide${act('channels')}" style="background:#CC00CC">Channels</div>
+                                    <div class="register-context-map__item register-context-map__item--ft${act('foundational-technology')}" style="background:#008080">FT</div>
+                                    <div class="register-context-map__item register-context-map__item--wide${act('interfaces')}" style="background:#800080">Interfaces</div>
+                                    <div class="register-context-map__item register-context-map__item--wide${act('capabilities')}" style="background:#000080">Capabilities</div>
+                                    <div class="register-context-map__item${act('business')}" style="background:#0000FF">Business</div>
+                                    <div class="register-context-map__item${act('corporate')}" style="background:#696969">Corporate</div>
+                                    <div class="register-context-map__item register-context-map__item--wide${act('integration')}" style="background:#6B6B00">Integration</div>
+                                    <div class="register-context-map__item register-context-map__item--wide${act('security')}" style="background:#CC0000">Security</div>
+                                    <div class="register-context-map__item register-context-map__item--wide${act('data')}" style="background:#800000">Data</div>
+                                `;
+                            })()}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const domainTags = sys.domains.map(dId => {
+                const dom = getDomainById(dId);
+                const lay = dom ? getLayerById(dom.layer) : null;
+                const colour = lay ? lay.colour : '#505a5f';
+                return `<span class="register-domain-tag" style="background:${colour}">${dom ? dom.label : dId}</span>`;
+            }).join('');
+
+            const supportLabels = { 'vendor-supported': 'Vendor-supported', 'in-house': 'In-house', 'managed-service': 'Managed service', 'shared': 'Shared / consortium', 'unsupported': 'Unsupported' };
+
+            const hostingHint = { 'on-prem': 'Council-managed infrastructure, typically in a data centre', 'cloud': 'Hosted by a cloud provider (IaaS/PaaS/SaaS)', 'hybrid': 'Split between on-premises and cloud infrastructure' };
+            const dataHint = { 'monolithic': 'Entangled data model - typically needs ETL for reporting', 'segmented': 'Well-separated data that can be extracted independently' };
+            const portHint = { 'low': 'Vendor lock-in - complex migration path', 'med': 'Moderate effort to migrate or replace', 'high': 'Relatively portable - standard interfaces and data formats' };
+
+            el.innerHTML = `
+                <div style="display:flex;align-items:center;gap:12px;"><h2 class="register-system-title" style="margin-bottom:0">${sys.name}</h2><button class="register-edit-btn" id="btnEditSystem" data-system-id="${sys.id}">Edit</button></div>
+                <p class="register-system-desc">${sys.description}</p>
+
+                <h3 class="register-section-heading">Identity</h3>
+                <div class="register-field-row--three register-field-row">
+                    <div class="register-field-card">
+                        <span class="register-field-label">Domains served</span>
+                        <div class="register-domain-tags">${domainTags}</div>
+                    </div>
+                    <div class="register-field-card">
+                        <span class="register-field-label">Lifecycle</span>
+                        <span class="register-lifecycle-badge register-lifecycle-badge--${sys.lifecycle}">${sys.lifecycle}</span>
+                    </div>
+                    <div class="register-context-map" aria-label="Position in LGAM layers">
+                        ${(() => {
+                            const activeId = layer ? layer.id : '';
+                            const act = (id) => id === activeId ? ' register-context-map__item--active' : '';
+                            return `
+                                <div class="register-context-map__item register-context-map__item--wide${act('channels')}" style="background:#CC00CC">Channels</div>
+                                <div class="register-context-map__item register-context-map__item--ft${act('foundational-technology')}" style="background:#008080">FT</div>
+                                <div class="register-context-map__item register-context-map__item--wide${act('interfaces')}" style="background:#800080">Interfaces</div>
+                                <div class="register-context-map__item register-context-map__item--wide${act('capabilities')}" style="background:#000080">Capabilities</div>
+                                <div class="register-context-map__item${act('business')}" style="background:#0000FF">Business</div>
+                                <div class="register-context-map__item${act('corporate')}" style="background:#696969">Corporate</div>
+                                <div class="register-context-map__item register-context-map__item--wide${act('integration')}" style="background:#6B6B00">Integration</div>
+                                <div class="register-context-map__item register-context-map__item--wide${act('security')}" style="background:#CC0000">Security</div>
+                                <div class="register-context-map__item register-context-map__item--wide${act('data')}" style="background:#800000">Data</div>
+                            `;
+                        })()}
+                    </div>
+                </div>
+                <div class="register-field-row--three register-field-row">
+                    <div class="register-field-card">
+                        <span class="register-field-label">Vendor</span>
+                        <span class="register-field-value register-field-value--empty">Council-specific</span>
+                    </div>
+                    <div class="register-field-card">
+                        <span class="register-field-label">Business owner</span>
+                        <span class="register-field-value register-field-value--empty">Council-specific</span>
+                    </div>
+                    <div class="register-field-card">
+                        <span class="register-field-label">Technical owner</span>
+                        <span class="register-field-value register-field-value--empty">Council-specific</span>
+                    </div>
+                </div>
+
+                <h3 class="register-section-heading">Contract &amp; Cost</h3>
+                <div class="register-field-row--three register-field-row">
+                    <div class="register-field-card">
+                        <span class="register-field-label">Annual cost</span>
+                        <span class="register-field-value register-field-value--empty">Council-specific</span>
+                    </div>
+                    <div class="register-field-card">
+                        <span class="register-field-label">Contract end</span>
+                        <span class="register-field-value register-field-value--empty">—</span>
+                    </div>
+                    <div class="register-field-card">
+                        <span class="register-field-label">Notice period</span>
+                        <span class="register-field-value register-field-value--empty">—</span>
+                    </div>
+                </div>
+
+                <h3 class="register-section-heading">Technical Profile</h3>
+                <div class="register-field-row">
+                    <div class="register-field-card">
+                        <span class="register-field-label">Hosting</span>
+                        ${renderSegmented(['cloud', 'on-prem', 'hybrid'], sys.technical.hosting, ['Cloud', 'On-prem', 'Hybrid'])}
+                        ${hostingHint[sys.technical.hosting] ? `<p class="register-field-hint">${hostingHint[sys.technical.hosting]}</p>` : ''}
+                    </div>
+                    <div class="register-field-card">
+                        <span class="register-field-label">Data architecture</span>
+                        ${renderSegmented(['segmented', 'monolithic'], sys.technical.dataModel, ['Segmented', 'Monolithic'])}
+                        ${dataHint[sys.technical.dataModel] ? `<p class="register-field-hint">${dataHint[sys.technical.dataModel]}</p>` : ''}
+                    </div>
+                </div>
+                <div class="register-field-row">
+                    <div class="register-field-card">
+                        <span class="register-field-label">Portability</span>
+                        ${renderSegmented(['high', 'med', 'low'], sys.technical.portability, ['High', 'Med', 'Low'])}
+                        ${portHint[sys.technical.portability] ? `<p class="register-field-hint">${portHint[sys.technical.portability]}</p>` : ''}
+                    </div>
+                    <div class="register-field-card">
+                        <span class="register-field-label">Support model</span>
+                        <div class="register-dropdown-display">${supportLabels[sys.technical.supportModel] || sys.technical.supportModel}</div>
+                    </div>
+                </div>
+            `;
+            const editBtn = el.querySelector('#btnEditSystem');
+            if (editBtn) editBtn.addEventListener('click', () => showEditMode(editBtn.dataset.systemId));
+        }
+
+        function renderSegmented(values, selected, labels) {
+            return `<div class="register-segmented" role="group">${values.map((v, i) =>
+                `<span class="register-segment${v === selected ? ' register-segment--selected' : ''}">${labels[i]}</span>`
+            ).join('')}</div>`;
+        }
+
+        const lgamSuggestions = {
+            "business": ["Cap_Workflow", "Cap_Forms", "Cap_Payments", "Cap_Booking"],
+            "corporate": ["Cap_Workflow", "Cap_Payments"],
+            "capabilities": [],
+            "foundational-technology": [],
+            "integration": [],
+            "security": ["Cap_Identity"],
+            "data": []
+        };
+
+        // Domain-to-domain dependencies derived from LGAM graph (architect.rumens.uk/lgam_graph.json)
+        // Format: source domain depends on target domain
+        const lgamDomainDeps = [
+            { source: "FG_Planning", target: "DATA_GIS" },
+            { source: "FG_Highways", target: "DATA_GIS" },
+            { source: "FG_Waste", target: "DATA_GIS" },
+            { source: "FG_Licensing", target: "DATA_GIS" },
+            { source: "FG_AdultSocial", target: "SEC_IAM" },
+            { source: "FG_ChildSocial", target: "SEC_IAM" },
+            { source: "FG_Housing", target: "SEC_IAM" },
+            { source: "FG_RevsBens", target: "SEC_IAM" },
+            { source: "FG_Education", target: "DATA_BI" },
+            { source: "FG_RevsBens", target: "DATA_Storage" },
+            { source: "FG_Financial", target: "DATA_Governance" },
+            { source: "FG_AdultSocial", target: "INT_ApiMgmt" },
+            { source: "FG_Housing", target: "INT_ApiMgmt" },
+            { source: "FT_DevOps", target: "FT_Infrastructure" },
+            { source: "FT_AI", target: "FT_Infrastructure" },
+            { source: "FT_EndUser", target: "SEC_IAM" },
+            { source: "DATA_BI", target: "DATA_Storage" },
+            { source: "INT_ApiMgmt", target: "SEC_IAM" },
+            { source: "CH_Online", target: "CI_Website" },
+            { source: "CH_Online", target: "CI_App" },
+            { source: "CH_Phone", target: "CI_Human" },
+            { source: "CH_Phone", target: "CI_AutoPhone" },
+            { source: "CH_SMS", target: "CI_APIGateway" },
+            { source: "CH_SmartDevice", target: "CI_APIGateway" },
+            { source: "CI_Website", target: "CAP_Forms" },
+            { source: "CI_Website", target: "CAP_Payments" },
+            { source: "CI_Website", target: "CAP_Booking" },
+            { source: "CI_Website", target: "CAP_Identity" },
+            { source: "CI_App", target: "CAP_Forms" },
+            { source: "CI_App", target: "CAP_Identity" },
+            { source: "CI_APIGateway", target: "SEC_IAM" },
+            { source: "CI_Human", target: "CAP_Booking" },
+            { source: "CAP_Payments", target: "SEC_IAM" },
+            { source: "CAP_Identity", target: "SEC_IAM" },
+        ];
+
+        function getDerivedDependencies(sys) {
+            const sysDomains = new Set(sys.domains);
+            const depSystemIds = new Set();
+            lgamDomainDeps.forEach(dep => {
+                if (sysDomains.has(dep.source)) {
+                    // Find systems that serve the target domain
+                    data.systems.forEach(other => {
+                        if (other.id !== sys.id && other.domains.includes(dep.target)) {
+                            depSystemIds.add(other.id);
+                        }
+                    });
+                }
+            });
+            return [...depSystemIds];
+        }
+
+        function getDerivedConsumers(sys) {
+            const sysDomains = new Set(sys.domains);
+            const consumerIds = new Set();
+            lgamDomainDeps.forEach(dep => {
+                if (sysDomains.has(dep.target)) {
+                    data.systems.forEach(other => {
+                        if (other.id !== sys.id && other.domains.includes(dep.source)) {
+                            consumerIds.add(other.id);
+                        }
+                    });
+                }
+            });
+            return [...consumerIds];
+        }
+
+        function getContextLabel(sys) {
+            const domain = getDomainById(sys.domains[0]);
+            const layer = domain ? getLayerById(domain.layer) : null;
+            if (layer && domain) {
+                return `<span style="color:${layer.colour}; font-weight:600;">${layer.label}</span> · ${domain.label}`;
+            }
+            return domain ? domain.label : '';
+        }
+
+        function getSuggestedCapabilities(sys) {
+            const layer = getLayerForSystem(sys);
+            if (!layer) return [];
+            const suggested = lgamSuggestions[layer.id] || [];
+            const already = new Set(sys.capabilities);
+            return suggested.filter(capId => !already.has(capId));
+        }
+
+        function renderRightPane(sys) {
+            const el = document.getElementById('paneRight');
+            let html = `<h2 class="register-right-heading">Capabilities &amp; Relationships</h2>`;
+
+            if (sys.capabilities.length > 0) {
+                html += `<div class="register-relationship-section"><p class="register-relationship-label">Capabilities this system provides</p><div class="register-cap-pills">`;
+                sys.capabilities.forEach(capId => {
+                    const cap = getCapabilityById(capId);
+                    html += `<span class="register-cap-pill register-cap-pill--provides">${cap ? cap.label : capId}</span>`;
+                });
+                html += `</div></div>`;
+            }
+
+            const suggested = getSuggestedCapabilities(sys);
+            if (suggested.length > 0) {
+                html += `<div class="register-relationship-section"><p class="register-relationship-label">LGAM suggests also consider</p><div class="register-cap-pills">`;
+                suggested.forEach(capId => {
+                    const cap = getCapabilityById(capId);
+                    html += `<span class="register-cap-pill register-cap-pill--suggested">${cap ? cap.label : capId}</span>`;
+                });
+                html += `</div><p class="register-suggestion-hint">Based on typical systems in this LGAM layer</p></div>`;
+            }
+
+            const derivedConsumers = getDerivedConsumers(sys);
+            if (derivedConsumers.length > 0) {
+                html += `<div class="register-relationship-section"><p class="register-relationship-label">Systems that depend on this</p>`;
+                derivedConsumers.forEach(cId => {
+                    const consumer = getSystemById(cId);
+                    if (consumer) {
+                        html += `<div class="register-related-system" data-system-id="${cId}"><span class="register-related-name">${consumer.name}</span><span class="register-related-via">${getContextLabel(consumer)}</span></div>`;
+                    }
+                });
+                html += `</div>`;
+            }
+
+            const derivedDeps = getDerivedDependencies(sys);
+            if (derivedDeps.length > 0) {
+                html += `<div class="register-relationship-section"><p class="register-relationship-label">This system depends on</p>`;
+                derivedDeps.forEach(depId => {
+                    const dep = getSystemById(depId);
+                    if (dep) {
+                        html += `<div class="register-related-system" data-system-id="${depId}"><span class="register-related-name">${dep.name}</span><span class="register-related-via">${getContextLabel(dep)}</span></div>`;
+                    }
+                });
+                html += `</div>`;
+            }
+
+            if (sys.capabilities.length === 0 && derivedConsumers.length === 0 && derivedDeps.length === 0 && suggested.length === 0) {
+                html += `<p class="register-empty-state">No relationships derived from LGAM</p>`;
+            }
+
+            // Completeness gaps -domains in the same layer with no system registered
+            const sysLayer = getLayerForSystem(sys);
+            if (sysLayer) {
+                const domainsInLayer = data.taxonomy.domains.filter(d => d.layer === sysLayer.id);
+                const coveredDomains = new Set();
+                data.systems.forEach(s => {
+                    s.domains.forEach(dId => {
+                        const dom = getDomainById(dId);
+                        if (dom && dom.layer === sysLayer.id) coveredDomains.add(dId);
+                    });
+                });
+                const gaps = domainsInLayer.filter(d => !coveredDomains.has(d.id));
+                if (gaps.length > 0) {
+                    html += `<div class="register-gaps-section"><p class="register-relationship-label">Gaps in this layer</p>`;
+                    html += `<p class="register-suggestion-hint" style="margin-top:0;margin-bottom:8px;">No system registered for these ${sysLayer.label} domains:</p>`;
+                    gaps.forEach(g => {
+                        html += `<div class="register-gap-item">${g.label}</div>`;
+                    });
+                    html += `</div>`;
+                }
+            }
+
+            el.innerHTML = html;
+
+            el.querySelectorAll('.register-related-system').forEach(card => {
+                card.addEventListener('click', () => selectSystem(card.dataset.systemId));
+            });
+        }
+
+        document.getElementById('systemSearch').addEventListener('input', (e) => {
+            renderLeftPane(e.target.value);
+        });
+
+        document.getElementById('systemList').addEventListener('keydown', (e) => {
+            const items = [...document.querySelectorAll('.register-system-item')];
+            const current = items.findIndex(el => el.getAttribute('aria-pressed') === 'true');
+            if (e.key === 'ArrowDown' && current < items.length - 1) {
+                e.preventDefault();
+                items[current + 1].focus();
+                selectSystem(items[current + 1].dataset.systemId);
+            } else if (e.key === 'ArrowUp' && current > 0) {
+                e.preventDefault();
+                items[current - 1].focus();
+                selectSystem(items[current - 1].dataset.systemId);
+            }
+        });
+
+        // View switching and URL routing
+        function switchView(view, updateHash = true) {
+            document.getElementById('main-content').classList.toggle('register-view--hidden', view !== 'register');
+            document.getElementById('modelToolbar').style.display = view === 'register' ? '' : 'none';
+            document.getElementById('graphView').classList.toggle('register-view--hidden', view !== 'graph');
+            document.getElementById('aboutView').classList.toggle('register-view--hidden', view !== 'about');
+            document.querySelectorAll('.register-view-tab').forEach(t => {
+                const isActive = t.dataset.view === view;
+                t.classList.toggle('register-view-tab--active', isActive);
+                t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+            if (updateHash && view !== 'register') history.replaceState(null, '', `#${view}`);
+        }
+
+        function handleHash() {
+            const hash = location.hash.slice(1);
+            if (!hash) return;
+            if (hash === 'graph') { switchView('graph', false); renderGraph(); graphRendered = true; }
+            else if (hash === 'about') { switchView('about', false); }
+            else if (hash.startsWith('model/')) {
+                const sysId = hash.split('/')[1];
+                if (getSystemById(sysId)) selectSystem(sysId, false);
+            }
+        }
+
+        let graphRendered = false;
+        document.querySelectorAll('.register-view-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.register-view-tab').forEach(t => {
+                    t.classList.remove('register-view-tab--active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                tab.classList.add('register-view-tab--active');
+                tab.setAttribute('aria-selected', 'true');
+
+                const view = tab.dataset.view;
+                switchView(view);
+
+                if (view === 'graph' && !graphRendered) {
+                    renderGraph();
+                    graphRendered = true;
+                }
+            });
+        });
+
+        function renderGraph() {
+            const container = document.getElementById('graphContainer');
+            const nodes = new vis.DataSet(data.systems.map(sys => {
+                const layer = getLayerForSystem(sys);
+                return {
+                    id: sys.id,
+                    label: sys.name,
+                    color: { background: layer ? layer.colour : '#505a5f', border: layer ? layer.colour : '#505a5f', highlight: { background: '#ffdd00', border: '#0b0c0c' } },
+                    font: { color: '#ffffff', face: 'GDS Transport, arial, sans-serif', size: 12 },
+                    shape: 'box',
+                    margin: 8
+                };
+            }));
+
+            const edgeSet = new Set();
+            const edges = [];
+            data.systems.forEach(sys => {
+                const deps = getDerivedDependencies(sys);
+                deps.forEach(depId => {
+                    const key = `${sys.id}->${depId}`;
+                    if (!edgeSet.has(key)) {
+                        edgeSet.add(key);
+                        edges.push({ from: sys.id, to: depId, arrows: 'to', color: { color: '#b1b4b6', highlight: '#1d70b8' } });
+                    }
+                });
+            });
+
+            const network = new vis.Network(
+                container,
+                { nodes, edges: new vis.DataSet(edges) },
+                {
+                    layout: { improvedLayout: true },
+                    physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { gravitationalConstant: -50, centralGravity: 0.008, springLength: 160, springConstant: 0.04, damping: 0.4 } },
+                    interaction: { hover: true, tooltipDelay: 200 },
+                    nodes: { margin: { top: 6, bottom: 6, left: 10, right: 10 } },
+                    edges: { smooth: { type: 'cubicBezier', roundness: 0.4 } }
+                }
+            );
+
+            function closePopup() {
+                const existing = container.querySelector('.graph-popup');
+                if (existing) existing.remove();
+            }
+
+            network.on('click', (params) => {
+                closePopup();
+                if (params.nodes.length > 0) {
+                    const sysId = params.nodes[0];
+                    const sys = getSystemById(sysId);
+                    const layer = getLayerForSystem(sys);
+                    const canvasPos = params.pointer.DOM;
+
+                    const popup = document.createElement('div');
+                    popup.className = 'graph-popup';
+                    popup.style.left = Math.min(canvasPos.x + 10, container.offsetWidth - 340) + 'px';
+                    popup.style.top = Math.min(canvasPos.y + 10, container.offsetHeight - 200) + 'px';
+                    const deps = getDerivedDependencies(sys);
+                    const consumers = getDerivedConsumers(sys);
+                    const capsHtml = sys.capabilities.length > 0
+                        ? `<div style="margin-bottom:8px;">${sys.capabilities.map(c => { const cap = getCapabilityById(c); return `<span class="register-cap-pill register-cap-pill--provides" style="font-size:11px;padding:2px 8px;">${cap ? cap.label : c}</span>`; }).join(' ')}</div>`
+                        : '';
+                    const relsHtml = (deps.length > 0 || consumers.length > 0)
+                        ? `<div style="font-size:12px;color:#505a5f;margin-bottom:10px;">${deps.length > 0 ? `Depends on ${deps.length} system${deps.length > 1 ? 's' : ''}` : ''}${deps.length > 0 && consumers.length > 0 ? ' · ' : ''}${consumers.length > 0 ? `${consumers.length} system${consumers.length > 1 ? 's' : ''} depend on this` : ''}</div>`
+                        : '';
+
+                    popup.innerHTML = `
+                        <button class="graph-popup__close" aria-label="Close">&times;</button>
+                        <div class="graph-popup__title">${sys.name}</div>
+                        <div class="graph-popup__desc">${sys.description}</div>
+                        <div class="graph-popup__layer" style="color:${layer ? layer.colour : '#505a5f'}">${layer ? layer.label : ''} · ${getDomainById(sys.domains[0])?.label || ''}</div>
+                        ${capsHtml}${relsHtml}
+                        <button class="graph-popup__btn">View in Model →</button>
+                    `;
+                    container.appendChild(popup);
+
+                    popup.querySelector('.graph-popup__close').addEventListener('click', closePopup);
+                    popup.querySelector('.graph-popup__btn').addEventListener('click', () => {
+                        selectSystem(sysId);
+                        document.querySelector('[data-view="register"]').click();
+                    });
+                }
+            });
+
+            network.on('deselectNode', closePopup);
+        }
+
+        // CRUD
+        function generateId() { return 'SYS_' + Date.now().toString(36); }
+
+        function addSystem(sys) {
+            data.systems.push(sys);
+            saveData();
+            fullRender();
+            selectSystem(sys.id);
+        }
+
+        function updateSystem(id, updates) {
+            const sys = getSystemById(id);
+            if (!sys) return;
+            Object.assign(sys, updates);
+            saveData();
+            selectSystem(id, false);
+            renderLeftPane();
+        }
+
+        function deleteSystem(id) {
+            data.systems = data.systems.filter(s => s.id !== id);
+            saveData();
+            selectedSystemId = null;
+            fullRender();
+        }
+
+        function showAddForm() {
+            const el = document.getElementById('paneCentre');
+            const layerOpts = data.taxonomy.layers.filter(l => l.id !== 'channels' && l.id !== 'interfaces').map(l => `<option value="${l.id}">${l.label}</option>`).join('');
+            el.innerHTML = `
+                <h2 class="register-system-title">Add New System</h2>
+                <div class="register-field-row" style="margin-top:16px;"><div class="register-field-card"><span class="register-field-label">Name</span><input class="register-edit-input" id="addName" placeholder="e.g. Social Care System"></div><div class="register-field-card"><span class="register-field-label">Layer</span><select class="register-edit-select" id="addLayer">${layerOpts}</select></div></div>
+                <div class="register-field-card" style="margin-bottom:12px;"><span class="register-field-label">Description</span><textarea class="register-edit-textarea" id="addDesc" placeholder="What does this system do?"></textarea></div>
+                <div class="register-field-row"><div class="register-field-card"><span class="register-field-label">Domain</span><select class="register-edit-select" id="addDomain"></select></div><div class="register-field-card"><span class="register-field-label">Lifecycle</span><select class="register-edit-select" id="addLifecycle"><option value="planned">Planned</option><option value="in-development">In Development</option><option value="live" selected>Live</option><option value="retiring">Retiring</option><option value="retired">Retired</option></select></div></div>
+                <h3 class="register-section-heading">Technical Profile</h3>
+                <div class="register-field-row"><div class="register-field-card"><span class="register-field-label">Hosting</span><select class="register-edit-select" id="addHosting"><option value="cloud">Cloud</option><option value="on-prem">On-prem</option><option value="hybrid">Hybrid</option></select></div><div class="register-field-card"><span class="register-field-label">Data Architecture</span><select class="register-edit-select" id="addDataModel"><option value="segmented">Segmented</option><option value="monolithic">Monolithic</option></select></div></div>
+                <div class="register-field-row"><div class="register-field-card"><span class="register-field-label">Portability</span><select class="register-edit-select" id="addPortability"><option value="high">High</option><option value="med">Med</option><option value="low">Low</option></select></div><div class="register-field-card"><span class="register-field-label">Support Model</span><select class="register-edit-select" id="addSupport"><option value="vendor-supported">Vendor-supported</option><option value="in-house">In-house</option><option value="managed-service">Managed service</option><option value="shared">Shared</option><option value="unsupported">Unsupported</option></select></div></div>
+                <div style="margin-top:16px;display:flex;gap:8px;"><button class="register-edit-btn register-edit-btn--save" id="addSubmit">Create system</button><button class="register-edit-btn" id="addCancel">Cancel</button></div>
+            `;
+            const layerSel = document.getElementById('addLayer');
+            const domSel = document.getElementById('addDomain');
+            function updDomains() { domSel.innerHTML = data.taxonomy.domains.filter(d => d.layer === layerSel.value).map(d => `<option value="${d.id}">${d.label}</option>`).join(''); }
+            layerSel.addEventListener('change', updDomains);
+            updDomains();
+            document.getElementById('addSubmit').addEventListener('click', () => {
+                const name = document.getElementById('addName').value.trim();
+                if (!name) { document.getElementById('addName').style.borderColor = '#d4351c'; return; }
+                addSystem({ id: generateId(), name, domains: [domSel.value], description: document.getElementById('addDesc').value.trim(), lifecycle: document.getElementById('addLifecycle').value, identity: { vendor: '', users: null, category: 'line-of-business', businessOwner: '', technicalOwner: '' }, contract: { annualCost: null, contractEnd: null, noticePeriod: null }, technical: { hosting: document.getElementById('addHosting').value, dataModel: document.getElementById('addDataModel').value, portability: document.getElementById('addPortability').value, supportModel: document.getElementById('addSupport').value }, compliance: [], capabilities: [], consumers: [], dependencies: [] });
+            });
+            document.getElementById('addCancel').addEventListener('click', () => { if (selectedSystemId) selectSystem(selectedSystemId); });
+        }
+
+        function showEditMode(sysId) {
+            const sys = getSystemById(sysId);
+            if (!sys) return;
+            const el = document.getElementById('paneCentre');
+            const supportOpts = [['vendor-supported','Vendor-supported'],['in-house','In-house'],['managed-service','Managed service'],['shared','Shared'],['unsupported','Unsupported']].map(([k,v]) => `<option value="${k}"${sys.technical.supportModel===k?' selected':''}>${v}</option>`).join('');
+            const lcOpts = [['planned','Planned'],['in-development','In Development'],['live','Live'],['retiring','Retiring'],['retired','Retired']].map(([k,v]) => `<option value="${k}"${sys.lifecycle===k?' selected':''}>${v}</option>`).join('');
+            el.innerHTML = `
+                <h2 class="register-system-title">Edit: ${sys.name}</h2>
+                <div class="register-field-row" style="margin-top:16px;"><div class="register-field-card"><span class="register-field-label">Name</span><input class="register-edit-input" id="editName" value="${sys.name}"></div><div class="register-field-card"><span class="register-field-label">Lifecycle</span><select class="register-edit-select" id="editLifecycle">${lcOpts}</select></div></div>
+                <div class="register-field-card" style="margin-bottom:12px;"><span class="register-field-label">Description</span><textarea class="register-edit-textarea" id="editDesc">${sys.description}</textarea></div>
+                <h3 class="register-section-heading">Identity</h3>
+                <div class="register-field-row--three register-field-row"><div class="register-field-card"><span class="register-field-label">Vendor</span><input class="register-edit-input" id="editVendor" value="${sys.identity.vendor}"></div><div class="register-field-card"><span class="register-field-label">Business Owner</span><input class="register-edit-input" id="editBizOwner" value="${sys.identity.businessOwner}"></div><div class="register-field-card"><span class="register-field-label">Technical Owner</span><input class="register-edit-input" id="editTechOwner" value="${sys.identity.technicalOwner}"></div></div>
+                <h3 class="register-section-heading">Contract & Cost</h3>
+                <div class="register-field-row--three register-field-row"><div class="register-field-card"><span class="register-field-label">Annual Cost (GBP)</span><input class="register-edit-input" id="editCost" type="number" value="${sys.contract.annualCost||''}"></div><div class="register-field-card"><span class="register-field-label">Contract End</span><input class="register-edit-input" id="editEnd" type="month" value="${sys.contract.contractEnd||''}"></div><div class="register-field-card"><span class="register-field-label">Notice (months)</span><input class="register-edit-input" id="editNotice" type="number" value="${sys.contract.noticePeriod||''}"></div></div>
+                <h3 class="register-section-heading">Technical Profile</h3>
+                <div class="register-field-row"><div class="register-field-card"><span class="register-field-label">Hosting</span><select class="register-edit-select" id="editHosting"><option value="cloud"${sys.technical.hosting==='cloud'?' selected':''}>Cloud</option><option value="on-prem"${sys.technical.hosting==='on-prem'?' selected':''}>On-prem</option><option value="hybrid"${sys.technical.hosting==='hybrid'?' selected':''}>Hybrid</option></select></div><div class="register-field-card"><span class="register-field-label">Data Architecture</span><select class="register-edit-select" id="editData"><option value="segmented"${sys.technical.dataModel==='segmented'?' selected':''}>Segmented</option><option value="monolithic"${sys.technical.dataModel==='monolithic'?' selected':''}>Monolithic</option></select></div></div>
+                <div class="register-field-row"><div class="register-field-card"><span class="register-field-label">Portability</span><select class="register-edit-select" id="editPort"><option value="high"${sys.technical.portability==='high'?' selected':''}>High</option><option value="med"${sys.technical.portability==='med'?' selected':''}>Med</option><option value="low"${sys.technical.portability==='low'?' selected':''}>Low</option></select></div><div class="register-field-card"><span class="register-field-label">Support Model</span><select class="register-edit-select" id="editSupport">${supportOpts}</select></div></div>
+                <h3 class="register-section-heading">Capabilities Provided</h3>
+                <div class="register-field-card"><span class="register-field-label">Select capabilities this system provides</span><div id="editCaps" style="display:flex;flex-wrap:wrap;gap:6px;">${data.taxonomy.capabilities.map(c => `<label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="checkbox" value="${c.id}" ${sys.capabilities.includes(c.id)?'checked':''}> ${c.label}</label>`).join('')}</div></div>
+                <div style="margin-top:16px;display:flex;gap:8px;"><button class="register-edit-btn register-edit-btn--save" id="editSave">Save</button><button class="register-edit-btn" id="editCancel">Cancel</button><span style="flex:1"></span><button class="register-edit-btn register-edit-btn--delete" id="editDelete">Delete</button></div>
+                <div class="register-confirm-bar" id="delConfirm" style="display:none;"><p><strong>Are you sure?</strong> This will permanently remove this system.</p><button class="register-edit-btn register-edit-btn--delete" id="delYes">Yes, delete</button> <button class="register-edit-btn" id="delNo">Cancel</button></div>
+            `;
+            document.getElementById('editSave').addEventListener('click', () => {
+                const caps = [...document.querySelectorAll('#editCaps input:checked')].map(cb => cb.value);
+                updateSystem(sys.id, { name: document.getElementById('editName').value.trim()||sys.name, description: document.getElementById('editDesc').value.trim(), lifecycle: document.getElementById('editLifecycle').value, identity: { vendor: document.getElementById('editVendor').value, users: sys.identity.users, category: sys.identity.category, businessOwner: document.getElementById('editBizOwner').value, technicalOwner: document.getElementById('editTechOwner').value }, contract: { annualCost: parseInt(document.getElementById('editCost').value)||null, contractEnd: document.getElementById('editEnd').value||null, noticePeriod: parseInt(document.getElementById('editNotice').value)||null }, technical: { hosting: document.getElementById('editHosting').value, dataModel: document.getElementById('editData').value, portability: document.getElementById('editPort').value, supportModel: document.getElementById('editSupport').value }, capabilities: caps });
+                document.getElementById('toolbarStatus').textContent = 'Saved';
+                setTimeout(() => document.getElementById('toolbarStatus').textContent = '', 2000);
+            });
+            document.getElementById('editCancel').addEventListener('click', () => selectSystem(sys.id));
+            document.getElementById('editDelete').addEventListener('click', () => document.getElementById('delConfirm').style.display = 'block');
+            document.getElementById('delNo').addEventListener('click', () => document.getElementById('delConfirm').style.display = 'none');
+            document.getElementById('delYes').addEventListener('click', () => deleteSystem(sys.id));
+        }
+
+        // Import/Export/Reset
+        document.getElementById('btnExport').addEventListener('click', () => {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = `lgam-alignment-${data.meta.council.replace(/[^a-z0-9]/gi,'-').toLowerCase()}-${new Date().toISOString().slice(0,10)}.json`;
+            a.click(); URL.revokeObjectURL(a.href);
+        });
+        document.getElementById('btnImport').addEventListener('click', () => document.getElementById('fileImport').click());
+        document.getElementById('fileImport').addEventListener('change', (e) => {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const imp = JSON.parse(ev.target.result);
+                    if (!imp.meta || !imp.taxonomy || !imp.systems) { alert('Invalid file: must contain meta, taxonomy, and systems.'); return; }
+                    data = imp; saveData(); fullRender();
+                    document.getElementById('toolbarStatus').textContent = `Imported ${data.systems.length} systems`;
+                    setTimeout(() => document.getElementById('toolbarStatus').textContent = '', 3000);
+                } catch(err) { alert('Failed to parse JSON: ' + err.message); }
+            };
+            reader.readAsText(file); e.target.value = '';
+        });
+        document.getElementById('btnReset').addEventListener('click', () => {
+            if (confirm('Discard all changes and restore LGAM reference data?')) { localStorage.removeItem('lgam-alignment-data'); location.reload(); }
+        });
+        document.getElementById('btnAddSystem').addEventListener('click', showAddForm);
+
+        init();
+        handleHash();
+        window.addEventListener('hashchange', handleHash);
+    </script>
+</body>
+</html>
