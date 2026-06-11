@@ -2,118 +2,16 @@
 title: Development control
 caption: LGAM Business Areas
 status: draft
+parent: ba-planning-hub.html
+parent_title: Planning Hub
 ---
-  <style>
-    :root {
-      --govuk-assets-path: "https://unpkg.com/govuk-frontend@5.13.0/dist/govuk/assets/";
-    }
-
-    .govuk-footer__copyright-logo::before {
-      background-image: url("https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/assets/images/govuk-crest.svg") !important;
-    }
-
-    .app-content-wrapper {
-      display: flex;
-      min-height: calc(100vh - 300px);
-    }
-
-    .app-sidebar {
-      background: #f3f2f1;
-      border-right: 1px solid #b1b4b6;
-      width: 260px;
-      min-width: 260px;
-      flex-shrink: 0;
-      padding: 20px 15px;
-      position: sticky;
-      top: 0;
-      align-self: flex-start;
-      max-height: 100vh;
-      overflow-y: auto;
-    }
-
-    .app-main-content {
-      flex: 1;
-      padding: 30px 40px;
-      max-width: 960px;
-    }
-
-    .app-navigation { list-style: none; margin: 0; padding: 0; }
-    .app-navigation__item { margin-bottom: 2px; }
-    .app-navigation__link {
-      display: block;
-      padding: 5px 8px;
-      color: #1d70b8;
-      text-decoration: none;
-      font-size: 14px;
-      font-family: "GDS Transport", arial, sans-serif;
-      line-height: 1.3;
-    }
-    .app-navigation__link:hover { background: #fff; text-decoration: underline; }
-    .app-navigation__heading {
-      font-family: "GDS Transport", arial, sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-      margin: 15px 0 6px 0;
-      padding: 0;
-      color: #0b0c0c;
-    }
-
-    .feature-box {
-      border-top: 4px solid #1d70b8;
-      background: #f3f2f1;
-      padding: 20px;
-      margin-bottom: 30px;
-    }
-
-    /* Pattern and Capability Tags */
-    .pattern-group { margin-bottom: 20px; }
-    .capability-tag { 
-      display: inline-block; 
-      padding: 2px 8px; 
-      background: #e5e5e5; 
-      color: #0b0c0c; 
-      font-size: 14px; 
-      margin-right: 5px; 
-      margin-bottom: 5px;
-      border: 1px solid #b1b4b6;
-    }
-    .pattern-tag { display: inline-block; padding: 2px 8px; font-weight: bold; font-size: 14px; margin-bottom: 5px; }
-    .pattern-tag--target { background: #00703c; color: #fff; }
-    .pattern-tag--anti { background: #d4351c; color: #fff; }
-
-    .phase-number {
-      display: inline-block;
-      background: #1d70b8;
-      color: #fff;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      text-align: center;
-      line-height: 24px;
-      margin-right: 10px;
-      font-size: 14px;
-    }
-
-    /* SVG Diagram Container */
-    .arch-diagram-container {
-      background: #fff;
-      border: 1px solid #b1b4b6;
-      padding: 20px;
-      margin: 30px 0;
-      overflow-x: auto;
-    }
-
-    @media (max-width: 768px) {
-      .app-content-wrapper { flex-direction: column; }
-      .app-sidebar { width: 100%; position: static; border-right: none; border-bottom: 1px solid #b1b4b6; }
-    }
-  </style>
+<style>
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .govuk-tag--green { background-color: #00703c; color: #fff; }
+    .govuk-tag--grey { background-color: #b1b4b6; color: #0b0c0c; }
+</style>
 
 <nav-contents>
-      <a href="planning-and-development.html" class="govuk-back-link govuk-!-margin-bottom-4 govuk-!-margin-top-0">Back to Planning Hub</a>
-      
-      <h2 class="app-navigation__heading">Contents</h2>
-      <ul class="app-navigation">
         <li class="app-navigation__item"><a class="app-navigation__link" href="#about">About this journey</a></li>
         <li class="app-navigation__item"><a class="app-navigation__link" href="#lgam-stack">The LGAM technology stack</a></li>
         <li class="app-navigation__item"><a class="app-navigation__link" href="#architecture-diagram">Target state data flow</a></li>
@@ -125,7 +23,6 @@ status: draft
         <li class="app-navigation__item"><a class="app-navigation__link govuk-!-font-weight-bold" href="#about">Development Control</a></li>
         <li class="app-navigation__item"><a class="app-navigation__link" href="#">Planning Policy</a></li>
         <li class="app-navigation__item"><a class="app-navigation__link" href="#">Building Control</a></li>
-      </ul>
 </nav-contents>
 
 <main-content>
@@ -920,146 +817,16 @@ status: draft
           <strong>Data Source:</strong> Live feed powered by the <a class="govuk-link" href="https://github.com/chrisns/uk-tenders-mcp">UK Tenders MCP integration</a>, filtering for <code>"planning system OR development control OR building control"</code>.
         </div>
 
-        <div id="tenders-container" class="govuk-!-margin-top-6 govuk-!-margin-bottom-8">
+        <div id="tenders-container" class="govuk-!-margin-top-6 govuk-!-margin-bottom-8" data-query="planning system OR development control OR building control" data-limit="4">
           <p class="govuk-body" id="tenders-loading">
-            <span style="display:inline-block; animation: spin 1s linear infinite;">⏳</span> Connecting to MCP tender feed...
+            <span style="display:inline-block; animation: spin 1s linear infinite;">&#x23F3;</span> Connecting to MCP tender feed...
           </p>
         </div>
       </section>
 
 </main-content>
 
+<page-modules>tenders</page-modules>
+
 <page-script>
-
-    //import { initAll } from 'https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/govuk-frontend.min.js';
-    //initAll();
-
-    // --- LIVE API FETCH: MCP TENDERS ---
-    async function fetchTenders() {
-      const container = document.getElementById('tenders-container');
-      if (!container) return;
-
-      try {
-        // We attempt a standard JSON-RPC HTTP POST to the MCP endpoint.
-        // Note: If the server strictly requires SSE transport, browsers may block this
-        // due to CORS or stream handling. We fallback to mock data gracefully.
-        const response = await fetch('https://govbuy.run.cns.me/mcp', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json, text/event-stream' 
-          },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: crypto.randomUUID(),
-            method: 'tools/call',
-            params: {
-              name: 'search_notices',
-              arguments: {
-                query: 'planning system OR development control OR building control',
-                limit: 4
-              }
-            }
-          })
-        });
-
-        if (!response.ok) throw new Error(`MCP fetch failed with status ${response.status}`);
-
-        const data = await response.json();
-        let results = [];
-
-        if (data.result && data.result.content && data.result.content.length > 0) {
-          const contentText = data.result.content[0].text;
-          try {
-             results = JSON.parse(contentText);
-          } catch(e) {
-             console.warn("MCP response text was not valid JSON, handling as raw data.");
-          }
-        }
-
-        renderTenderTable(results, container);
-
-      } catch (error) {
-        console.warn("MCP direct browser fetch failed (likely CORS policy or strict SSE transport required). Using simulated market insight data for preview.", error);
-        
-        // Fallback data demonstrating the UX intent
-        const mockTenders = [
-          {
-            title: "(Example data) Provision of Back Office Planning System (BOPS)",
-            buyer: "London Borough of Southwark",
-            value: "£85,000",
-            status: "Active",
-            url: "https://www.contractsfinder.service.gov.uk/"
-          },
-          {
-            title: "(Example data) Replacement of Planning and Regulatory Services System",
-            buyer: "Westmorland and Furness Council",
-            value: "£45,000",
-            status: "Awarded",
-            url: "https://www.contractsfinder.service.gov.uk/"
-          },
-          {
-            title: "(Example data) Rules-as-Code Planning Application Engine",
-            buyer: "Ministry of Housing, Communities and Local Government",
-            value: "£210,000",
-            status: "Active",
-            url: "https://www.contractsfinder.service.gov.uk/"
-          },
-          {
-            title: "(Example data) Planning and Building Control Software Suite",
-            buyer: "Newcastle City Council",
-            value: "£110,000",
-            status: "Closed",
-            url: "https://www.contractsfinder.service.gov.uk/"
-          }
-        ];
-        renderTenderTable(mockTenders, container);
-      }
-    }
-
-    function renderTenderTable(tenders, container) {
-      if (!tenders || tenders.length === 0) {
-        container.innerHTML = '<p class="govuk-body">No recent tenders found for development control systems.</p>';
-        return;
-      }
-
-      let html = `
-        <table class="govuk-table govuk-!-font-size-16">
-          <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header">Opportunity</th>
-              <th scope="col" class="govuk-table__header">Buyer</th>
-              <th scope="col" class="govuk-table__header">Est. Value</th>
-              <th scope="col" class="govuk-table__header">Status</th>
-            </tr>
-          </thead>
-          <tbody class="govuk-table__body">
-      `;
-
-      tenders.forEach(t => {
-        const title = t.title || t.Title || "Unknown Opportunity";
-        const buyer = t.buyer || t.Buyer || t.Organisation || "Various Authorities";
-        const value = t.value || t.Value || "Not disclosed";
-        const status = t.status || t.Status || "Active";
-        const url = t.url || t.Link || "https://www.contractsfinder.service.gov.uk/Search";
-        
-        const isClosed = status.toLowerCase().includes('closed') || status.toLowerCase().includes('awarded');
-        const badgeColor = isClosed ? 'grey' : 'green';
-
-        html += `
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><a href="${url}" class="govuk-link" target="_blank">${title}</a></td>
-            <td class="govuk-table__cell">${buyer}</td>
-            <td class="govuk-table__cell">${value}</td>
-            <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--${badgeColor}">${status}</strong></td>
-          </tr>
-        `;
-      });
-
-      html += `</tbody></table>`;
-      container.innerHTML = html;
-    }
-
-    // Initialize fetch
-    fetchTenders();
 </page-script>
