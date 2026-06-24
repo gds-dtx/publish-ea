@@ -251,20 +251,20 @@
           <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
             <div class="value-stream-card">
               <h3 class="govuk-heading-m value-stream-card__title">
-                <a href="#" class="value-stream-card__link">Building Control</a>
+                <a href="#" class="value-stream-card__link">Building Control (under development)</a>
               </h3>
               <p class="govuk-body govuk-!-font-size-14">Enforcing structural safety. Technically intensive, heavily reliant on offline-first mobile apps for field inspections and 3D BIM data ingestion.</p>
-              <a href="#" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+              <!--<a href="#" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>-->
             </div>
           </div>
 
           <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
             <div class="value-stream-card">
               <h3 class="govuk-heading-m value-stream-card__title">
-                <a href="#" class="value-stream-card__link">Planning Policy</a>
+                <a href="#" class="value-stream-card__link">Planning Policy (under development)</a>
               </h3>
               <p class="govuk-body govuk-!-font-size-14">Creating local spatial plans. Data-heavy, requiring geospatial modeling, multi-criteria decision analysis, and mass public engagement platforms.</p>
-              <a href="#" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+              <!--<a href="#" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>-->
             </div>
           </div>
         </div>
@@ -354,11 +354,11 @@
       <section id="market-intelligence">
         <h2 class="govuk-heading-l">Market intelligence</h2>
         <p class="govuk-body">Reviewing live public sector tender opportunities provides valuable context when designing target architectures or drafting business cases. This data helps benchmark estimated contract values and identify active suppliers across the wider planning domain.</p>
-
+<!--
         <div class="govuk-inset-text">
           <strong>Data Source:</strong> Live feed powered by the UK Tenders MCP integration, filtering for broad domain keywords.
         </div>
-
+-->
         <div id="tenders-container" class="govuk-!-margin-top-6 govuk-!-margin-bottom-8" data-query="planning system OR building control software OR local plan" data-limit="5">
           <p class="govuk-body" id="tenders-loading">
             <span style="display:inline-block; animation: spin 1s linear infinite;">&#x23F3;</span> Connecting to MCP tender feed...
@@ -510,17 +510,17 @@
 
     function renderFallback(query, limit, container) {
       const examples = [
-        { title: "Provision of Back Office Planning System (BOPS)", buyer: "London Borough of Southwark", value: "£850,000", status: "Active", url: "https://www.contractsfinder.service.gov.uk/" },
-        { title: "Replacement of Planning and Regulatory Services System", buyer: "Westmorland and Furness Council", value: "£450,000", status: "Awarded", url: "https://www.contractsfinder.service.gov.uk/" },
+        { title: "Provision of Planning System", buyer: "London Borough of Example", value: "£85,000", status: "Active", url: "https://www.contractsfinder.service.gov.uk/" },
+        { title: "Replacement of Planning and Regulatory Services System", buyer: "Example and Demo Council", value: "£45,000", status: "Awarded", url: "https://www.contractsfinder.service.gov.uk/" },
         { title: "Rules-as-Code Planning Application Engine", buyer: "Ministry of Housing, Communities and Local Government", value: "£2,100,000", status: "Active", url: "https://www.contractsfinder.service.gov.uk/" },
-        { title: "Planning and Building Control Software Suite", buyer: "Newcastle City Council", value: "£1,100,000", status: "Closed", url: "https://www.contractsfinder.service.gov.uk/" },
-        { title: "Local Plan Digital Engagement Platform", buyer: "Surrey County Council", value: "£125,000", status: "Active", url: "https://www.contractsfinder.service.gov.uk/" }
+        { title: "Planning and Building Control Software Suite", buyer: "Example City Council", value: "£110,000", status: "Closed", url: "https://www.contractsfinder.service.gov.uk/" },
+        { title: "Local Plan Digital Engagement Platform", buyer: "Example County Council", value: "£12,500", status: "Active", url: "https://www.contractsfinder.service.gov.uk/" }
       ];
 
       const tenders = examples.slice(0, limit);
       let html = `
         <table class="govuk-table govuk-!-font-size-16">
-          <caption class="govuk-table__caption govuk-table__caption--s">Example data — live feed requires server-side MCP proxy (<a class="govuk-link" href="https://github.com/chrisns/uk-tenders-mcp" target="_blank">UK Tenders MCP</a>)</caption>
+          <caption class="govuk-table__caption govuk-table__caption--s">Example data</caption>
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
               <th scope="col" class="govuk-table__header">Opportunity</th>
@@ -546,7 +546,7 @@
       });
 
       html += `</tbody></table>`;
-      html += `<p class="govuk-body govuk-!-font-size-14">The above is example data. When a CORS proxy is available, this table will show live results from <a class="govuk-link" href="https://www.contractsfinder.service.gov.uk/Search/Results?searchTerm=${encodeURIComponent(query)}" target="_blank">Contracts Finder</a> via the <a class="govuk-link" href="https://github.com/chrisns/uk-tenders-mcp" target="_blank">UK Tenders MCP</a> integration.</p>`;
+      html += `<p class="govuk-body govuk-!-font-size-14">The above is example data. On a live page, this table would show live results from <a class="govuk-link" href="https://www.contractsfinder.service.gov.uk/Search/Results?searchTerm=${encodeURIComponent(query)}" target="_blank">Contracts Finder</a> via the <a class="govuk-link" href="https://github.com/chrisns/uk-tenders-mcp" target="_blank">UK Tenders MCP</a> integration.</p>`;
       container.innerHTML = html;
     }
 
