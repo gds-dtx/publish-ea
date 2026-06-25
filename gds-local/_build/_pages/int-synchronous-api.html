@@ -1,0 +1,110 @@
+---
+title: Synchronous API Integration
+caption: Integration Pattern
+status: draft
+---
+<style>
+    /* Add any custom styles here */
+</style>
+
+<nav-contents>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#overview">Overview</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#when-to-use">When to use this pattern</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#architecture-pattern">Architecture pattern</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#platforms-tools">Platforms and tools</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#standards">Target standards</a></li>
+      </ul>
+</nav-contents>
+
+<main-content>
+      <span class="govuk-caption-xl">Integration Pattern</span>
+      <h1 class="govuk-heading-xl">Synchronous API Integration</h1>
+
+      <section id="overview">
+        <p class="govuk-body govuk-!-font-size-24">Real-time, blocking request/response patterns connecting front-end channels to back-office systems or partner agencies, relying heavily on API Gateways and RESTful standards.</p>
+        <p class="govuk-body">Synchronous API integration is the most common integration pattern in modern local government architectures. It involves a client (such as a web form, a mobile app, or a partner system) making a request to a server (a back-office system) and waiting (blocking) until it receives a response.</p>
+        <p class="govuk-body">This pattern ensures that the client immediately knows the outcome of the request (e.g., whether a payment was successful, or if a resident's address was found), making it ideal for interactive user experiences.</p>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="when-to-use">
+        <h2 class="govuk-heading-l">When to use this pattern</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li><strong>Real-time lookups:</strong> When a user interface needs immediate data, such as a UPRN address lookup or checking council tax balance.</li>
+          <li><strong>Transactional integrity:</strong> When the next step in a process cannot continue until the current step is confirmed successful (e.g., payment processing).</li>
+          <li><strong>Partner B2B Integration:</strong> When connecting directly to central government services (like DWP APIs) that expect a real-time HTTP request.</li>
+        </ul>
+        
+        <div class="govuk-warning-text govuk-!-margin-top-6">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">Warning</span>
+            Do not use this pattern for long-running processes or moving massive datasets. If a downstream system is slow or unavailable, a synchronous call will block the upstream client, leading to timeouts and a poor user experience. For those scenarios, consider the Asynchronous Messaging pattern.
+          </strong>
+        </div>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="architecture-pattern">
+        <h2 class="govuk-heading-l">Architecture pattern</h2>
+        <p class="govuk-body">The target architecture for synchronous APIs avoids direct point-to-point connections by placing an <strong>API Gateway</strong> between the consumers and the providers.</p>
+        
+        <ul class="govuk-list govuk-list--bullet">
+          <li><strong>Consumers:</strong> Council website, staff CRM, mobile apps, or external partner systems.</li>
+          <li><strong>API Gateway:</strong> The centralised ingress point that handles authentication (OAuth 2.0), rate limiting, threat protection (WAF), and audit logging.</li>
+          <li><strong>Providers:</strong> The back-office line of business systems (e.g., Social Care system, Housing system) exposing their native APIs.</li>
+        </ul>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="platforms-tools">
+        <h2 class="govuk-heading-l">Platforms and tools</h2>
+        <p class="govuk-body">Implementing synchronous API integration effectively requires specific components from the LGAM taxonomy:</p>
+        
+        <table class="govuk-table govuk-!-font-size-16">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header govuk-!-width-one-third">Component Type</th>
+              <th scope="col" class="govuk-table__header">Examples</th>
+              <th scope="col" class="govuk-table__header">Role in Architecture</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-font-weight-bold">API Gateway</td>
+              <td class="govuk-table__cell">Azure API Management, AWS API Gateway, Kong, Tyk</td>
+              <td class="govuk-table__cell">Acts as the secure front door, enforcing policy, rate limits, and routing requests to the correct backend.</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-font-weight-bold">Identity Provider (IdP)</td>
+              <td class="govuk-table__cell">Microsoft Entra ID, Auth0, Keycloak</td>
+              <td class="govuk-table__cell">Issues the JSON Web Tokens (JWTs) that the API Gateway validates before permitting access.</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-font-weight-bold">Developer Portal</td>
+              <td class="govuk-table__cell">Often bundled with the API Gateway</td>
+              <td class="govuk-table__cell">A catalogue where developers can discover available APIs, read documentation, and request access keys.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="standards">
+        <h2 class="govuk-heading-l">Target standards</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li><strong>REST (Representational State Transfer):</strong> The default architectural style for web APIs, using standard HTTP methods (GET, POST, PUT, DELETE).</li>
+          <li><strong>OpenAPI Specification (OAS 3.0+):</strong> The industry standard for defining and documenting RESTful APIs. All new council APIs should be documented using OAS to enable auto-generation of SDKs and developer portal documentation.</li>
+          <li><strong>OAuth 2.0 / OpenID Connect (OIDC):</strong> The standard for federated identity and API authorisation. Direct basic authentication or static API keys should be avoided in favour of short-lived JWTs.</li>
+          <li><strong>GraphQL:</strong> An alternative to REST for complex data retrieval, allowing clients to request exactly the data they need in a single query. Best used for "Experience APIs" sitting in front of mobile or web frontends.</li>
+        </ul>
+      </section>
+
+</main-content>
+
+<page-script>
+</page-script>

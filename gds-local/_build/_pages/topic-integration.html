@@ -1,0 +1,168 @@
+---
+title: Integration & Interoperability
+caption: Enabling Technology
+status: draft
+---
+<style>
+    /* LGAM cards */
+    .value-stream-card {
+        background-color: #f3f2f1;
+        padding: 20px;
+        height: 100%;
+        box-sizing: border-box;
+        border-top: 4px solid #1d70b8;
+    }
+    .value-stream-card__title {
+        margin-bottom: 10px;
+    }
+    .value-stream-card__link {
+        text-decoration: none;
+    }
+    .value-stream-card__link:hover {
+        text-decoration: underline;
+    }
+    
+    /* Functions section container */
+    .lgam-functions-panel {
+      background: #f3f2f1;
+      padding: 20px;
+      border-left: 10px solid #6B6B00;
+    }
+</style>
+
+<nav-contents>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#about">About this topic</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#integration-patterns">Integration patterns</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#architectural-principles">Architectural principles</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#lgam-stack">LGAM technology stack</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#frameworks">Frameworks & guidance</a></li>
+      </ul>
+</nav-contents>
+
+<main-content>
+      <span class="govuk-caption-xl">Enabling Technology</span>
+      <h1 class="govuk-heading-xl">Integration & Interoperability</h1>
+
+      <section id="about">
+        <p class="govuk-body govuk-!-font-size-24">Connecting council systems to each other, to partners, and to central government — enabling data and services to flow.</p>
+        <p class="govuk-body">Integration & Interoperability provides the connective tissue that allows council systems, partner organisations, and central government platforms to exchange data and orchestrate processes. Without deliberate investment in integration capabilities, councils accumulate point-to-point connections that become increasingly fragile and expensive to maintain.</p>
+        <p class="govuk-body">While the <a href="topic-data-sharing.html" class="govuk-link">Data Sharing topic</a> defines <em>what</em> data is shared, <em>why</em>, and the information governance surrounding it, this topic covers the physical <em>how</em>: the architectural styles, platforms, and technical patterns required to move that data.</p>
+        
+        <h3 class="govuk-heading-m govuk-!-margin-top-6">Why this matters for councils</h3>
+        <ul class="govuk-list govuk-list--bullet">
+          <li><strong>Vendor lock-in and poor APIs:</strong> The local gov tech market includes many legacy systems with poor API support, requiring robust integration patterns to extract value.</li>
+          <li><strong>Integration debt:</strong> Integration debt accumulates faster than technical debt. Every new system adds point-to-point connections that increase fragility if not managed centrally.</li>
+          <li><strong>RPA as a workaround:</strong> Robotic Process Automation (RPA) often exists specifically because proper integration is not available. Councils automate around the gaps rather than solving the underlying connectivity problem.</li>
+        </ul>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="integration-patterns">
+        <h2 class="govuk-heading-l">Integration patterns</h2>
+        <p class="govuk-body">Integration capabilities are best categorised by their architectural style. Select a pattern below to view the target architecture, standards, and typical LGAM tooling for that style.</p>
+
+        <div class="govuk-grid-row govuk-!-margin-top-6">
+          <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
+            <div class="value-stream-card">
+              <h3 class="govuk-heading-m value-stream-card__title">
+                <a href="int-synchronous-api.html" class="value-stream-card__link">Synchronous API integration</a>
+              </h3>
+              <p class="govuk-body govuk-!-font-size-14">Real-time, blocking request/response patterns connecting front-end channels to back-office systems, relying heavily on API Gateways and RESTful standards.</p>
+              <a href="int-synchronous-api.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+
+          <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
+            <div class="value-stream-card">
+              <h3 class="govuk-heading-m value-stream-card__title">
+                <a href="int-asynchronous-messaging.html" class="value-stream-card__link">Asynchronous messaging</a>
+              </h3>
+              <p class="govuk-body govuk-!-font-size-14">Real-time but decoupled patterns like publish/subscribe and message queues, using event brokers to notify multiple downstream systems of state changes.</p>
+              <a href="int-asynchronous-messaging.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+
+          <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
+            <div class="value-stream-card">
+              <h3 class="govuk-heading-m value-stream-card__title">
+                <a href="int-bulk-data-movement.html" class="value-stream-card__link">Bulk data movement</a>
+              </h3>
+              <p class="govuk-body govuk-!-font-size-14">Moving large volumes of data asynchronously on a schedule, covering modern ETL/ELT pipelines for analytics and legacy Managed File Transfer (MFT) drops.</p>
+              <a href="int-bulk-data-movement.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="architectural-principles">
+        <h2 class="govuk-heading-l">Architectural principles</h2>
+        <p class="govuk-body">To minimise integration debt and build a resilient enterprise architecture, councils should adhere to the following principles:</p>
+        
+        <ol class="govuk-list govuk-list--number govuk-!-margin-bottom-6">
+          <li><strong>API-first design:</strong> Expose all core business capabilities and data through well-documented, secure APIs rather than direct database access.</li>
+          <li><strong>Avoid point-to-point connections:</strong> Use intermediate routing (API Gateways, Event Brokers, or iPaaS) to decouple systems. A point-to-point "spaghetti" architecture creates brittle dependencies that prevent legacy modernisation.</li>
+          <li><strong>Decouple with events:</strong> Prefer asynchronous event-driven integration over synchronous APIs for cross-domain orchestration to improve resilience and scalability.</li>
+          <li><strong>Secure by design:</strong> Never trust the internal network. All APIs and integration endpoints must be authenticated and authorised using standard federated identity protocols (e.g., OAuth 2.0).</li>
+          <li><strong>Centralised governance, decentralised delivery:</strong> Establish common integration standards and patterns centrally, but empower individual delivery teams to build their own integrations using the approved tooling.</li>
+        </ol>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="lgam-stack">
+        <h2 class="govuk-heading-l">LGAM technology stack at hub level</h2>
+        <p class="govuk-body">Delivering robust integration relies on several core taxonomy nodes within the LGAM Enabling Technology layer.</p>
+        
+        <div class="lgam-functions-panel govuk-!-margin-top-6" style="border-left-color: #6B6B00; background-color: #f8f8f8;">
+          <table class="govuk-table govuk-!-font-size-16" style="margin-bottom: 0;">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header govuk-!-width-one-third">LGAM Taxonomy Node</th>
+                <th scope="col" class="govuk-table__header">Topic Relevance</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><strong class="govuk-tag" style="max-width: 100%; white-space: normal; text-align: left; background-color: #6B6B00; color: #fff;">API Management & Gateways</strong></td>
+                <td class="govuk-table__cell">Platforms and services for designing, publishing, securing, and monitoring APIs, often combined with developer portals for discovery and governance.</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><strong class="govuk-tag" style="max-width: 100%; white-space: normal; text-align: left; background-color: #6B6B00; color: #fff;">Event-Driven & Streaming Integration</strong></td>
+                <td class="govuk-table__cell">Platforms for capturing and distributing real-time event streams (e.g., Kafka, Azure Event Grid), enabling responsive, decoupled architectures.</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><strong class="govuk-tag" style="max-width: 100%; white-space: normal; text-align: left; background-color: #6B6B00; color: #fff;">Data Integration & Pipelines (ETL/ELT)</strong></td>
+                <td class="govuk-table__cell">Tools and processes for extracting, transforming, and loading data between systems, supporting both batch ETL and real-time ELT pipelines.</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><strong class="govuk-tag" style="max-width: 100%; white-space: normal; text-align: left; background-color: #6B6B00; color: #fff;">Integration Governance & Tooling</strong></td>
+                <td class="govuk-table__cell">Secure-by-design integration architecture and governance processes. These establish common integration patterns, standards, and reusable components.</td>
+              </tr>
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell"><strong class="govuk-tag" style="max-width: 100%; white-space: normal; text-align: left; background-color: #6B6B00; color: #fff;">Message-Oriented Middleware</strong></td>
+                <td class="govuk-table__cell">Enterprise Service Buses (ESB) and message brokers that route, transform, and orchestrate interactions between legacy applications.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="frameworks">
+        <h2 class="govuk-heading-l">Frameworks & guidance</h2>
+        <p class="govuk-body">Relevant standards and procurement vehicles for integration and interoperability:</p>
+        
+        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+          <li><a href="https://www.gov.uk/guidance/gds-api-technical-and-data-standards" class="govuk-link"><strong>GDS API technical and data standards</strong></a> — How to design, build and operate APIs consistently across the public sector.</li>
+          <li><a href="https://www.api.gov.uk/#uk-public-sector-apis" class="govuk-link"><strong>API Catalogue</strong></a> — Directory of public sector APIs, helping councils discover available government data feeds.</li>
+          <li><a href="https://www.crowncommercial.gov.uk/agreements/RM6335" class="govuk-link"><strong>Digital and Legacy Application Services (CCS RM6335)</strong></a> — Commercial framework for procuring middleware management, integration platforms, and APIs.</li>
+          <li><a href="https://www.localdigital.gov.uk/declaration/" class="govuk-link"><strong>Local Digital Declaration</strong></a> — A shared commitment to open standards, insisting on safe and secure technology, and designing systems that communicate with each other.</li>
+        </ul>
+      </section>
+
+</main-content>
+
+<page-script>
+</page-script>
