@@ -1,0 +1,105 @@
+---
+title: Asynchronous Messaging
+caption: Integration Pattern
+status: draft
+---
+<style>
+    /* Add any custom styles here */
+</style>
+
+<nav-contents>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#overview">Overview</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#when-to-use">When to use this pattern</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#architecture-pattern">Architecture pattern</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#platforms-tools">Platforms and tools</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#standards">Target standards</a></li>
+      </ul>
+</nav-contents>
+
+<main-content>
+      <span class="govuk-caption-xl">Integration Pattern</span>
+      <h1 class="govuk-heading-xl">Asynchronous Messaging</h1>
+
+      <section id="overview">
+        <p class="govuk-body govuk-!-font-size-24">Real-time, non-blocking, decoupled patterns (publish/subscribe, fire-and-forget) using event brokers to notify downstream systems of state changes.</p>
+        <p class="govuk-body">Asynchronous messaging allows systems to communicate without having to wait for a response from the receiving system. When a system performs an action (e.g., an address is updated in the CRM), it publishes a message or "event" to a central broker. Other systems that care about this event (e.g., Council Tax, Waste Management) can subscribe to the broker and process the update at their own pace.</p>
+        <p class="govuk-body">This architectural style fundamentally decouples the publisher from the subscriber, meaning the publisher doesn't need to know who is listening, and if a subscriber system goes offline, the messages are safely queued until it returns.</p>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="when-to-use">
+        <h2 class="govuk-heading-l">When to use this pattern</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li><strong>Cross-domain updates:</strong> "Tell Us Once" style scenarios. If a resident updates their name in the citizen portal, this event can be broadcast asynchronously to update the housing, revenues, and social care systems without locking up the portal UI.</li>
+          <li><strong>Resilience against downtime:</strong> If a legacy back-office system frequently goes offline for nightly backups, upstream web forms can drop messages onto a queue to be processed when the system comes back online, preventing data loss.</li>
+          <li><strong>Orchestrating long-running processes:</strong> Such as document generation or complex eligibility calculations that take too long to hold open a synchronous HTTP connection.</li>
+        </ul>
+        
+        <div class="govuk-inset-text">
+          <strong>Event-driven vs Message-driven:</strong> While similar, an <em>event</em> usually just announces that something happened (e.g., "AddressUpdated"), whereas a <em>message</em> (command) tells another system to do something specific (e.g., "PrintLetter"). Both use asynchronous brokers, but events provide greater decoupling.
+        </div>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="architecture-pattern">
+        <h2 class="govuk-heading-l">Architecture pattern</h2>
+        <p class="govuk-body">The core of an asynchronous architecture is the <strong>Event Broker</strong> or <strong>Message Queue</strong>.</p>
+        
+        <ul class="govuk-list govuk-list--bullet">
+          <li><strong>Publishers (Producers):</strong> The system where the state change occurs. It formats the event (often in JSON) and pushes it to a topic on the broker.</li>
+          <li><strong>Event Broker:</strong> The intermediary platform. It receives the event, stores it durably, and routes it to any registered subscribers.</li>
+          <li><strong>Subscribers (Consumers):</strong> Systems that listen to specific topics. They pull the event from the broker (or are pushed via Webhook) and update their own local data stores accordingly.</li>
+        </ul>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="platforms-tools">
+        <h2 class="govuk-heading-l">Platforms and tools</h2>
+        <p class="govuk-body">Implementing asynchronous messaging relies on robust middleware:</p>
+        
+        <table class="govuk-table govuk-!-font-size-16">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header govuk-!-width-one-third">Component Type</th>
+              <th scope="col" class="govuk-table__header">Examples</th>
+              <th scope="col" class="govuk-table__header">Role in Architecture</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-font-weight-bold">Message Queues</td>
+              <td class="govuk-table__cell">Azure Service Bus, AWS SQS, RabbitMQ</td>
+              <td class="govuk-table__cell">Point-to-point asynchronous delivery. Ensures a command is delivered exactly once to a specific worker.</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-font-weight-bold">Event Streaming Platforms</td>
+              <td class="govuk-table__cell">Apache Kafka, Azure Event Hubs, AWS Kinesis</td>
+              <td class="govuk-table__cell">High-throughput publish/subscribe platforms where multiple consumers can read the same stream of events.</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-font-weight-bold">Webhooks</td>
+              <td class="govuk-table__cell">GOV.UK Notify receipts, Stripe events</td>
+              <td class="govuk-table__cell">A lightweight form of asynchronous push integration over HTTP. Usually requires the subscriber to expose a public endpoint.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="standards">
+        <h2 class="govuk-heading-l">Target standards</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li><strong>AsyncAPI:</strong> The industry standard for documenting event-driven architectures. Similar to how OpenAPI documents REST APIs, AsyncAPI documents the channels, messages, and payloads of a message broker.</li>
+          <li><strong>CloudEvents:</strong> A specification by the Cloud Native Computing Foundation (CNCF) for describing event data in common formats to provide interoperability across services, platforms, and systems.</li>
+          <li><strong>AMQP (Advanced Message Queuing Protocol):</strong> An open standard application layer protocol for message-oriented middleware.</li>
+        </ul>
+      </section>
+
+</main-content>
+
+<page-script>
+</page-script>

@@ -1,0 +1,111 @@
+---
+title: Bulk Data Movement
+caption: Integration Pattern
+status: draft
+---
+<style>
+    /* Add any custom styles here */
+</style>
+
+<nav-contents>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#overview">Overview</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#when-to-use">When to use this pattern</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#architecture-pattern">Architecture pattern</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#platforms-tools">Platforms and tools</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#standards">Target standards</a></li>
+      </ul>
+</nav-contents>
+
+<main-content>
+      <span class="govuk-caption-xl">Integration Pattern</span>
+      <h1 class="govuk-heading-xl">Bulk Data Movement</h1>
+
+      <section id="overview">
+        <p class="govuk-body govuk-!-font-size-24">Moving large datasets asynchronously on a schedule or trigger, covering modern ETL/ELT data pipelines and legacy Managed File Transfer (MFT) drops.</p>
+        <p class="govuk-body">While modern digital services prefer real-time, event-driven integration, local government still relies heavily on bulk data movement. This pattern involves extracting large amounts of data from a source system, potentially transforming it, and loading it into a target destination.</p>
+        <p class="govuk-body">This is primarily used for analytical workloads (feeding a data warehouse) or statutory reporting (nightly extracts to central government), but it is also commonly used as a fallback integration pattern for legacy systems that lack APIs or event streaming capabilities.</p>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="when-to-use">
+        <h2 class="govuk-heading-l">When to use this pattern</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li><strong>Data Warehousing & Analytics:</strong> Extracting operational data from LOB systems (e.g., Housing, Revenues) to populate a central data lake or warehouse for Business Intelligence.</li>
+          <li><strong>Statutory Returns:</strong> Generating and securely transferring large, mandated datasets to central government departments (e.g., DLUHC, DfE) on a scheduled basis.</li>
+          <li><strong>Legacy Integration:</strong> When a source system cannot expose an API or publish events, but can produce a nightly CSV dump.</li>
+          <li><strong>System Migrations:</strong> The one-off bulk extraction, transformation, and loading of historical records from an old system to a newly procured solution.</li>
+        </ul>
+        
+        <div class="govuk-warning-text govuk-!-margin-top-6">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">Warning</span>
+            Avoid using bulk data movement (like nightly CSV drops) for operational processes that require timely data. If a social worker needs to know if an individual was evicted today, a system relying on a nightly batch job will provide dangerously stale data.
+          </strong>
+        </div>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="architecture-pattern">
+        <h2 class="govuk-heading-l">Architecture pattern</h2>
+        <p class="govuk-body">The architecture for bulk data movement varies based on the modernity of the stack, but generally follows an ETL (Extract, Transform, Load) or ELT (Extract, Load, Transform) approach.</p>
+        
+        <ul class="govuk-list govuk-list--bullet">
+          <li><strong>Data Sources:</strong> SQL Databases, flat files, or API endpoints of operational systems.</li>
+          <li><strong>Orchestrator:</strong> A scheduling engine that triggers the data pipelines at specific intervals (e.g., cron jobs, Apache Airflow).</li>
+          <li><strong>Data Pipeline:</strong> The compute engine that extracts the data, applies necessary transformations (cleansing, mapping, anonymisation), and loads it to the destination.</li>
+          <li><strong>Destinations:</strong> Data lakes, data warehouses, or secure SFTP servers belonging to partner agencies.</li>
+        </ul>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="platforms-tools">
+        <h2 class="govuk-heading-l">Platforms and tools</h2>
+        <p class="govuk-body">Implementing robust bulk data movement requires enterprise-grade orchestration to handle failures and retries:</p>
+        
+        <table class="govuk-table govuk-!-font-size-16">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header govuk-!-width-one-third">Component Type</th>
+              <th scope="col" class="govuk-table__header">Examples</th>
+              <th scope="col" class="govuk-table__header">Role in Architecture</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-font-weight-bold">Cloud Data Pipelines (ETL/ELT)</td>
+              <td class="govuk-table__cell">Azure Data Factory, AWS Glue, dbt (data build tool)</td>
+              <td class="govuk-table__cell">Modern, scalable services for authoring, scheduling, and monitoring complex data transformations.</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-font-weight-bold">Data Orchestrators</td>
+              <td class="govuk-table__cell">Apache Airflow, Prefect, Dagster</td>
+              <td class="govuk-table__cell">Platform for authoring, scheduling, and monitoring data pipelines as Directed Acyclic Graphs (DAGs).</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-font-weight-bold">Managed File Transfer (MFT)</td>
+              <td class="govuk-table__cell">Globalscape, MoveIT, Azure SFTP</td>
+              <td class="govuk-table__cell">Secure, audited transfer of flat files (CSV, XML) between external partners or legacy systems.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      <section id="standards">
+        <h2 class="govuk-heading-l">Target standards</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li><strong>Data Formats:</strong> Parquet or Delta Lake for modern analytical storage; CSV or JSON-L for legacy flat file transfers.</li>
+          <li><strong>Encryption:</strong> Data transferred over the internet must use TLS 1.2+ in transit. PGP encryption should be applied to sensitive file payloads (at rest) before transmission via SFTP.</li>
+          <li><strong>Idempotency:</strong> Data pipelines should be designed idempotently, meaning if a nightly job fails halfway through and is restarted, it does not duplicate data in the target system.</li>
+        </ul>
+      </section>
+
+</main-content>
+
+<page-script>
+</page-script>
