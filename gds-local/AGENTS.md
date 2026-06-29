@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to OpenCode and Claude Code when working with code in this repository.
 
 ## Scope
 
@@ -117,3 +117,28 @@ The same data model is used in both the JSON resource files and the inline data 
 - All pages carry a **Beta phase banner**
 - New subpages: create a file in `_build/_pages/`, set `status: draft`, run `build.py`, iterate, then flip to `status: published` when ready
 - Ensure accessibility: skip links, semantic HTML, sufficient contrast, ARIA attributes where needed
+
+## Content Development Rules
+
+- **Taxonomy Alignment:** Always check capabilities and business areas against the official taxonomy before adding them to pages. Do not deviate from the exact naming. Use `resources/lgam-data.json` or `_hand/lgam-content-tracker.csv` as the source of truth for LGAM nodes.
+- **British English:** Always use British English spellings (e.g., categorise, centre, colour, cancelling).
+- **Architectural Principles:** Ensure all domain and capability designs are consistent with the principles defined in `resources/lgam_architectural_principles.md`. If there is a compelling domain-specific reason to deviate, this must be discussed between you and the user and potentially recorded in the principles document. **Do not** include these internal debates or justifications in the public-facing HTML pages.
+
+## LGAM Taxonomy Colours
+
+When adding or styling elements for each LGAM layer, use the following hex codes for consistency:
+
+- **Public Channels:** `#CC00CC`
+- **Council Interfaces:** `#800080`
+- **Capabilities:** `#000080`
+- **Business Areas:** `#0000FF`
+- **Corporate Areas:** `#696969`
+- **Foundational Technology:** `#008080`
+  - Artificial Intelligence: `#006400`
+  - Developer and Operations Tooling: `#008000`
+  - End User and Productivity: `#228B22`
+  - Service Management: `#2E8B57`
+  - Infrastructure & Hosting: `#556B2F`
+- **Integration:** `#6B6B00`
+- **Security:** `#CC0000`
+- **Data and Information:** `#800000`
