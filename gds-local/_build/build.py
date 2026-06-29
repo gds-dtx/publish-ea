@@ -92,6 +92,14 @@ def build_page(filename, front_matter, blocks):
     parent = front_matter.get("parent", "")
     parent_title = front_matter.get("parent_title", "")
 
+    # Calculate depth to fix relative links to the root index.html
+    depth = filename.count("/")
+    prefix = "../" * depth
+    if depth > 0:
+        header = header.replace('href="index.html"', f'href="{prefix}index.html"')
+        sidebar_lgam = sidebar_lgam.replace('href="index.html"', f'href="{prefix}index.html"')
+        sidebar_lgam = sidebar_lgam.replace('href="index.html#', f'href="{prefix}index.html#')
+
     # Assemble
     parts = []
     parts.append(GENERATED_COMMENT)
@@ -287,9 +295,13 @@ def main():
         print(f"Error: pages directory not found: {PAGES_DIR}", file=sys.stderr)
         sys.exit(1)
 
-    page_files = sorted(
-        f for f in os.listdir(PAGES_DIR) if f.endswith(".html")
-    )
+    page_files = []
+    for root_dir, _, files in os.walk(PAGES_DIR):
+        for f in files:
+            if f.endswith(".html"):
+                rel_path = os.path.relpath(os.path.join(root_dir, f), PAGES_DIR)
+                page_files.append(rel_path)
+    page_files = sorted(page_files)
 
     if not page_files:
         print("No page sources found in _pages/")
@@ -310,12 +322,14 @@ def main():
 
         # Always write to preview/
         preview_path = os.path.join(PREVIEW_DIR, filename)
+        os.makedirs(os.path.dirname(preview_path), exist_ok=True)
         with open(preview_path, "w", encoding="utf-8") as f:
             f.write(output)
 
         # Only write to root for published pages
         root_path = os.path.join(GDS_LOCAL_DIR, filename)
         if status == "published":
+            os.makedirs(os.path.dirname(root_path), exist_ok=True)
             with open(root_path, "w", encoding="utf-8") as f:
                 f.write(output)
             print(f"  [published]  {filename}")
