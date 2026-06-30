@@ -20,6 +20,7 @@ import os
 import re
 import shutil
 import sys
+import datetime
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 GDS_LOCAL_DIR = os.path.dirname(SCRIPT_DIR)
@@ -234,8 +235,70 @@ def update_index_links(pages):
         print("  [unchanged] index.html")
 
 
+def _folder_label(folder_name):
+    """Derive a human-readable label from a folder name."""
+    return folder_name.replace("-", " ").title()
+
+
 def generate_preview_index(pages_meta):
-    """Generate a simple link index page listing all preview pages."""
+    """Generate a hierarchically grouped preview index page."""
+    from collections import OrderedDict
+
+    tag_colours = {"published": "green", "draft": "grey", "modified": "yellow"}
+
+    # Build a two-level hierarchy: top_folder → sub_folder → [(filename, fm)]
+    # For single-depth folders (e.g. integration/index.html) sub_folder is ""
+    # For root pages (e.g. payments.html) top_folder is ""
+    hierarchy = OrderedDict()
+    for filename, fm in pages_meta:
+        parts = filename.split("/")
+        if len(parts) == 1:
+            # Root-level page
+            top, sub = "", ""
+        elif len(parts) == 2:
+            # Single folder depth (e.g. integration/index.html)
+            top, sub = parts[0], ""
+        else:
+            # Nested (e.g. business-area/adult-social-care/index.html)
+            top, sub = parts[0], parts[1]
+        hierarchy.setdefault(top, OrderedDict()).setdefault(sub, []).append((filename, fm))
+
+    def _render_page_table(pages, lines):
+        """Render a GOV.UK table for a list of pages."""
+        lines.append('<table class="govuk-table">')
+        lines.append('<thead class="govuk-table__header"><tr>')
+        lines.append('<th class="govuk-table__header" style="width:30%">Page</th>')
+        lines.append('<th class="govuk-table__header" style="width:15%">Status</th>')
+        lines.append('<th class="govuk-table__header" style="width:15%">Last updated</th>')
+        lines.append('<th class="govuk-table__header" style="width:40%">Description</th>')
+        lines.append("</tr></thead>")
+        lines.append('<tbody class="govuk-table__body">')
+
+        for filename, fm in pages:
+            title = fm.get("title", filename)
+            status = fm.get("status", "draft")
+            colour = tag_colours.get(status, "grey")
+            description = fm.get("description", "")
+            caption = fm.get("caption", "")
+            display_name = os.path.basename(filename)
+
+            # Get last modified date from file
+            filepath = os.path.join(PAGES_DIR, filename)
+            mtime = os.path.getmtime(filepath)
+            last_modified = datetime.datetime.fromtimestamp(mtime).strftime("%d %b %Y")
+
+            lines.append('<tr class="govuk-table__row">')
+            lines.append(f'<td class="govuk-table__cell"><a class="govuk-link" href="{filename}">{title}</a>'
+                         f'<br><span class="directory-page-name">{display_name}</span></td>')
+            lines.append(f'<td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{colour}">{status}</strong></td>')
+            lines.append(f'<td class="govuk-table__cell"><span class="directory-desc">{last_modified}</span></td>')
+            desc_text = description if description else f'<span class="directory-desc">{caption}</span>' if caption else ""
+            lines.append(f'<td class="govuk-table__cell">{desc_text}</td>')
+            lines.append("</tr>")
+
+        lines.append("</tbody></table>")
+
+    # --- Build the HTML ---
     lines = []
     lines.append("<!DOCTYPE html>")
     lines.append('<html lang="en"><head>')
@@ -243,12 +306,19 @@ def generate_preview_index(pages_meta):
     lines.append('<title>LGAM Preview Index</title>')
     lines.append('<meta name="viewport" content="width=device-width, initial-scale=1">')
     lines.append('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/govuk-frontend.min.css">')
-    lines.append("</head><body class=\"govuk-template__body\">")
+    lines.append('<style>')
+    lines.append('  .directory-desc { color: #505a5f; font-size: 16px; }')
+    lines.append('  .directory-section { margin-bottom: 40px; }')
+    lines.append('  .directory-subsection { margin-left: 20px; margin-bottom: 30px; }')
+    lines.append('  .directory-page-name { font-family: monospace; font-size: 14px; color: #505a5f; }')
+    lines.append('</style>')
+    lines.append('</head><body class="govuk-template__body">')
     lines.append('<div class="govuk-width-container" style="padding: 30px 0;">')
     lines.append('<h1 class="govuk-heading-l">LGAM Preview Pages</h1>')
     lines.append('<p class="govuk-body">These pages are drafts or have unapproved modifications. They are not linked from the live site.</p>')
 
     # Hand-authored pages
+    lines.append('<div class="directory-section">')
     lines.append('<h2 class="govuk-heading-m">Hand-authored pages</h2>')
     lines.append('<ul class="govuk-list govuk-list--bullet">')
     for filename in HAND_AUTHORED_FILES:
@@ -256,31 +326,38 @@ def generate_preview_index(pages_meta):
         if os.path.exists(preview_path):
             hand_path = os.path.join(HAND_DIR, filename)
             state = "modified" if os.path.exists(hand_path) else "published"
-            lines.append(f'<li><a class="govuk-link" href="{filename}">{filename}</a> <strong class="govuk-tag govuk-tag--{("yellow" if state == "modified" else "green")}">{state}</strong></li>')
+            lines.append(f'<li><a class="govuk-link" href="{filename}">{filename}</a> <strong class="govuk-tag govuk-tag--{"yellow" if state == "modified" else "green"}">{state}</strong></li>')
     lines.append("</ul>")
+    lines.append("</div>")
 
-    # Built pages
-    lines.append('<h2 class="govuk-heading-m">Built pages</h2>')
-    lines.append('<table class="govuk-table">')
-    lines.append('<thead class="govuk-table__header"><tr>')
-    lines.append('<th class="govuk-table__header">Page</th>')
-    lines.append('<th class="govuk-table__header">Title</th>')
-    lines.append('<th class="govuk-table__header">Status</th>')
-    lines.append("</tr></thead>")
-    lines.append('<tbody class="govuk-table__body">')
+    # Built pages, grouped hierarchically
+    for top_folder, sub_groups in hierarchy.items():
+        top_label = _folder_label(top_folder) if top_folder else "General"
+        has_sub_sections = any(sub for sub in sub_groups.keys() if sub)
 
-    tag_colours = {"published": "green", "draft": "grey", "modified": "yellow"}
-    for filename, fm in pages_meta:
-        title = fm.get("title", filename)
-        status = fm.get("status", "draft")
-        colour = tag_colours.get(status, "grey")
-        lines.append("<tr class=\"govuk-table__row\">")
-        lines.append(f'<td class="govuk-table__cell"><a class="govuk-link" href="{filename}">{filename}</a></td>')
-        lines.append(f'<td class="govuk-table__cell">{title}</td>')
-        lines.append(f'<td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{colour}">{status}</strong></td>')
-        lines.append("</tr>")
+        lines.append('<div class="directory-section">')
+        lines.append(f'<h2 class="govuk-heading-m">{top_label}</h2>')
 
-    lines.append("</tbody></table>")
+        if has_sub_sections:
+            for sub_folder, pages in sub_groups.items():
+                if sub_folder:
+                    sub_label = _folder_label(sub_folder)
+                    lines.append('<div class="directory-subsection">')
+                    lines.append(f'<h3 class="govuk-heading-s">{sub_label}</h3>')
+                    _render_page_table(pages, lines)
+                    lines.append("</div>")
+                else:
+                    # Pages directly under the top folder (no sub-folder)
+                    _render_page_table(pages, lines)
+        else:
+            # Flat section — all pages are directly under this folder
+            all_pages = []
+            for pages in sub_groups.values():
+                all_pages.extend(pages)
+            _render_page_table(all_pages, lines)
+
+        lines.append("</div>")
+
     lines.append("</div></body></html>")
 
     index_path = os.path.join(PREVIEW_DIR, "directory.html")
@@ -339,6 +416,36 @@ def main():
         else:
             # Draft — don't write to root (or remove if it exists from a previous state)
             print(f"  [draft]      {filename} (preview only)")
+
+        # Generate redirects if specified in front matter
+        redirect_from = fm.get("redirect_from", "")
+        if redirect_from:
+            for old_path in [p.strip() for p in redirect_from.split(",") if p.strip()]:
+                rel_url = os.path.relpath(filename, os.path.dirname(old_path) or ".")
+                redirect_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Redirecting&hellip;</title>
+    <link rel="canonical" href="{rel_url}">
+    <script>location="{rel_url}"</script>
+    <meta http-equiv="refresh" content="0; url={rel_url}">
+    <meta name="robots" content="noindex">
+</head>
+<body>
+    <h1>Redirecting&hellip;</h1>
+    <a href="{rel_url}">Click here if you are not redirected.</a>
+</body>
+</html>"""
+                old_preview = os.path.join(PREVIEW_DIR, old_path)
+                os.makedirs(os.path.dirname(old_preview), exist_ok=True)
+                with open(old_preview, "w", encoding="utf-8") as f:
+                    f.write(redirect_html)
+                if status == "published":
+                    old_root = os.path.join(GDS_LOCAL_DIR, old_path)
+                    os.makedirs(os.path.dirname(old_root), exist_ok=True)
+                    with open(old_root, "w", encoding="utf-8") as f:
+                        f.write(redirect_html)
 
         pages_meta.append((filename, fm))
 
