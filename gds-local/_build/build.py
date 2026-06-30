@@ -329,7 +329,7 @@ def generate_preview_index(pages_meta):
     lines.append('</head><body class="govuk-template__body">')
     lines.append('<script type="module" src="https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/govuk-frontend.min.js"></script>')
     lines.append('<script type="module">import { initAll } from "https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/govuk-frontend.min.js"; initAll();</script>')
-    lines.append('<div class="govuk-width-container" style="padding: 30px 0;">')
+    lines.append('<div class="govuk-width-container" style="max-width: 90%; padding: 30px 0;">')
     lines.append('<h1 class="govuk-heading-l">LGAM Preview Pages</h1>')
     lines.append('<p class="govuk-body">These pages are drafts or have unapproved modifications. They are not linked from the live site.</p>')
 
@@ -362,9 +362,11 @@ def generate_preview_index(pages_meta):
                 if sub_folder:
                     sub_label = _folder_label(sub_folder)
                     lines.append('<div class="directory-subsection">')
-                    lines.append(f'<h3 class="govuk-heading-s">{sub_label}</h3>')
+                    lines.append('<details class="govuk-details" data-module="govuk-details">')
+                    lines.append(f'<summary class="govuk-details__summary"><span class="govuk-details__summary-text govuk-heading-s govuk-!-margin-bottom-0">{sub_label}</span></summary>')
+                    lines.append('<div class="govuk-details__text govuk-!-padding-top-2">')
                     _render_page_table(pages, lines)
-                    lines.append("</div>")
+                    lines.append("</div></details></div>")
                 else:
                     # Pages directly under the top folder (no sub-folder)
                     _render_page_table(pages, lines)

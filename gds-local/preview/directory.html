@@ -14,7 +14,7 @@
 </head><body class="govuk-template__body">
 <script type="module" src="https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/govuk-frontend.min.js"></script>
 <script type="module">import { initAll } from "https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/govuk-frontend.min.js"; initAll();</script>
-<div class="govuk-width-container" style="padding: 30px 0;">
+<div class="govuk-width-container" style="max-width: 90%; padding: 30px 0;">
 <h1 class="govuk-heading-l">LGAM Preview Pages</h1>
 <p class="govuk-body">These pages are drafts or have unapproved modifications. They are not linked from the live site.</p>
 <div class="directory-section" style="border-left-color: #0b0c0c;">
@@ -29,7 +29,9 @@
 <summary class="govuk-details__summary"><span class="govuk-details__summary-text govuk-heading-m govuk-!-margin-bottom-0">Business Area</span></summary>
 <div class="govuk-details__text govuk-!-padding-top-4">
 <div class="directory-subsection">
-<h3 class="govuk-heading-s">Adult Social Care</h3>
+<details class="govuk-details" data-module="govuk-details">
+<summary class="govuk-details__summary"><span class="govuk-details__summary-text govuk-heading-s govuk-!-margin-bottom-0">Adult Social Care</span></summary>
+<div class="govuk-details__text govuk-!-padding-top-2">
 <table class="govuk-table">
 <thead class="govuk-table__header"><tr>
 <th class="govuk-table__header" style="width:30%">Page</th>
@@ -57,9 +59,11 @@
 <td class="govuk-table__cell">Alternative architectural visualizations using pure CSS grid layouts to present systems structurally: a spatial zone layout indicating flow, and a radiating hub-and-spoke diagram emphasizing non-hierarchical relationships.</td>
 </tr>
 </tbody></table>
-</div>
+</div></details></div>
 <div class="directory-subsection">
-<h3 class="govuk-heading-s">Planning And Development</h3>
+<details class="govuk-details" data-module="govuk-details">
+<summary class="govuk-details__summary"><span class="govuk-details__summary-text govuk-heading-s govuk-!-margin-bottom-0">Planning And Development</span></summary>
+<div class="govuk-details__text govuk-!-padding-top-2">
 <table class="govuk-table">
 <thead class="govuk-table__header"><tr>
 <th class="govuk-table__header" style="width:30%">Page</th>
@@ -105,7 +109,7 @@
 <td class="govuk-table__cell">Describes architectures for spatial evidence gathering and mass citizen engagement. Employs tabbed breakdowns to contrast manual legacy workflows with data-driven pipelines, supported by comparative SVG diagrams illustrating reproducible analytics and geospatial platforms.</td>
 </tr>
 </tbody></table>
-</div>
+</div></details></div>
 </div></details></div>
 <div class="directory-section" style="border-left-color: #800000;">
 <details class="govuk-details" data-module="govuk-details" open>
@@ -248,7 +252,9 @@
 <summary class="govuk-details__summary"><span class="govuk-details__summary-text govuk-heading-m govuk-!-margin-bottom-0">Topics</span></summary>
 <div class="govuk-details__text govuk-!-padding-top-4">
 <div class="directory-subsection">
-<h3 class="govuk-heading-s">Data Sharing</h3>
+<details class="govuk-details" data-module="govuk-details">
+<summary class="govuk-details__summary"><span class="govuk-details__summary-text govuk-heading-s govuk-!-margin-bottom-0">Data Sharing</span></summary>
+<div class="govuk-details__text govuk-!-padding-top-2">
 <table class="govuk-table">
 <thead class="govuk-table__header"><tr>
 <th class="govuk-table__header" style="width:30%">Page</th>
@@ -276,6 +282,6 @@
 <td class="govuk-table__cell">Architectural specification for central-to-local API integration. Employs an interactive Mermaid flowchart and a complex tabbed accordion structure to compare target data flows with legacy anti-patterns across different lifecycle phases.</td>
 </tr>
 </tbody></table>
-</div>
+</div></details></div>
 </div></details></div>
 </div></body></html>
