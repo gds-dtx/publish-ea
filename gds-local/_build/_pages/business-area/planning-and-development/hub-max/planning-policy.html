@@ -57,7 +57,7 @@ description: "Describes architectures for spatial evidence gathering and mass ci
 
       <h2 class="app-navigation__heading">Planning Journeys</h2>
       <ul class="app-navigation">
-        <li class="app-navigation__item"><a class="app-navigation__link" href="development-control.html">Development Control</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="development-management.html">Development Management</a></li>
         <li class="app-navigation__item"><a class="app-navigation__link govuk-!-font-weight-bold" href="#about">Planning Policy</a></li>
         <li class="app-navigation__item"><a class="app-navigation__link" href="building-control.html">Building Control</a></li>
 </nav-contents>
@@ -68,7 +68,7 @@ description: "Describes architectures for spatial evidence gathering and mass ci
 
       <section id="about">
         <p class="govuk-body govuk-!-font-size-24">The technical architecture required to gather spatial evidence, engage citizens at scale, and formulate the statutory Local Plan.</p>
-        <p class="govuk-body">Creating a Local Plan is a multi-year, data-intensive endeavor. Unlike the transactional nature of Development Control, Planning Policy architecture focuses on big data analytics, geospatial modeling (e.g., finding land suitable for housing), and mass citizen engagement platforms designed to capture sentiment rather than just simple form inputs.</p>
+        <p class="govuk-body">Creating a Local Plan is a multi-year, data-intensive endeavor. Unlike the transactional nature of Development Management, Planning Policy architecture focuses on big data analytics, geospatial modeling (e.g., finding land suitable for housing), and mass citizen engagement platforms designed to capture sentiment rather than just simple form inputs.</p>
       </section>
 
       <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
@@ -99,7 +99,7 @@ description: "Describes architectures for spatial evidence gathering and mass ci
             </tr>
             <tr class="govuk-table__row">
               <th scope="row" class="govuk-table__header">API management</th>
-              <td class="govuk-table__cell">Once the Plan is adopted, exposing the spatial policies as "Rules-as-code" APIs to be consumed directly by the Development Control forms engines.</td>
+              <td class="govuk-table__cell">Once the Plan is adopted, exposing the spatial policies as "Rules-as-code" APIs to be consumed directly by the Development Management forms engines.</td>
             </tr>
           </tbody>
         </table>
@@ -348,7 +348,7 @@ description: "Describes architectures for spatial evidence gathering and mass ci
 
                 <!-- Process -->
                 <div class="govuk-tabs__panel" id="phase3-process">
-                  <p class="govuk-body"><strong>The process:</strong> Following Examination by the Planning Inspectorate, the Local Plan is officially adopted. This plan is now the legal framework that Development Control officers must use to assess incoming planning applications.</p>
+                  <p class="govuk-body"><strong>The process:</strong> Following Examination by the Planning Inspectorate, the Local Plan is officially adopted. This plan is now the legal framework that Development Management officers must use to assess incoming planning applications.</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group">
                     <span class="capability-tag">API management</span>
@@ -360,7 +360,7 @@ description: "Describes architectures for spatial evidence gathering and mass ci
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase3-anti">
                   <div class="pattern-group">
                     <span class="pattern-tag pattern-tag--anti">Anti-pattern: The Disconnected Truth</span>
-                    <p class="govuk-body">The Planning Policy team publishes the new rules as a PDF document. Meanwhile, Development Control continues to use older spatial layers in their separate IT system. There is no automated connection between the newly adopted rules and the systems used to enforce them daily.</p>
+                    <p class="govuk-body">The Planning Policy team publishes the new rules as a PDF document. Meanwhile, Development Management continues to use older spatial layers in their separate IT system. There is no automated connection between the newly adopted rules and the systems used to enforce them daily.</p>
                   </div>
                   
                   <div class="arch-diagram-container">
@@ -389,7 +389,7 @@ description: "Describes architectures for spatial evidence gathering and mass ci
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase3-target">
                   <div class="feature-box">
                     <h4 class="govuk-heading-s">Best Practice: Rules-as-Code API Publishing</h4>
-                    <p class="govuk-body">Modern architectures align with the MHCLG objective of "Rules-as-code". When a Local Plan is adopted, its spatial constraints (e.g., Conservation Areas, Tree Preservation zones) are published to the corporate data store and instantly exposed via an API. The Development Control "dynamic forms" frontend is hardwired to consume this API, meaning applicants immediately face the new rules the moment the plan is legally adopted.</p>
+                    <p class="govuk-body">Modern architectures align with the MHCLG objective of "Rules-as-code". When a Local Plan is adopted, its spatial constraints (e.g., Conservation Areas, Tree Preservation zones) are published to the corporate data store and instantly exposed via an API. The Development Management "dynamic forms" frontend is hardwired to consume this API, meaning applicants immediately face the new rules the moment the plan is legally adopted.</p>
                     
                     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
                     <h5 class="govuk-heading-s">Real-world impact</h5>
