@@ -253,15 +253,14 @@ def generate_preview_index(pages_meta):
     for filename, fm in pages_meta:
         parts = filename.split("/")
         if len(parts) == 1:
-            # Root-level page
-            top, sub = "", ""
+            top, sub, concept = "", "", ""
         elif len(parts) == 2:
-            # Single folder depth (e.g. integration/index.html)
-            top, sub = parts[0], ""
+            top, sub, concept = parts[0], "", ""
+        elif len(parts) == 3:
+            top, sub, concept = parts[0], parts[1], ""
         else:
-            # Nested (e.g. business-area/adult-social-care/index.html)
-            top, sub = parts[0], parts[1]
-        hierarchy.setdefault(top, OrderedDict()).setdefault(sub, []).append((filename, fm))
+            top, sub, concept = parts[0], parts[1], parts[2]
+        hierarchy.setdefault(top, OrderedDict()).setdefault(sub, OrderedDict()).setdefault(concept, []).append((filename, fm))
 
     def _render_page_table(pages, lines):
         """Render a GOV.UK table for a list of pages."""
@@ -358,23 +357,46 @@ def generate_preview_index(pages_meta):
         lines.append('<div class="govuk-details__text govuk-!-padding-top-4">')
 
         if has_sub_sections:
-            for sub_folder, pages in sub_groups.items():
+            for sub_folder, concept_groups in sub_groups.items():
                 if sub_folder:
                     sub_label = _folder_label(sub_folder)
                     lines.append('<div class="directory-subsection">')
                     lines.append('<details class="govuk-details" data-module="govuk-details">')
                     lines.append(f'<summary class="govuk-details__summary"><span class="govuk-details__summary-text govuk-heading-s govuk-!-margin-bottom-0">{sub_label}</span></summary>')
                     lines.append('<div class="govuk-details__text govuk-!-padding-top-2">')
-                    _render_page_table(pages, lines)
+                    
+                    has_concepts = any(c for c in concept_groups.keys() if c)
+                    if has_concepts:
+                        for concept_folder, pages in concept_groups.items():
+                            if concept_folder:
+                                concept_label = _folder_label(concept_folder)
+                                lines.append('<div class="directory-subsection">')
+                                lines.append('<details class="govuk-details" data-module="govuk-details">')
+                                lines.append(f'<summary class="govuk-details__summary"><span class="govuk-details__summary-text govuk-!-margin-bottom-0" style="font-weight:bold;">{concept_label}</span></summary>')
+                                lines.append('<div class="govuk-details__text govuk-!-padding-top-2">')
+                                _render_page_table(pages, lines)
+                                lines.append("</div></details></div>")
+                            else:
+                                _render_page_table(pages, lines)
+                    else:
+                        all_pages = []
+                        for pages in concept_groups.values():
+                            all_pages.extend(pages)
+                        _render_page_table(all_pages, lines)
+                        
                     lines.append("</div></details></div>")
                 else:
                     # Pages directly under the top folder (no sub-folder)
-                    _render_page_table(pages, lines)
+                    all_pages = []
+                    for pages in concept_groups.values():
+                        all_pages.extend(pages)
+                    _render_page_table(all_pages, lines)
         else:
             # Flat section — all pages are directly under this folder
             all_pages = []
-            for pages in sub_groups.values():
-                all_pages.extend(pages)
+            for concept_groups in sub_groups.values():
+                for pages in concept_groups.values():
+                    all_pages.extend(pages)
             _render_page_table(all_pages, lines)
 
         lines.append("</div></details></div>")
