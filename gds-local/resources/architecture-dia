@@ -1,0 +1,3 @@
+[Consumer's LoB App] → [Consumer's Gateway/iPaaS] →→ [Controller's API Gateway] → [Controller's Microservice] → [Core DB]
+                              ↕                              ↕
+                       [Consumer's IdP]  ──── trust ────  [Token Validation]
