@@ -11,21 +11,16 @@ description: "Domain hub outlining planning value streams via a card-based navig
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .govuk-tag--green { background-color: #00703c; color: #fff; }
     .govuk-tag--grey { background-color: #b1b4b6; color: #0b0c0c; }
+
+    .flex-row { display: flex; flex-wrap: wrap; }
+    .value-stream-card { height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
 </style>
 
 <nav-contents>
         <li class="app-navigation__item"><a class="app-navigation__link" href="#about">About this domain</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#value-streams">Planning value streams</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#domain-principles">Domain architectural principles</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#target-data-model">The target data model</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#market-intelligence">Market intelligence</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#value-streams">Planning and development areas</a></li>
       </ul>
 
-      <h2 class="app-navigation__heading">Related Domains</h2>
-      <ul class="app-navigation">
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#">Geospatial Data</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#">Housing</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#">Licensing and Regulation</a></li>
 </nav-contents>
 
 <main-content>
@@ -33,7 +28,7 @@ description: "Domain hub outlining planning value streams via a card-based navig
       <h1 class="govuk-heading-xl">Planning and Development</h1>
 
       <section id="about">
-        <p class="govuk-body govuk-!-font-size-24">The processing of planning applications, enforcement of building regulations, and creation of local spatial plans.</p>
+        <p class="govuk-body govuk-!-font-size-24">The processing of planning applications, enforcement of building regulations, and creation of spatial plans.</p>
         <p class="govuk-body">Planning and Development represents one of the most legally complex, highly scrutinised, and data-intensive functions of local government. Systems in this domain must handle massive volumes of unstructured data (architectural plans, public objections) whilst strictly enforcing spatial geometries and statutory deadlines.</p>
       </section>
 
@@ -43,14 +38,14 @@ description: "Domain hub outlining planning value streams via a card-based navig
         <h2 class="govuk-heading-l">Planning value streams</h2>
         <p class="govuk-body">Because the technological requirements vary drastically across the planning domain, target architectures are best understood by mapping them to specific business value streams. Select a journey below to view detailed technical lifecycles, target architectures, and anti-patterns.</p>
 
-        <div class="govuk-grid-row govuk-!-margin-top-6">
+        <div class="govuk-grid-row govuk-!-margin-top-6 flex-row">
           <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
             <div class="value-stream-card">
               <h3 class="govuk-heading-m value-stream-card__title">
-                <a href="development-control.html" class="value-stream-card__link">Development Control</a>
+                <a href="development-management.html" class="value-stream-card__link">Development Management</a>
               </h3>
               <p class="govuk-body govuk-!-font-size-14">Processing individual planning applications. High public visibility, reliant on rules-engines, dynamic forms, and integration with public registers.</p>
-              <a href="development-control.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+              <a href="development-management.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
             </div>
           </div>
 
@@ -69,7 +64,7 @@ description: "Domain hub outlining planning value streams via a card-based navig
               <h3 class="govuk-heading-m value-stream-card__title">
                 <a href="planning-policy.html" class="value-stream-card__link">Planning Policy</a>
               </h3>
-              <p class="govuk-body govuk-!-font-size-14">Creating local spatial plans. Data-heavy, requiring geospatial modeling, multi-criteria decision analysis, and mass public engagement platforms.</p>
+              <p class="govuk-body govuk-!-font-size-14">Creating spatial plans. Data-heavy, requiring geospatial modeling, multi-criteria decision analysis, and mass public engagement platforms.</p>
               <a href="planning-policy.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
             </div>
           </div>

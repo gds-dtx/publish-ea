@@ -1,0 +1,120 @@
+---
+title: Development management
+caption: LGAM Business Areas
+status: draft
+parent: hub.html
+parent_title: Planning Hub
+redirect_from: ba-pd-development-management.html
+description: "Details the architecture for processing planning applications. Features a central API-first data flow diagram, followed by phased accordion sections contrasting legacy bottlenecks with target state solutions like ML data extraction and decoupled edge registers."
+---
+<style>
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .govuk-tag--green { background-color: #00703c; color: #fff; }
+    .govuk-tag--grey { background-color: #b1b4b6; color: #0b0c0c; }
+
+    .lgam-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      color: #ffffff;
+      font-size: 14px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+    .lgam-tag--capability { background: #000080; border: 1px solid #000080; }
+    .lgam-tag--corporate { background: #696969; border: 1px solid #696969; }
+    .lgam-tag--data { background: #800000; border: 1px solid #800000; }
+    .lgam-tag--public { background: #CC00CC; border: 1px solid #CC00CC; }
+    .lgam-tag--integration { background: #6B6B00; border: 1px solid #6B6B00; }
+    .lgam-tag--security { background: #CC0000; border: 1px solid #CC0000; }
+</style>
+
+<nav-contents>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#about">About this area</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#lgam-stack">The LGAM technology stack</a></li>
+      </ul>
+
+      <h2 class="app-navigation__heading">Planning Journeys</h2>
+      <ul class="app-navigation">
+        <li class="app-navigation__item"><a class="app-navigation__link" href="planning-policy.html">Planning Policy</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link govuk-!-font-weight-bold" href="#about">Development Management</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="building-control.html">Building Control</a></li>
+</nav-contents>
+
+<main-content>
+      <span class="govuk-caption-xl">Business Area: Planning & Development</span>
+      <h1 class="govuk-heading-xl">Development Management</h1>
+
+      <section id="about">
+        <p class="govuk-body govuk-!-font-size-24">The technical architecture supporting the lifecycle of an individual planning application - from the citizen's initial submission to the council's final legal determination.</p>
+        <p class="govuk-body">Because this service is highly transactional and public-facing, its architecture must be capable of handling high volumes of web traffic, complex spatial rule evaluations, and heavy unstructured document processing. It may represent the bulk of a council's planning technology expenditure.</p>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+      <section id="lgam-stack">
+        <h2 class="govuk-heading-l">The LGAM technology stack</h2>
+        <p class="govuk-body">Delivering this journey requires orchestrating multiple components across the LGAM taxonomy. An API-first architecture decouples these capabilities rather than purchasing them as a single system. The technology stack to deliver this, when aligned to the Local Government Architecture Model, might include the following elements:</p>
+        
+        <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">A non-exhaustive selection of core LGAM capabilities required for Development Management</caption>
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">LGAM Layer</th>
+              <th scope="col" class="govuk-table__header">LGAM Element</th>
+              <th scope="col" class="govuk-table__header">Context in Planning</th>
+              <th scope="col" class="govuk-table__header">Enabling Technology (Example)</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Forms</span></td>
+              <td class="govuk-table__cell">Dynamic, spatial-aware frontends that use "rules-as-code" to ask contextual questions based on the property's location.</td>
+              <td class="govuk-table__cell">Digital Forms Engine</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Workflow</span></td>
+              <td class="govuk-table__cell">The core back-office engine managing statutory timelines, tasks, consultations, and the officer determination process.</td>
+              <td class="govuk-table__cell">Case Management System</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Data and Information</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Document and records management</span></td>
+              <td class="govuk-table__cell">Secure storage for massive volumes of unstructured data: architectural plans, public comments, and decision notices.</td>
+              <td class="govuk-table__cell">Corporate <abbr title="Electronic Document Management">EDM</abbr></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Corporate Areas</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Geographical</span></td>
+              <td class="govuk-table__cell">The spatial database providing UPRN lookups, mapping polygons, and intersecting proposals with local plan constraints.</td>
+              <td class="govuk-table__cell">Corporate <abbr title="Geographic Information System">GIS</abbr> Platform</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--integration">Integration</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--integration">API Gateway</span></td>
+              <td class="govuk-table__cell">RESTful endpoints connecting the public submission portal to the back-office, and integrating with statutory consultees.</td>
+              <td class="govuk-table__cell">Enterprise Integration Platform</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Identity</span></td>
+              <td class="govuk-table__cell">Federated identity specifically for high-frequency planning agents, allowing them a single sign-on view of all their active applications.</td>
+              <td class="govuk-table__cell"><abbr title="Customer Identity and Access Management">CIAM</abbr> Service / Federated Identity Provider</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Payments</span></td>
+              <td class="govuk-table__cell">Processing complex planning application fees based on development size and type.</td>
+              <td class="govuk-table__cell">Corporate Payment Gateway</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <hr class="govuk-section-break govuk-section-break--l"/>
+</main-content>
+
+<page-modules></page-modules>
+
+<page-script>
+</page-script>

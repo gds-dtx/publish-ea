@@ -1,0 +1,77 @@
+---
+title: Planning Hub
+caption: LGAM Business Areas
+status: draft
+redirect_from: ba-planning-hub.html
+description: "Domain hub outlining planning value streams via a card-based navigation concept. Establishes overarching architectural principles using accordions, and sets data modeling expectations before routing users to detailed technical lifecycles."
+---
+<style>
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .govuk-tag--green { background-color: #00703c; color: #fff; }
+    .govuk-tag--grey { background-color: #b1b4b6; color: #0b0c0c; }
+
+    .flex-row { display: flex; flex-wrap: wrap; }
+    .value-stream-card { height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+</style>
+
+<nav-contents>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#about">About this domain</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#value-streams">Planning and Development areas</a></li>
+      </ul>
+
+</nav-contents>
+
+<main-content>
+      <span class="govuk-caption-xl">Business Area</span>
+      <h1 class="govuk-heading-xl">Planning and Development</h1>
+
+      <section id="about">
+        <p class="govuk-body govuk-!-font-size-24">The processing of planning applications, enforcement of building regulations, and creation of spatial plans.</p>
+        <p class="govuk-body">Planning and Development represents one of the most legally complex, highly scrutinised, and data-intensive functions of local government. Systems in this domain must handle massive volumes of unstructured data (architectural plans, public objections) whilst strictly enforcing spatial geometries and statutory deadlines.</p>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+      <section id="value-streams">
+        <h2 class="govuk-heading-l">Planning and Development areas</h2>
+        <p class="govuk-body">Planning and Development functions might broadly be categorised into three areas:</p>
+
+        <div class="govuk-grid-row govuk-!-margin-top-6 flex-row">
+          <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
+            <div class="value-stream-card">
+              <h3 class="govuk-heading-m value-stream-card__title">
+                <a href="planning-policy.html" class="value-stream-card__link">Planning Policy</a>
+              </h3>
+              <p class="govuk-body govuk-!-font-size-14">Creating spatial plans. Data-heavy, requiring geospatial modeling, multi-criteria decision analysis, and scalable public engagement platforms.</p>
+              <a href="planning-policy.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+
+          <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
+            <div class="value-stream-card">
+              <h3 class="govuk-heading-m value-stream-card__title">
+                <a href="development-management.html" class="value-stream-card__link">Development Management</a>
+              </h3>
+              <p class="govuk-body govuk-!-font-size-14">Processing individual planning applications. High public visibility, ideally served by linked rules-engines, dynamic forms, and integration with public registers.</p>
+              <a href="development-management.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+
+          <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
+            <div class="value-stream-card">
+              <h3 class="govuk-heading-m value-stream-card__title">
+                <a href="building-control.html" class="value-stream-card__link">Building Control</a>
+              </h3>
+              <p class="govuk-body govuk-!-font-size-14">Enforcing structural safety. Technically intensive, ideally served by offline-tolerant mobile apps for field inspections and 3D BIM data ingestion.</p>
+              <a href="building-control.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <hr class="govuk-section-break govuk-section-break--l"/>
+</main-content>
+
+<page-modules></page-modules>
+
+<page-script>
+</page-script>

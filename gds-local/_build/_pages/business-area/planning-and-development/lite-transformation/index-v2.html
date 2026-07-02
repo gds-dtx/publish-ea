@@ -1,8 +1,8 @@
 ---
-title: Planning and development
+title: Planning & Development
 caption: LGAM Business Areas
 status: draft
-description: LGAM accordion layout with research insights and business cases
+description: Assessment view with capability heatmap and maturity tool
 ---
 <style>
     /* Multi-column list styling for dense data */
@@ -223,50 +223,62 @@ description: LGAM accordion layout with research insights and business cases
       margin-right: 10px;
       font-size: 14px;
     }
+
+    /* Heatmap Styles */
+    .heatmap-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    .heatmap-table th, .heatmap-table td {
+      border: 1px solid #b1b4b6;
+      padding: 10px;
+      text-align: center;
+      font-family: "GDS Transport", arial, sans-serif;
+      font-size: 14px;
+    }
+    .heatmap-table th { background-color: #f3f2f1; font-weight: 700; }
+    .heatmap-cell--high { background-color: #00703c; color: white; font-weight: bold; }
+    .heatmap-cell--medium { background-color: #f47738; color: black; font-weight: bold; }
+    .heatmap-cell--low { background-color: #d4351c; color: white; font-weight: bold; }
 </style>
 <nav-contents>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#about">About this area</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#function-areas">Functions and services</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#capabilities">Capabilities</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#modernisation">Digital planning & modernisation</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#planning-datasets">Planning data platform</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#scope">1. Define the scope</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#mapping">2. Map capabilities</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#assess">3. Assess maturity & risk</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#roadmap">4. Build roadmap</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#interoperability">5. Interoperability target</a></li>
 </nav-contents>
 <main-content>
-<span class="govuk-caption-xl">LGAM Business Areas</span>
+          <span class="govuk-caption-xl">Business Area</span>
           <h1 class="govuk-heading-xl">Planning and Development</h1>
 
-          <p class="govuk-body-l">The processing of planning applications, building control, and local spatial planning.</p>
+          <p class="govuk-body-l">The processing of planning applications, building control, and spatial planning.</p>
 
-          <!-- 1. About this area -->
+          <!-- 0. About this area -->
           <h2 class="govuk-heading-l" id="about">About this area</h2>
-          <p class="govuk-body govuk-!-margin-bottom-6">Planning and development sits in the <a href="https://architecture.cddo.cabinetoffice.gov.uk/gds-local/index.html#business-areas" class="govuk-link">Business Areas layer</a> of the Local Government Architecture Model. It covers the statutory functions that councils perform around land use, building safety, and spatial planning - from processing individual planning applications through to maintaining the local plan.</p>
+          <p class="govuk-body govuk-!-margin-bottom-6">Planning and development sits in the <a href="../../../index.html#business-areas" class="govuk-link">Business Areas layer</a> of the Local Government Architecture Model. It covers the statutory functions that councils perform around land use, building safety, and spatial planning - from processing individual planning applications through to maintaining the local plan.</p>
+
+          <div class="govuk-inset-text">
+            This page demonstrates a framework for assessing your local authority's planning capabilities, identifying fragmentation, and building a modern, data-driven roadmap for your Planning and Development functions using the LGAM taxonomy.
+          </div>
 
           <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
-          <!-- 2. Functions and Services (Merged Hierarchical View) -->
-          <h2 class="govuk-heading-l" id="function-areas">Functions and services</h2>
-          
-          <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Using the LGA taxonomy</h3>
-          <p class="govuk-body">Using the <a href="https://standards.esd.org.uk/?uri=function%2F99" class="govuk-link">LG Inform Plus function and service list</a> taxonomy to map planning services provides a common language across local authorities, software suppliers, and central government. This standardisation is crucial for interoperability - it allows councils to accurately benchmark performance, share modular technology patterns, and procure software that maps directly to agreed, well-defined service boundaries.</p>
+          <!-- 1. Scope -->
+          <h2 class="govuk-heading-l" id="scope">1. Define the scope of assessment</h2>
+          <p class="govuk-body govuk-!-margin-bottom-6">Before mapping your technology, you must clarify the business scope. Below are the statutory functions and services that make up the Planning and Development domain, according to the LGA's <a href="https://standards.esd.org.uk/?uri=function%2F99" class="govuk-link">LG Inform Plus function and service list</a>. Using the LGA taxonomy ensures your assessment is comprehensive and maps directly to agreed, well-defined service boundaries.</p>
 
           <div class="lgam-functions-panel">
-
-          <!-- Search Filter integrated directly above the hierarchical grid -->
-          <div class="govuk-form-group govuk-!-margin-bottom-4" id="serviceFilterGroup" style="display: none;">
-            <label class="govuk-label govuk-!-font-weight-bold" for="serviceFilter">
-              Filter services
-            </label>
-            <div style="display: flex; align-items: baseline; gap: 15px; flex-wrap: wrap;">
-              <input class="govuk-input govuk-!-width-one-half" id="serviceFilter" name="serviceFilter" type="text" placeholder="e.g. Planning applications" oninput="filterServices()">
-              <span id="serviceCount" class="govuk-hint govuk-!-margin-bottom-0"></span>
+            <div class="govuk-form-group govuk-!-margin-bottom-4" id="serviceFilterGroup" style="display: none;">
+              <label class="govuk-label govuk-!-font-weight-bold" for="serviceFilter">Filter services within scope</label>
+              <div style="display: flex; align-items: baseline; gap: 15px; flex-wrap: wrap;">
+                <input class="govuk-input govuk-!-width-one-half" id="serviceFilter" name="serviceFilter" type="text" placeholder="e.g. Planning applications" oninput="filterServices()">
+                <span id="serviceCount" class="govuk-hint govuk-!-margin-bottom-0"></span>
+              </div>
             </div>
-          </div>
-
-          <button type="button" class="govuk-button govuk-button--secondary lgam-show-all-button" data-module="govuk-button" aria-expanded="false" id="functionAreasOpenAll">
-            Open all <span class="govuk-visually-hidden">sections in Function areas</span>
-          </button>
-
-          <ul class="lgam-accordion" id="functionAreasGrid">
+            <button type="button" class="govuk-button govuk-button--secondary lgam-show-all-button" aria-expanded="false" id="functionAreasOpenAll">Open all</button>
+                      <ul class="lgam-accordion" id="functionAreasGrid">
 
             <li class="lgam-item" data-function-id="100">
               <details class="govuk-details" data-module="govuk-details">
@@ -285,7 +297,7 @@ description: LGAM accordion layout with research insights and business cases
 
             <li class="lgam-item" data-function-id="101">
               <details class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Development Control <span class="lgam-service-count">(27 services)</span></span></summary>
+                <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Development Management <span class="lgam-service-count">(27 services)</span></span></summary>
                 <div class="govuk-details__text">
                   <p class="govuk-body govuk-!-margin-bottom-4">Assessment and determination of planning applications, including full planning, outline, reserved matters, prior notifications, and lawful development certificates. Includes pre-application advice, public consultation, and planning enforcement.</p>
                   <h4 class="govuk-heading-s govuk-!-margin-bottom-2">Services</h4>
@@ -294,8 +306,8 @@ description: LGAM accordion layout with research insights and business cases
                     <li>Brownfield land register</li>
                     <li>Community infrastructure levy (CIL)</li>
                     <li>Conservation area tree works notification</li>
-                    <li>Development control</li>
-                    <li>Development control enforcement</li>
+                    <li>Development management</li>
+                    <li>Development management enforcement</li>
                     <li>Discharge of planning conditions</li>
                     <li>Environmental Impact Assessment screening</li>
                     <li>Full planning applications</li>
@@ -399,107 +411,185 @@ description: LGAM accordion layout with research insights and business cases
 
           <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
-          <!-- 3. Capabilities and related elements -->
-          <h2 class="govuk-heading-l" id="capabilities">Capabilities and related elements</h2>
-          <p class="govuk-body">Elements from across the LGAM layers that support planning and development services.</p>
+          <!-- 2. Mapping -->
+          <h2 class="govuk-heading-l" id="mapping">2. Map your capabilities and technology</h2>
+          <p class="govuk-body">Under each core LGAM capability, record the applications or digital services your department currently uses. This structured mapping ensures every capability has a consistent trail from domain to enabling technology, allowing you to identify duplication (e.g. using multiple different form builders). The below is a non-exhaustive example of how you might approach this:</p>
 
           <table class="govuk-table govuk-!-margin-bottom-8">
             <thead class="govuk-table__head">
               <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header govuk-!-width-one-third">LGAM Mapping</th>
-                <th scope="col" class="govuk-table__header govuk-!-width-one-third">Context in Planning</th>
+                <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">LGAM Capability</th>
+                <th scope="col" class="govuk-table__header govuk-!-width-one-half">Context in Planning</th>
                 <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Enabling Technology (Example)</th>
               </tr>
             </thead>
             <tbody class="govuk-table__body">
               <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span>&rarr; <span class="lgam-tag lgam-tag--capability">Payments</span></td>
+                <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Payments</span></td>
                 <td class="govuk-table__cell">Processing application fees, community infrastructure levy, and land charges.</td>
-                <td class="govuk-table__cell">Payment Gateway</td>
+                <td class="govuk-table__cell">Corporate Payment Gateway</td>
               </tr>
               <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span>&rarr; <span class="lgam-tag lgam-tag--capability">Forms</span></td>
-                <td class="govuk-table__cell">Capturing structured data for planning applications, building control submissions, and prior notifications.</td>
+                <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Forms</span></td>
+                <td class="govuk-table__cell">Capturing structured data for planning applications and prior notifications.</td>
                 <td class="govuk-table__cell">Planning Portal / Built-in PDF Forms</td>
               </tr>
               <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span>&rarr; <span class="lgam-tag lgam-tag--capability">Workflow</span><br><span class="govuk-body-s" style="color:#505a5f;">(Case Management)</span></td>
-                <td class="govuk-table__cell">Routing applications through validation, public consultation, officer assessment, and final determination stages.</td>
-                <td class="govuk-table__cell">Planning System</td>
+                <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Workflow</span><br><span class="govuk-body-s" style="color:#505a5f;">(Case Management)</span></td>
+                <td class="govuk-table__cell">Routing applications through validation, public consultation, and final determination stages.</td>
+                <td class="govuk-table__cell">Monolithic Planning System</td>
               </tr>
               <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Corporate Areas</span>&rarr; <span class="lgam-tag lgam-tag--corporate">Geographical</span><br><span class="govuk-body-s" style="color:#505a5f;">(GIS / Spatial Analysis)</span></td>
+                <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Geographical</span><br><span class="govuk-body-s" style="color:#505a5f;">(GIS / Spatial)</span></td>
                 <td class="govuk-table__cell">Cross-referencing proposed development boundaries against authoritative spatial constraints.</td>
-                <td class="govuk-table__cell">GIS Platform</td>
+                <td class="govuk-table__cell">Corporate GIS Platform</td>
               </tr>
               <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Data and Information</span>&rarr; <span class="lgam-tag lgam-tag--data">Document and records management</span></td>
+                <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Data & Information</span><br><span class="govuk-body-s" style="color:#505a5f;">(Document Management)</span></td>
                 <td class="govuk-table__cell">Managing and storing unstructured PDFs, plans, and applicant-provided evidence.</td>
-                <td class="govuk-table__cell">EDM Module</td>
+                <td class="govuk-table__cell">Monolithic EDM Module</td>
               </tr>
             </tbody>
           </table>
 
-          <!--<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">-->
+          <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
-          <!-- 4. Digital Planning & Modernisation (Research & Benefits) -->
-          <h2 class="govuk-heading-l" id="modernisation">Digital planning and modernisation</h2>
-          <p class="govuk-body govuk-!-margin-bottom-6">Extensive public sector user research, supported by initiatives such as the Local Digital Fund and Open Digital Planning (ODP), has identified key systemic challenges within planning technology and established evidence-based principles for modernisation and good architectural practice.</p>
+          <!-- 3. Assess -->
+          <h2 class="govuk-heading-l" id="assess">3. Assess capability maturity and risk</h2>
+          <p class="govuk-body">Evaluate how well your mapped capabilities work together. Are you relying on manual data entry? Are your forms disconnected from your workflow? Use a heat map to visually communicate capability strength, interoperability, and risk to stakeholders.</p>
 
-          <h3 class="govuk-heading-m">Core principles</h3>
-          <div class="govuk-grid-row govuk-!-margin-bottom-8">
-            <div class="govuk-grid-column-one-third">
-              <div class="feature-box" style="height: 100%; box-sizing: border-box; margin-bottom: 0;">
-                <h4 class="govuk-heading-s">Moving from "documents to data"</h4>
-                <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-0">Prioritising the collection of standardised, machine-readable data at the point of application, reducing reliance on unstructured text and PDFs to power automated checking and spatial mapping.</p>
+                    <h3 class="govuk-heading-m">Example Heat Map: Planning Capabilities</h3>
+          <p class="govuk-body">Rate each capability against the following criteria to determine overall maturity:</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li><strong>Coverage:</strong> Do you have the necessary tooling to support this capability?</li>
+            <li><strong>Quality:</strong> Are the tools effective, user-friendly, and up to date?</li>
+            <li><strong>Interoperability:</strong> Is the capability well-integrated with your other systems (e.g., via APIs)?</li>
+          </ul>
+          <table class="heatmap-table">
+            <thead>
+              <tr>
+                <th>Capability</th>
+                <th>Coverage (Tooling)</th>
+                <th>Quality (Effectiveness)</th>
+                <th>Interoperability (Integration)</th>
+                <th>Overall Maturity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Payments</strong></td>
+                <td class="heatmap-cell--high">High</td>
+                <td class="heatmap-cell--high">High</td>
+                <td class="heatmap-cell--high">High</td>
+                <td class="heatmap-cell--high">Mature</td>
+              </tr>
+              <tr>
+                <td><strong>Forms</strong></td>
+                <td class="heatmap-cell--high">High</td>
+                <td class="heatmap-cell--low">Low</td>
+                <td class="heatmap-cell--low">Low</td>
+                <td class="heatmap-cell--low">At Risk</td>
+              </tr>
+              <tr>
+                <td><strong>Workflow</strong></td>
+                <td class="heatmap-cell--high">High</td>
+                <td class="heatmap-cell--medium">Medium</td>
+                <td class="heatmap-cell--low">Low</td>
+                <td class="heatmap-cell--medium">Needs Focus</td>
+              </tr>
+              <tr>
+                <td><strong>Geographical</strong></td>
+                <td class="heatmap-cell--high">High</td>
+                <td class="heatmap-cell--high">High</td>
+                <td class="heatmap-cell--medium">Medium</td>
+                <td class="heatmap-cell--medium">Needs Focus</td>
+              </tr>
+            </tbody>
+          </table>
+
+                    <h3 class="govuk-heading-m">The cost of fragmentation</h3>
+          <p class="govuk-body">Analysis from the <a href="https://localdigital.gov.uk/fund/reducing-invalid-planning-applications/" class="govuk-link">Reducing Invalid Planning Applications (RIPA)</a> and <a href="https://localdigital.gov.uk/fund/back-office-planning-system/" class="govuk-link">Back Office Planning System (BOPS)</a> Local Digital Fund business cases demonstrates the high cost of legacy practices and the significant potential savings of resolving capability gaps.</p>
+          
+          <div class="govuk-grid-row govuk-!-margin-bottom-4 govuk-!-margin-top-6">
+            <!-- Stat 1 -->
+            <div class="govuk-grid-column-one-quarter">
+              <div class="stat-box">
+                <span class="govuk-heading-xl govuk-!-margin-bottom-1">50%</span>
+                <span class="govuk-body-s govuk-!-font-weight-bold" style="display:block; margin-bottom: 5px;">Average invalid rate</span>
+                <p class="govuk-body-s govuk-!-margin-bottom-0" style="color: #505a5f;">If your <strong>Forms</strong> capability lacks built-in logic and is disconnected from your GIS, you will see high invalidation rates (historically ~50%). Resolving these manual errors can take 2-5 hours per application.</p>
               </div>
             </div>
-            <div class="govuk-grid-column-one-third">
-              <div class="feature-box" style="height: 100%; box-sizing: border-box; margin-bottom: 0;">
-                <h4 class="govuk-heading-s">Modular architecture</h4>
-                <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-0">Transitioning away from tightly-coupled systems toward API-driven modular services (e.g., separating portals from processing systems) to prevent lock-in and improve agility.</p>
+            <!-- Stat 2 -->
+            <div class="govuk-grid-column-one-quarter">
+              <div class="stat-box">
+                <span class="govuk-heading-xl govuk-!-margin-bottom-1">80%</span>
+                <span class="govuk-body-s govuk-!-font-weight-bold" style="display:block; margin-bottom: 5px;">Validation improvement</span>
+                <p class="govuk-body-s govuk-!-margin-bottom-0" style="color: #505a5f;">Using user-centred, logic-driven forms that integrate deeply with your capability stack can prevent up to 80% of common validation errors at the point of entry.</p>
               </div>
             </div>
-            <div class="govuk-grid-column-one-third">
-              <div class="feature-box" style="height: 100%; box-sizing: border-box; margin-bottom: 0;">
-                <h4 class="govuk-heading-s">User-centred design</h4>
-                <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-0">Redesigning submission forms and back-office workflows around the verified needs of applicants and planning officers, using plain English and automating routine validation checks.</p>
+            <!-- Stat 3 -->
+            <div class="govuk-grid-column-one-quarter">
+              <div class="stat-box">
+                <span class="govuk-heading-xl govuk-!-margin-bottom-1">£66k+</span>
+                <span class="govuk-body-s govuk-!-font-weight-bold" style="display:block; margin-bottom: 5px;">Annual LA savings</span>
+                <p class="govuk-body-s govuk-!-margin-bottom-0" style="color: #505a5f;">Estimated minimum processing time savings for a typical local authority (processing ~1,400 applications/year) by reducing the invalid rate. Savings could reach £171,500.</p>
+              </div>
+            </div>
+            <!-- Stat 4 -->
+            <div class="govuk-grid-column-one-quarter">
+              <div class="stat-box">
+                <span class="govuk-heading-xl govuk-!-margin-bottom-1">0.5</span>
+                <span class="govuk-body-s govuk-!-font-weight-bold" style="display:block; margin-bottom: 5px;">Days saved by applicants</span>
+                <p class="govuk-body-s govuk-!-margin-bottom-0" style="color: #505a5f;">Estimated time saved by an applicant or agent when preparing an application using modernised tools, plus avoiding a further half-day of subsequent corrections.</p>
               </div>
             </div>
           </div>
 
           <h4 class="govuk-heading-s">Sources and further reading</h4>
           <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8 govuk-!-font-size-16">
-            <li><a href="https://localdigital.gov.uk/fund/reducing-invalid-planning-applications/" class="govuk-link">Reducing Invalid Planning Applications (RIPA)</a></li>
-            <li><a href="https://localdigital.gov.uk/fund/back-office-planning-system/" class="govuk-link">Back Office Planning System (BOPS)</a></li>
+            <li><a href="https://localdigital.gov.uk/fund/reducing-invalid-planning-applications/" class="govuk-link">Local Digital Fund - Reducing Invalid Planning Applications (RIPA)</a></li>
+            <li><a href="https://localdigital.gov.uk/fund/back-office-planning-system/" class="govuk-link">Local Digital Fund - Back Office Planning System (BOPS)</a></li>
             <li><a href="https://opendigitalplanning.org/" class="govuk-link">Open Digital Planning (ODP) community</a></li>
           </ul>
 
+          <p class="govuk-body">For a comprehensive evaluation, you can use the <a href="https://opendigitalplanning.org/digital-planning-improvement" class="govuk-link govuk-!-font-weight-bold">Digital Planning Maturity Assessment tool</a>, available to any council who joins the Open Digital Planning community.</p>
+
           <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
-          <!-- 5. Planning Datasets -->
-          <h2 class="govuk-heading-l" id="planning-datasets">National Planning Data Platform</h2>
+          <!-- 4. Roadmap -->
+          <h2 class="govuk-heading-l" id="roadmap">4. Build an actionable roadmap</h2>
+          <p class="govuk-body govuk-!-margin-bottom-6">Translate your assessment insights into a capability-driven improvement plan. Extensive public sector user research has established the following evidence-based principles as rationalisation targets for planning technology.</p>
+
+          <h3 class="govuk-heading-m">Strategic rationalisation targets</h3>
+          <div class="govuk-grid-row govuk-!-margin-bottom-8">
+            <div class="govuk-grid-column-one-third">
+              <div class="feature-box" style="height: 100%; box-sizing: border-box; margin-bottom: 0;">
+                <h4 class="govuk-heading-s">Moving from "documents to data"</h4>
+                <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-0">Prioritise collecting standardised, machine-readable data via modern forms. Reduce reliance on your Document Management capability for unstructured PDFs to power automated checking.</p>
+              </div>
+            </div>
+            <div class="govuk-grid-column-one-third">
+              <div class="feature-box" style="height: 100%; box-sizing: border-box; margin-bottom: 0;">
+                <h4 class="govuk-heading-s">Modular architecture</h4>
+                <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-0">Retire monolithic systems that tightly couple your Forms, Workflow, and Payments. Transition toward API-driven, modular services to prevent vendor lock-in and improve agility.</p>
+              </div>
+            </div>
+            <div class="govuk-grid-column-one-third">
+              <div class="feature-box" style="height: 100%; box-sizing: border-box; margin-bottom: 0;">
+                <h4 class="govuk-heading-s">User-centred design</h4>
+                <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-0">Redesign back-office workflows around the verified needs of planning officers, automating routine validation checks through improved interoperability.</p>
+              </div>
+            </div>
+          </div>
+
+          <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+          <!-- 5. Interoperability -->
+          <h2 class="govuk-heading-l" id="interoperability">5. Interoperability target: Planning Data Platform</h2>
           
-          <p class="govuk-body govuk-!-font-size-19">The <strong><a href="https://www.planning.data.gov.uk/" class="govuk-link">Planning Data Platform</a></strong> is a central repository built by the Ministry of Housing, Communities and Local Government that standardises and ingests planning and housing data from local authorities across England. By aggregating fragmented, locally-held data into a single, searchable platform, it provides a reliable single source of truth.</p>
+          <p class="govuk-body govuk-!-font-size-19">The <strong><a href="https://www.planning.data.gov.uk/" class="govuk-link">Planning Data Platform</a></strong> is a central repository built by the Ministry of Housing, Communities and Local Govenment that standardises planning and housing data across England. It serves as the national interoperability target for your local capabilities.</p>
 
-          <div class="govuk-grid-row govuk-!-margin-bottom-6 govuk-!-margin-top-6">
-            <div class="stat-box govuk-grid-column-one-half">
-              <h3 class="govuk-heading-s">Why it is beneficial</h3>
-              <p class="govuk-body govuk-!-font-size-16">This open-data approach is the foundation of the "documents to data" principle. It breaks information out of siloed PDFs, enables property technology (PropTech) innovation, allows developers to easily find constraints, and supports faster, automated validation by planning officers.</p>
-            </div>
-            <div class="stat-box govuk-grid-column-one-half">
-              <h3 class="govuk-heading-s">How to implement these resources</h3>
-              <p class="govuk-body govuk-!-font-size-16">Local authorities should align their data publication pipelines with MHCLG's data specifications. By maintaining spatial data in standard formats at the source, councils can automate the flow of data via APIs into both their local GIS platforms and the national platform.</p>
-            </div>
-          </div>
-
-          <div class="govuk-warning-text govuk-!-width-two-thirds">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-              <span class="govuk-warning-text__assistive">Warning</span>
-              Data may be incomplete and not yet cover all of England. MHCLG are working to improve availability and quality.
-            </strong>
-          </div>
+          <p class="govuk-body">Local authorities should set long-term ambitions to align their Data and Geographical capabilities with MHCLG's specifications. By maintaining spatial data in standard formats at the source, councils can automate the flow of data via APIs, removing the need for manual reporting.</p>
 
           <h3 class="govuk-heading-m govuk-!-margin-top-8">Available planning datasets</h3>
 
@@ -705,6 +795,9 @@ description: LGAM accordion layout with research insights and business cases
           <div class="govuk-inset-text govuk-!-margin-top-8">
             <a href="https://www.planning.data.gov.uk/dataset/" class="govuk-link govuk-!-font-weight-bold">Browse all planning datasets on planning.data.gov.uk</a>
           </div>
+          <p class="govuk-body govuk-!-margin-top-6">
+             <a class="govuk-link" href="#main-content">Back to top ↑</a>
+          </p>
 </main-content>
 <page-script>
     // --- FILTER LOGIC FOR INTEGRATED FUNCTION/SERVICE GRID ---

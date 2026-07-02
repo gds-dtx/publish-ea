@@ -1,0 +1,145 @@
+---
+title: Building Control
+caption: LGAM Business Areas
+status: draft
+parent: hub.html
+parent_title: Planning Hub
+redirect_from: ba-pd-building-control.html
+description: "Explores the technical lifecycle of building regulations enforcement. Uses interactive accordion tabs to contrast legacy anti-patterns with target architectures, featuring detailed SVG flowcharts that illustrate offline mobile fieldwork and complex BIM data integration."
+---
+<style>
+    /* Pattern and Capability Tags */
+    .pattern-group { margin-bottom: 20px; }
+    .capability-tag { 
+      display: inline-block; 
+      padding: 2px 8px; 
+      background: #e5e5e5; 
+      color: #0b0c0c; 
+      font-size: 14px; 
+      margin-right: 5px; 
+      margin-bottom: 5px;
+      border: 1px solid #b1b4b6;
+    }
+    .pattern-tag { display: inline-block; padding: 2px 8px; font-weight: bold; font-size: 14px; margin-bottom: 5px; }
+    .pattern-tag--target { background: #00703c; color: #fff; }
+    .pattern-tag--anti { background: #d4351c; color: #fff; }
+
+    .phase-number {
+      display: inline-block;
+      background: #1d70b8;
+      color: #fff;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      text-align: center;
+      line-height: 24px;
+      margin-right: 10px;
+      font-size: 14px;
+    }
+
+    /* SVG Diagram Container */
+    .arch-diagram-container {
+      background: #fff;
+      border: 1px solid #b1b4b6;
+      padding: 20px;
+      margin: 30px 0;
+      overflow-x: auto;
+    }
+
+    .lgam-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      color: #ffffff;
+      font-size: 14px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+    .lgam-tag--capability { background: #000080; border: 1px solid #000080; }
+    .lgam-tag--corporate { background: #696969; border: 1px solid #696969; }
+    .lgam-tag--data { background: #800000; border: 1px solid #800000; }
+    .lgam-tag--public { background: #CC00CC; border: 1px solid #CC00CC; }
+    .lgam-tag--integration { background: #6B6B00; border: 1px solid #6B6B00; }
+    .lgam-tag--security { background: #CC0000; border: 1px solid #CC0000; }
+</style>
+
+<nav-contents>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#about">About this area</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#lgam-stack">The LGAM technology stack</a></li>
+      </ul>
+
+      <h2 class="app-navigation__heading">Planning Journeys</h2>
+      <ul class="app-navigation">
+        <li class="app-navigation__item"><a class="app-navigation__link" href="planning-policy.html">Planning Policy</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="development-management.html">Development Management</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link govuk-!-font-weight-bold" href="#about">Building Control</a></li>
+</nav-contents>
+
+<main-content>
+      <span class="govuk-caption-xl">Business Area: Planning & Development</span>
+      <h1 class="govuk-heading-xl">Building Control</h1>
+
+      <section id="about">
+        <p class="govuk-body govuk-!-font-size-24">The technical architecture supporting the enforcement of building regulations, structural safety, and on-site compliance inspections.</p>
+        <p class="govuk-body">Building Control may have a small public-facing presence, with the bulk of its stack serving a highly technical, field-centric service. Its architecture should prioritise offline-capable mobile applications for site inspectors, the ingestion of complex 3D technical drawings (BIM), and rigid, immutable audit trails to comply with Building Safety Act and the Building Safety Regulator (BSR) requirements.</p>
+      </section>
+
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+      <section id="lgam-stack">
+        <h2 class="govuk-heading-l">The LGAM technology stack</h2>
+        <p class="govuk-body">Delivering this journey requires specific capabilities focused heavily on mobile workforce enablement and secure data storage. The technology stack to deliver this, when aligned to the Local Government Architecture Model, might include the following elements:</p>
+        
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">LGAM Layer</th>
+              <th scope="col" class="govuk-table__header">LGAM Element</th>
+              <th scope="col" class="govuk-table__header">Context in Planning</th>
+              <th scope="col" class="govuk-table__header">Enabling Technology (Example)</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Forms</span></td>
+              <td class="govuk-table__cell">Offline-first tablet applications allowing inspectors to log site evidence (photos, notes) in basements or rural areas without 4G/5G.</td>
+              <td class="govuk-table__cell">Mobile Inspection App / Offline Forms Engine</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Data and Information</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Document and records management</span></td>
+              <td class="govuk-table__cell">Highly secure, scalable storage capable of handling massive <abbr title="Building Information Modeling">BIM</abbr> and <abbr title="Computer-Aided Design">CAD</abbr> drawings, often subject to commercial confidentiality.</td>
+              <td class="govuk-table__cell">Secure <abbr title="Electronic Document Management">EDM</abbr> / BIM Repository</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Corporate Areas</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Geographical</span></td>
+              <td class="govuk-table__cell">Dynamic routing algorithms to optimize the daily schedules of field inspectors across the borough.</td>
+              <td class="govuk-table__cell"><abbr title="Geographic Information System">GIS</abbr> / Dynamic Scheduler</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--integration">Integration</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--integration">API Gateway</span></td>
+              <td class="govuk-table__cell">Linkages to the national <abbr title="Building Safety Regulator">BSR</abbr> to automatically pass high-risk building data upstream.</td>
+              <td class="govuk-table__cell">National Gateway Integration</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Payments</span></td>
+              <td class="govuk-table__cell">Processing inspection fees and taking payments for regularisation certificates.</td>
+              <td class="govuk-table__cell">Corporate Payment Gateway</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Workflow</span></td>
+              <td class="govuk-table__cell">Managing the statutory timeline of inspections from commencement to completion.</td>
+              <td class="govuk-table__cell">Core Case Management System</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <hr class="govuk-section-break govuk-section-break--l"/>
+</main-content>
+
+<page-script>
+</page-script>
