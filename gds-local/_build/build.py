@@ -71,6 +71,7 @@ def parse_page(filepath):
         "main_content": extract_block("main-content"),
         "page_script": extract_block("page-script"),
         "page_modules": extract_block("page-modules"),
+        "page_history": extract_block("page-history"),
     }
 
     return front_matter, blocks
@@ -139,6 +140,18 @@ def build_page(target_filename, front_matter, blocks):
     parts.append("    </nav>\n\n")
     parts.append("      <main class=\"app-main-content\" id=\"main-content\" role=\"main\">\n")
     parts.append(blocks["main_content"])
+
+    if blocks.get("page_history", "").strip():
+        parts.append("\n<hr class=\"govuk-section-break govuk-section-break--xl govuk-section-break--visible\">\n")
+        parts.append("<details class=\"govuk-details\" data-module=\"govuk-details\">\n")
+        parts.append("  <summary class=\"govuk-details__summary\">\n")
+        parts.append("    <span class=\"govuk-details__summary-text\">Page history</span>\n")
+        parts.append("  </summary>\n")
+        parts.append("  <div class=\"govuk-details__text\">\n")
+        parts.append("    " + blocks["page_history"].strip().replace("\n", "\n    ") + "\n")
+        parts.append("  </div>\n")
+        parts.append("</details>\n")
+
     parts.append("\n      </main>\n")
     parts.append("  </div>\n\n")
 
