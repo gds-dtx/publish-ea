@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Planning Policy - Local Government Architecture Model - GOV.UK</title>
+  <title>Planning Hub - Local Government Architecture Model - GOV.UK</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#1d70b8">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/govuk-frontend.min.css">
@@ -33,59 +33,12 @@
       }
     }
 
-    /* Pattern and Capability Tags */
-    .pattern-group { margin-bottom: 20px; }
-    .capability-tag { 
-      display: inline-block; 
-      padding: 2px 8px; 
-      background: #e5e5e5; 
-      color: #0b0c0c; 
-      font-size: 14px; 
-      margin-right: 5px; 
-      margin-bottom: 5px;
-      border: 1px solid #b1b4b6;
-    }
-    .pattern-tag { display: inline-block; padding: 2px 8px; font-weight: bold; font-size: 14px; margin-bottom: 5px; }
-    .pattern-tag--target { background: #00703c; color: #fff; }
-    .pattern-tag--anti { background: #d4351c; color: #fff; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .govuk-tag--green { background-color: #00703c; color: #fff; }
+    .govuk-tag--grey { background-color: #b1b4b6; color: #0b0c0c; }
 
-    .phase-number {
-      display: inline-block;
-      background: #1d70b8;
-      color: #fff;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      text-align: center;
-      line-height: 24px;
-      margin-right: 10px;
-      font-size: 14px;
-    }
-
-    /* SVG Diagram Container */
-    .arch-diagram-container {
-      background: #fff;
-      border: 1px solid #b1b4b6;
-      padding: 20px;
-      margin: 30px 0;
-      overflow-x: auto;
-    }
-
-    .lgam-tag {
-      display: inline-block;
-      padding: 2px 8px;
-      color: #ffffff;
-      font-size: 14px;
-      margin-right: 5px;
-      margin-bottom: 5px;
-    }
-    .lgam-tag--capability { background: #000080; border: 1px solid #000080; }
-    .lgam-tag--corporate { background: #696969; border: 1px solid #696969; }
-    .lgam-tag--data { background: #800000; border: 1px solid #800000; }
-    .lgam-tag--public { background: #CC00CC; border: 1px solid #CC00CC; }
-    .lgam-tag--interface { background: #28a197; border: 1px solid #28a197; }
-    .lgam-tag--integration { background: #6B6B00; border: 1px solid #6B6B00; }
-    .lgam-tag--security { background: #CC0000; border: 1px solid #CC0000; }
+    .flex-row { display: flex; flex-wrap: wrap; }
+    .value-stream-card { height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
 
     /* Page layout: sidebar + main content */
     .app-content-wrapper {
@@ -237,7 +190,7 @@
         </a>
       </div>
       <div class="govuk-header__content">
-        <a href="../../../index.html" class="govuk-header__link govuk-header__service-name">
+        <a href="../../index.html" class="govuk-header__link govuk-header__service-name">
           Local Government Architecture Model
         </a>
       </div>
@@ -246,94 +199,81 @@
 
   <div class="app-content-wrapper">
     <nav class="app-sidebar" aria-label="Page navigation">
-      <a href="index.html" class="govuk-back-link govuk-!-margin-bottom-4 govuk-!-margin-top-0">Back to Planning and development</a>
       <h2 class="app-navigation__heading">Contents</h2>
       <ul class="app-navigation">
 
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#about">About this area</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="#lgam-stack">The LGAM technology stack</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#about">About this domain</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="#value-streams">Planning and Development areas</a></li>
       </ul>
 
-      <h2 class="app-navigation__heading">Planning Journeys</h2>
-      <ul class="app-navigation">
-        <li class="app-navigation__item"><a class="app-navigation__link govuk-!-font-weight-bold" href="#about">Planning Policy</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="development-management.html">Development Management</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="building-control.html">Building Control</a></li>
 
       </ul>
       <h2 class="app-navigation__heading">Local Government Architecture Model</h2>
       <ul class="app-navigation">
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html">Index</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#public-channels">Public Channels</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#council-interfaces">Council Interfaces</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#capabilities">Capabilities</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#business-areas">Business Areas</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#corporate-areas">Corporate Areas</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#foundational-technology">Foundational Technology</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#integration">Integration</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#security">Security</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#data-information">Data and Information</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html">Index</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#public-channels">Public Channels</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#council-interfaces">Council Interfaces</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#capabilities">Capabilities</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#business-areas">Business Areas</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#corporate-areas">Corporate Areas</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#foundational-technology">Foundational Technology</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#integration">Integration</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#security">Security</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#data-information">Data and Information</a></li>
       </ul>
     </nav>
 
       <main class="app-main-content" id="main-content" role="main">
 
-      <span class="govuk-caption-xl">Business Area: Planning & Development</span>
-      <h1 class="govuk-heading-xl">Planning Policy</h1>
+      <span class="govuk-caption-xl">Business Area</span>
+      <h1 class="govuk-heading-xl">Planning and Development</h1>
 
       <section id="about">
-        <p class="govuk-body govuk-!-font-size-24">The technical architecture required to gather spatial evidence, engage citizens at scale, and formulate the statutory Local Plan.</p>
-        <p class="govuk-body">Creating a Local Plan is a multi-year, data-intensive endeavor. Unlike transactional services, Planning Policy architecture focuses on big data analytics, geospatial modeling (e.g., finding land suitable for housing), and scalable citizen engagement platforms designed to capture sentiment rather than just simple form inputs.</p>
+        <p class="govuk-body govuk-!-font-size-24">The processing of planning applications, enforcement of building regulations, and creation of spatial plans.</p>
+        <p class="govuk-body">Planning and Development represents one of the most legally complex, highly scrutinised, and data-intensive functions of local government. Systems in this domain must handle massive volumes of unstructured data (architectural plans, public objections) whilst strictly enforcing spatial geometries and statutory deadlines.</p>
+        
+        <div class="govuk-inset-text">
+          <p class="govuk-body">For more on modernising this domain, see the <a href="https://opendigitalplanning.org/" class="govuk-link" target="_blank" rel="noopener">Open Digital Planning</a> initiative - a community of forward-thinking Local Planning Authorities working together to shape a more efficient, data-driven planning system, supported by the Ministry of Housing, Communities and Local Government.</p>
+        </div>
       </section>
 
       <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-      <section id="lgam-stack">
-        <h2 class="govuk-heading-l">The LGAM technology stack</h2>
-        <p class="govuk-body">Delivering a Local Plan requires orchestrating analytical and engagement capabilities. The technology stack to deliver this, when aligned to the Local Government Architecture Model, might include the following elements:</p>
-        
-        <table class="govuk-table">
-          <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header">LGAM Layer</th>
-              <th scope="col" class="govuk-table__header">LGAM Element</th>
-              <th scope="col" class="govuk-table__header">Context in Planning</th>
-              <th scope="col" class="govuk-table__header">Enabling Technology (Example)</th>
-            </tr>
-          </thead>
-          <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Corporate Areas</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Geographical</span></td>
-              <td class="govuk-table__cell">Spatial modelling to conduct <abbr title="Multi-Criteria Decision Analysis">MCDA</abbr>, overlaying flood zones, transport nodes, and conservation areas to identify viable development sites.</td>
-              <td class="govuk-table__cell">Advanced <abbr title="Geographic Information System">GIS</abbr> / Spatial Modelling Tool</td>
-            </tr>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Data and Information</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Data warehousing</span></td>
-              <td class="govuk-table__cell">Aggregating <abbr title="Office for National Statistics">ONS</abbr> demographic data, historic housing delivery rates, and economic models into a central repository to form the "evidence base".</td>
-              <td class="govuk-table__cell">Enterprise Data Lake / Warehouse</td>
-            </tr>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--interface">Council Interfaces</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--interface">Website</span></td>
-              <td class="govuk-table__cell">Interactive, map-based consultation platforms allowing citizens to drop pins and leave sentiment-driven feedback on proposed zoning changes.</td>
-              <td class="govuk-table__cell">Citizen Engagement Portal</td>
-            </tr>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--integration">Integration</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--integration">API Gateway</span></td>
-              <td class="govuk-table__cell">Once the Plan is adopted, exposing the spatial policies as "Rules-as-code" APIs to be consumed directly by the Development Management forms engines.</td>
-              <td class="govuk-table__cell">Open Data <abbr title="Application Programming Interface">API</abbr> Server</td>
-            </tr>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Data and Information</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Document and records management</span></td>
-              <td class="govuk-table__cell">Version control and archiving of the statutory Local Plan documents throughout multiple rounds of public examination.</td>
-              <td class="govuk-table__cell">Corporate <abbr title="Electronic Document Management">EDM</abbr></td>
-            </tr>
-          </tbody>
-        </table>
+      <section id="value-streams">
+        <h2 class="govuk-heading-l">Planning and Development areas</h2>
+        <p class="govuk-body">Planning and Development functions might broadly be categorised into three areas:</p>
+
+        <div class="govuk-grid-row govuk-!-margin-top-6 flex-row">
+          <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
+            <div class="value-stream-card">
+              <h3 class="govuk-heading-m value-stream-card__title">
+                <a href="planning-policy.html" class="value-stream-card__link">Planning Policy</a>
+              </h3>
+              <p class="govuk-body govuk-!-font-size-14">Creating spatial plans. Data-heavy, requiring geospatial modeling, multi-criteria decision analysis, and scalable public engagement platforms.</p>
+              <a href="planning-policy.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+
+          <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
+            <div class="value-stream-card">
+              <h3 class="govuk-heading-m value-stream-card__title">
+                <a href="development-management.html" class="value-stream-card__link">Development Management</a>
+              </h3>
+              <p class="govuk-body govuk-!-font-size-14">Processing individual planning applications. High public visibility, ideally served by linked rules-engines, dynamic forms, and integration with public registers.</p>
+              <a href="development-management.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+
+          <div class="govuk-grid-column-one-third govuk-!-margin-bottom-4">
+            <div class="value-stream-card">
+              <h3 class="govuk-heading-m value-stream-card__title">
+                <a href="building-control.html" class="value-stream-card__link">Building Control</a>
+              </h3>
+              <p class="govuk-body govuk-!-font-size-14">Enforcing structural safety. Technically intensive, ideally served by offline-tolerant mobile apps for field inspections and 3D BIM data ingestion.</p>
+              <a href="building-control.html" class="govuk-link govuk-!-font-size-14 govuk-!-font-weight-bold">View detail <span aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+        </div>
       </section>
       <hr class="govuk-section-break govuk-section-break--l"/>
 

@@ -76,7 +76,7 @@ def parse_page(filepath):
     return front_matter, blocks
 
 
-def build_page(filename, front_matter, blocks):
+def build_page(target_filename, front_matter, blocks):
     """Assemble a full HTML page from partials and page-specific blocks."""
     head_open = read_partial("head-open.html")
     layout_css = read_partial("layout-css.html")
@@ -94,7 +94,7 @@ def build_page(filename, front_matter, blocks):
     parent_title = front_matter.get("parent_title", "")
 
     # Calculate depth to fix relative links to the root index.html
-    depth = filename.count("/")
+    depth = target_filename.count("/")
     prefix = "../" * depth
     if depth > 0:
         header = header.replace('href="index.html"', f'href="{prefix}index.html"')
@@ -181,28 +181,31 @@ def update_index_links(pages):
     original = html
 
     for filename, fm in pages:
-        title = fm.get("title", "")
+        index_title = fm.get("index_title", fm.get("title", ""))
         status = fm.get("status", "draft")
-        if not title:
+        target = fm.get("target", filename)
+        
+        if not index_title:
             continue
+
+        link_url = target if status in ("published", "modified") else filename
 
         # Build the link paragraph we want to insert/find
         link_para = (
             f'<p class="govuk-body govuk-!-margin-top-3 govuk-!-margin-bottom-0">'
-            f'<a href="{filename}" class="govuk-link">View {title} detail &rarr;</a></p>'
+            f'<a href="{link_url}" class="govuk-link">View {fm.get("title", "")} detail &rarr;</a></p>'
         )
 
-        # Pattern to find existing auto-generated link for this file
+        # Pattern to find existing auto-generated link for this file or target
         link_pattern = re.compile(
             r'<p class="govuk-body govuk-!-margin-top-3 govuk-!-margin-bottom-0">'
-            r'<a href="' + re.escape(filename) + r'"[^>]*>View [^<]+ detail[^<]*</a></p>\n?'
+            r'<a href="(?:' + re.escape(filename) + r'|' + re.escape(target) + r')"[^>]*>View [^<]+ detail[^<]*</a></p>\n?'
         )
 
-        # Find the item whose summary text matches the page title (case-insensitive)
-        # Pattern: <summary...><span...>Title text</span></summary>
+        # Find the item whose summary text matches the index_title (case-insensitive)
         summary_pattern = re.compile(
             r'(<details[^>]*>.*?<summary[^>]*>\s*<span[^>]*>)\s*'
-            + re.escape(title)
+            + re.escape(index_title)
             + r'\s*(</span>\s*</summary>.*?<div class="govuk-details__text">)(.*?)(</div>\s*</details>)',
             re.DOTALL | re.IGNORECASE,
         )
@@ -213,18 +216,14 @@ def update_index_links(pages):
 
         details_text = match.group(3)
 
-        # Published and modified pages get links; draft pages don't
         if status in ("published", "modified"):
-            # If link already present, leave it
             if link_pattern.search(details_text):
                 continue
-            # Insert link after the first <p> in the details text
             first_p_end = re.search(r'</p>', details_text)
             if first_p_end:
                 insert_pos = match.start(3) + first_p_end.end()
                 html = html[:insert_pos] + "\n                    " + link_para + html[insert_pos:]
         else:
-            # Draft: remove link if present
             html = link_pattern.sub("", html)
 
     if html != original:
@@ -434,30 +433,47 @@ def main():
 
     pages_meta = []
 
+    published_targets = {}
+    
     for filename in page_files:
         filepath = os.path.join(PAGES_DIR, filename)
         fm, blocks = parse_page(filepath)
-        output = build_page(filename, fm, blocks)
         status = fm.get("status", "draft")
+        target = fm.get("target", filename)
 
-        # Always write to preview/
+        # Build preview using original filename (preserves source tree structure in preview)
+        preview_output = build_page(filename, fm, blocks)
         preview_path = os.path.join(PREVIEW_DIR, filename)
         os.makedirs(os.path.dirname(preview_path), exist_ok=True)
         with open(preview_path, "w", encoding="utf-8") as f:
-            f.write(output)
+            f.write(preview_output)
 
         # Only write to root for published pages
-        root_path = os.path.join(GDS_LOCAL_DIR, filename)
+        root_path = os.path.join(GDS_LOCAL_DIR, target)
         if status == "published":
+            # If target depth differs, re-render to get correct relative prefixes
+            if target.count("/") != filename.count("/"):
+                published_output = build_page(target, fm, blocks)
+            else:
+                published_output = preview_output
+                
+            # Collision detection
+            if target in published_targets:
+                print(f"\nERROR: Multiple published files target '{target}': {published_targets[target]} and {filename}", file=sys.stderr)
+                sys.exit(1)
+            published_targets[target] = filename
+
             os.makedirs(os.path.dirname(root_path), exist_ok=True)
             with open(root_path, "w", encoding="utf-8") as f:
-                f.write(output)
-            print(f"  [published]  {filename}")
+                f.write(published_output)
+                
+            if target != filename:
+                print(f"  [published]  {filename} -> {target}")
+            else:
+                print(f"  [published]  {filename}")
         elif status == "modified":
-            # Don't touch root — it retains the last-published version
             print(f"  [modified]   {filename} (preview only, root unchanged)")
         else:
-            # Draft — don't write to root (or remove if it exists from a previous state)
             print(f"  [draft]      {filename} (preview only)")
 
         # Generate redirects if specified in front matter
