@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Planning Policy - Local Government Architecture Model - GOV.UK</title>
+  <title>Building Control - Local Government Architecture Model - GOV.UK</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#1d70b8">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/govuk-frontend.min.css">
@@ -83,7 +83,6 @@
     .lgam-tag--corporate { background: #696969; border: 1px solid #696969; }
     .lgam-tag--data { background: #800000; border: 1px solid #800000; }
     .lgam-tag--public { background: #CC00CC; border: 1px solid #CC00CC; }
-    .lgam-tag--interface { background: #28a197; border: 1px solid #28a197; }
     .lgam-tag--integration { background: #6B6B00; border: 1px solid #6B6B00; }
     .lgam-tag--security { background: #CC0000; border: 1px solid #CC0000; }
 
@@ -237,7 +236,7 @@
         </a>
       </div>
       <div class="govuk-header__content">
-        <a href="../../../index.html" class="govuk-header__link govuk-header__service-name">
+        <a href="../../index.html" class="govuk-header__link govuk-header__service-name">
           Local Government Architecture Model
         </a>
       </div>
@@ -256,41 +255,41 @@
 
       <h2 class="app-navigation__heading">Planning Journeys</h2>
       <ul class="app-navigation">
-        <li class="app-navigation__item"><a class="app-navigation__link govuk-!-font-weight-bold" href="#about">Planning Policy</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="planning-policy.html">Planning Policy</a></li>
         <li class="app-navigation__item"><a class="app-navigation__link" href="development-management.html">Development Management</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="building-control.html">Building Control</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link govuk-!-font-weight-bold" href="#about">Building Control</a></li>
 
       </ul>
       <h2 class="app-navigation__heading">Local Government Architecture Model</h2>
       <ul class="app-navigation">
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html">Index</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#public-channels">Public Channels</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#council-interfaces">Council Interfaces</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#capabilities">Capabilities</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#business-areas">Business Areas</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#corporate-areas">Corporate Areas</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#foundational-technology">Foundational Technology</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#integration">Integration</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#security">Security</a></li>
-        <li class="app-navigation__item"><a class="app-navigation__link" href="../../../index.html#data-information">Data and Information</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html">Index</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#public-channels">Public Channels</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#council-interfaces">Council Interfaces</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#capabilities">Capabilities</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#business-areas">Business Areas</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#corporate-areas">Corporate Areas</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#foundational-technology">Foundational Technology</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#integration">Integration</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#security">Security</a></li>
+        <li class="app-navigation__item"><a class="app-navigation__link" href="../../index.html#data-information">Data and Information</a></li>
       </ul>
     </nav>
 
       <main class="app-main-content" id="main-content" role="main">
 
       <span class="govuk-caption-xl">Business Area: Planning & Development</span>
-      <h1 class="govuk-heading-xl">Planning Policy</h1>
+      <h1 class="govuk-heading-xl">Building Control</h1>
 
       <section id="about">
-        <p class="govuk-body govuk-!-font-size-24">The technical architecture required to gather spatial evidence, engage citizens at scale, and formulate the statutory Local Plan.</p>
-        <p class="govuk-body">Creating a Local Plan is a multi-year, data-intensive endeavor. Unlike transactional services, Planning Policy architecture focuses on big data analytics, geospatial modeling (e.g., finding land suitable for housing), and scalable citizen engagement platforms designed to capture sentiment rather than just simple form inputs.</p>
+        <p class="govuk-body govuk-!-font-size-24">The technical architecture supporting the enforcement of building regulations, structural safety, and on-site compliance inspections.</p>
+        <p class="govuk-body">Building Control may have a small public-facing presence, with the bulk of its stack serving a highly technical, field-centric service. Its architecture should prioritise offline-capable mobile applications for site inspectors, the ingestion of complex 3D technical drawings (BIM), and rigid, immutable audit trails to comply with Building Safety Act and the Building Safety Regulator (BSR) requirements.</p>
       </section>
 
       <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
       <section id="lgam-stack">
         <h2 class="govuk-heading-l">The LGAM technology stack</h2>
-        <p class="govuk-body">Delivering a Local Plan requires orchestrating analytical and engagement capabilities. The technology stack to deliver this, when aligned to the Local Government Architecture Model, might include the following elements:</p>
+        <p class="govuk-body">Delivering this journey requires specific capabilities focused heavily on mobile workforce enablement and secure data storage. The technology stack to deliver this, when aligned to the Local Government Architecture Model, might include the following elements:</p>
         
         <table class="govuk-table">
           <thead class="govuk-table__head">
@@ -303,34 +302,40 @@
           </thead>
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Corporate Areas</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Geographical</span></td>
-              <td class="govuk-table__cell">Spatial modelling to conduct <abbr title="Multi-Criteria Decision Analysis">MCDA</abbr>, overlaying flood zones, transport nodes, and conservation areas to identify viable development sites.</td>
-              <td class="govuk-table__cell">Advanced <abbr title="Geographic Information System">GIS</abbr> / Spatial Modelling Tool</td>
-            </tr>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Data and Information</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Data warehousing</span></td>
-              <td class="govuk-table__cell">Aggregating <abbr title="Office for National Statistics">ONS</abbr> demographic data, historic housing delivery rates, and economic models into a central repository to form the "evidence base".</td>
-              <td class="govuk-table__cell">Enterprise Data Lake / Warehouse</td>
-            </tr>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--interface">Council Interfaces</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--interface">Website</span></td>
-              <td class="govuk-table__cell">Interactive, map-based consultation platforms allowing citizens to drop pins and leave sentiment-driven feedback on proposed zoning changes.</td>
-              <td class="govuk-table__cell">Citizen Engagement Portal</td>
-            </tr>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--integration">Integration</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--integration">API Gateway</span></td>
-              <td class="govuk-table__cell">Once the Plan is adopted, exposing the spatial policies as "Rules-as-code" APIs to be consumed directly by the Development Management forms engines.</td>
-              <td class="govuk-table__cell">Open Data <abbr title="Application Programming Interface">API</abbr> Server</td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Forms</span></td>
+              <td class="govuk-table__cell">Offline-first tablet applications allowing inspectors to log site evidence (photos, notes) in basements or rural areas without 4G/5G.</td>
+              <td class="govuk-table__cell">Mobile Inspection App / Offline Forms Engine</td>
             </tr>
             <tr class="govuk-table__row">
               <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Data and Information</span></td>
               <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Document and records management</span></td>
-              <td class="govuk-table__cell">Version control and archiving of the statutory Local Plan documents throughout multiple rounds of public examination.</td>
-              <td class="govuk-table__cell">Corporate <abbr title="Electronic Document Management">EDM</abbr></td>
+              <td class="govuk-table__cell">Highly secure, scalable storage capable of handling massive <abbr title="Building Information Modeling">BIM</abbr> and <abbr title="Computer-Aided Design">CAD</abbr> drawings, often subject to commercial confidentiality.</td>
+              <td class="govuk-table__cell">Secure <abbr title="Electronic Document Management">EDM</abbr> / BIM Repository</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Corporate Areas</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Geographical</span></td>
+              <td class="govuk-table__cell">Dynamic routing algorithms to optimize the daily schedules of field inspectors across the borough.</td>
+              <td class="govuk-table__cell"><abbr title="Geographic Information System">GIS</abbr> / Dynamic Scheduler</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--integration">Integration</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--integration">API Gateway</span></td>
+              <td class="govuk-table__cell">Linkages to the national <abbr title="Building Safety Regulator">BSR</abbr> to automatically pass high-risk building data upstream.</td>
+              <td class="govuk-table__cell">National Gateway Integration</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Payments</span></td>
+              <td class="govuk-table__cell">Processing inspection fees and taking payments for regularisation certificates.</td>
+              <td class="govuk-table__cell">Corporate Payment Gateway</td>
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Workflow</span></td>
+              <td class="govuk-table__cell">Managing the statutory timeline of inspections from commencement to completion.</td>
+              <td class="govuk-table__cell">Core Case Management System</td>
             </tr>
           </tbody>
         </table>
