@@ -9,20 +9,11 @@ description: "Explores the technical lifecycle of building regulations enforceme
 ---
 <style>
     /* Pattern and Capability Tags */
-    .pattern-group { margin-bottom: 20px; }
-    .capability-tag { 
-      display: inline-block; 
-      padding: 2px 8px; 
-      background: #e5e5e5; 
-      color: #0b0c0c; 
-      font-size: 14px; 
-      margin-right: 5px; 
-      margin-bottom: 5px;
-      border: 1px solid #b1b4b6;
-    }
-    .pattern-tag { display: inline-block; padding: 2px 8px; font-weight: bold; font-size: 14px; margin-bottom: 5px; }
-    .pattern-tag--target { background: #00703c; color: #fff; }
-    .pattern-tag--anti { background: #d4351c; color: #fff; }
+    
+    
+    
+    
+    
 
     .phase-number {
       display: inline-block;
@@ -133,16 +124,16 @@ description: "Explores the technical lifecycle of building regulations enforceme
                   <p class="govuk-body"><strong>The process:</strong> Builders, architects, or homeowners submit technical structural drawings before work commences. The key architectural challenge here is securely handling massive file sizes (e.g. 500MB CAD files).</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group">
-                    <span class="capability-tag">Forms</span>
-                    <span class="capability-tag">Document and records management</span>
-                    <span class="capability-tag">Payments</span>
+                    <span class="govuk-tag lgam-tag--capability">Forms</span>
+                    <span class="govuk-tag lgam-tag--capability">Document and records management</span>
+                    <span class="govuk-tag lgam-tag--capability">Payments</span>
                   </div>
                 </div>
 
                 <!-- Anti-patterns -->
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase1-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Disconnected large file transfer</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Disconnected large file transfer</span>
                     <p class="govuk-body">Because standard council web forms limit file sizes (e.g., to 10MB), applicants email links via Dropbox or WeTransfer for their massive CAD files. Officers manually download these and store them on unmanaged local network drives, breaking the audit trail.</p>
                   </div>
                   
@@ -257,16 +248,16 @@ description: "Explores the technical lifecycle of building regulations enforceme
                   <p class="govuk-body"><strong>The process:</strong> Building Control surveyors must thoroughly review complex structural plans and calculations against national Building Regulations (e.g. fire safety, thermal performance, escape routes) before any construction work is permitted to begin.</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group">
-                    <span class="capability-tag">Document and records management</span>
-                    <span class="capability-tag">Workflow</span>
-                    <span class="capability-tag">Business rule engines</span>
+                    <span class="govuk-tag lgam-tag--capability">Document and records management</span>
+                    <span class="govuk-tag lgam-tag--capability">Workflow</span>
+                    <span class="govuk-tag lgam-tag--capability">Business rule engines</span>
                   </div>
                 </div>
 
                 <!-- Anti-patterns -->
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase2-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Flattening 3D BIM to 2D PDFs</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Flattening 3D BIM to 2D PDFs</span>
                     <p class="govuk-body">Architects design modern buildings using rich, data-heavy 3D Building Information Models (BIM). However, legacy council systems force applicants to "flatten" these models into hundreds of static 2D PDF blueprints for submission. Surveyors then spend hours manually measuring distances on screen, losing all the embedded structural metadata.</p>
                   </div>
                   
@@ -366,15 +357,15 @@ description: "Explores the technical lifecycle of building regulations enforceme
                   <p class="govuk-body"><strong>The process:</strong> The core of Building Control. Surveyors travel to active construction sites to inspect foundations, damp proofing, and steelwork. They must record evidence (photos, notes, pass/fail status) and link it precisely to the property record.</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group">
-                    <span class="capability-tag">Mobile working</span>
-                    <span class="capability-tag">Geospatial data</span>
+                    <span class="govuk-tag lgam-tag--capability">Mobile working</span>
+                    <span class="govuk-tag lgam-tag--capability">Geospatial data</span>
                   </div>
                 </div>
 
                 <!-- Anti-patterns -->
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase3-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: "Online-only" web apps in the field</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: "Online-only" web apps in the field</span>
                     <p class="govuk-body">Deploying standard council web-portals to tablets. When inspectors go into concrete basements or rural development sites without 4G, the application drops the session, forcing them to use pen-and-paper and transcribe notes back at the office.</p>
                   </div>
                   
@@ -476,15 +467,15 @@ description: "Explores the technical lifecycle of building regulations enforceme
                   <p class="govuk-body"><strong>The process:</strong> Following satisfactory inspections, the council issues a formal Completion Certificate. Crucially, post-Grenfell legislation requires stringent, ongoing data sharing regarding High-Risk Buildings (HRBs) with the central Building Safety Regulator (BSR).</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group">
-                    <span class="capability-tag">Partner (B2B) integration</span>
-                    <span class="capability-tag">Data quality and governance</span>
+                    <span class="govuk-tag lgam-tag--capability">Partner (B2B) integration</span>
+                    <span class="govuk-tag lgam-tag--capability">Data quality and governance</span>
                   </div>
                 </div>
 
                 <!-- Anti-patterns -->
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase4-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: "Swivel-chair" regulatory reporting</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: "Swivel-chair" regulatory reporting</span>
                     <p class="govuk-body">Building Control officers must manually run reports in their local system, export them to Excel, and manually upload them to a central government portal. This creates a lag in safety data and a high risk of transcription errors regarding critical structural information.</p>
                   </div>
                   

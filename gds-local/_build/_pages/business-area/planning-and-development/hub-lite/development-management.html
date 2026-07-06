@@ -10,23 +10,16 @@ description: "Details the architecture for processing planning applications. Fea
 ---
 <style>
     @keyframes spin { 100% { transform: rotate(360deg); } }
-    .govuk-tag--green { background-color: #00703c; color: #fff; }
-    .govuk-tag--grey { background-color: #b1b4b6; color: #0b0c0c; }
+    
+    
 
-    .lgam-tag {
-      display: inline-block;
-      padding: 2px 8px;
-      color: #ffffff;
-      font-size: 14px;
-      margin-right: 5px;
-      margin-bottom: 5px;
-    }
-    .lgam-tag--capability { background: #000080; border: 1px solid #000080; }
-    .lgam-tag--corporate { background: #696969; border: 1px solid #696969; }
-    .lgam-tag--data { background: #800000; border: 1px solid #800000; }
-    .lgam-tag--public { background: #CC00CC; border: 1px solid #CC00CC; }
-    .lgam-tag--integration { background: #6B6B00; border: 1px solid #6B6B00; }
-    .lgam-tag--security { background: #CC0000; border: 1px solid #CC0000; }
+    
+    
+    
+    
+    
+    
+    
 </style>
 
 <nav-contents>
@@ -68,26 +61,26 @@ description: "Details the architecture for processing planning applications. Fea
           </thead>
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Forms</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--capability">Forms</span></td>
               <td class="govuk-table__cell">Dynamic, spatial-aware frontends that use "rules-as-code" to ask contextual questions based on the property's location.</td>
               <td class="govuk-table__cell">Digital Forms Engine</td>
             </tr>
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Workflow</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--capability">Workflow</span></td>
               <td class="govuk-table__cell">The core back-office engine managing statutory timelines, tasks, consultations, and the officer determination process.</td>
               <td class="govuk-table__cell">Case Management System</td>
             </tr>
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Data and Information</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--data">Document and records management</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--data">Data and Information</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--data">Document and records management</span></td>
               <td class="govuk-table__cell">Secure storage for massive volumes of unstructured data: architectural plans, public comments, and decision notices.</td>
               <td class="govuk-table__cell">Corporate <abbr title="Electronic Document Management">EDM</abbr></td>
             </tr>
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Corporate Areas</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--corporate">Geographical</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--corporate">Corporate Areas</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--corporate">Geographical</span></td>
               <td class="govuk-table__cell">The spatial database providing UPRN lookups, mapping polygons, and intersecting proposals with local plan constraints.</td>
               <td class="govuk-table__cell">Corporate <abbr title="Geographic Information System">GIS</abbr> Platform</td>
             </tr>
@@ -98,14 +91,14 @@ description: "Details the architecture for processing planning applications. Fea
               <td class="govuk-table__cell">Enterprise Integration Platform</td>
             </tr>
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Identity</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--capability">Identity</span></td>
               <td class="govuk-table__cell">Federated identity specifically for high-frequency planning agents, allowing them a single sign-on view of all their active applications.</td>
               <td class="govuk-table__cell"><abbr title="Customer Identity and Access Management">CIAM</abbr> Service / Federated Identity Provider</td>
             </tr>
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Capabilities</span></td>
-              <td class="govuk-table__cell"><span class="lgam-tag lgam-tag--capability">Payments</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--capability">Capabilities</span></td>
+              <td class="govuk-table__cell"><span class="govuk-tag lgam-tag--capability">Payments</span></td>
               <td class="govuk-table__cell">Processing complex planning application fees based on development size and type.</td>
               <td class="govuk-table__cell">Corporate Payment Gateway</td>
             </tr>

@@ -9,20 +9,11 @@ description: "Describes architectures for spatial evidence gathering and mass ci
 ---
 <style>
     /* Pattern and Capability Tags */
-    .pattern-group { margin-bottom: 20px; }
-    .capability-tag { 
-      display: inline-block; 
-      padding: 2px 8px; 
-      background: #e5e5e5; 
-      color: #0b0c0c; 
-      font-size: 14px; 
-      margin-right: 5px; 
-      margin-bottom: 5px;
-      border: 1px solid #b1b4b6;
-    }
-    .pattern-tag { display: inline-block; padding: 2px 8px; font-weight: bold; font-size: 14px; margin-bottom: 5px; }
-    .pattern-tag--target { background: #00703c; color: #fff; }
-    .pattern-tag--anti { background: #d4351c; color: #fff; }
+    
+    
+    
+    
+    
 
     .phase-number {
       display: inline-block;
@@ -133,16 +124,16 @@ description: "Describes architectures for spatial evidence gathering and mass ci
                   <p class="govuk-body"><strong>The process:</strong> Policy officers must gather massive amounts of demographic, environmental, and economic data. They model this data to predict future housing needs and identify physical plots of land suitable for development (the Strategic Housing Land Availability Assessment - SHLAA).</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group">
-                    <span class="capability-tag">Geospatial data</span>
-                    <span class="capability-tag">Data warehousing</span>
-                    <span class="capability-tag">Business intelligence</span>
+                    <span class="govuk-tag lgam-tag--capability">Geospatial data</span>
+                    <span class="govuk-tag lgam-tag--capability">Data warehousing</span>
+                    <span class="govuk-tag lgam-tag--capability">Business intelligence</span>
                   </div>
                 </div>
 
                 <!-- Anti-patterns -->
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase1-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Manual desktop spatial clicks</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Manual desktop spatial clicks</span>
                     <p class="govuk-body">Conducting complex site allocation through undocumented, manual operations within desktop GIS software. The analyst manually intersects layers (e.g., "Remove flood zones, add brownfield"). If the underlying flood data updates next week, the entire manual clicking process must be repeated, and errors are untraceable.</p>
                   </div>
                   
@@ -247,15 +238,15 @@ description: "Describes architectures for spatial evidence gathering and mass ci
                   <p class="govuk-body"><strong>The process:</strong> The council must consult the public on the draft plan. Citizens, developers, and statutory bodies review proposed zoning changes and provide feedback, generating thousands of responses that must be logged, categorized, and addressed.</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group">
-                    <span class="capability-tag">Websites (Consultation)</span>
-                    <span class="capability-tag">Data pipelines</span>
+                    <span class="govuk-tag lgam-tag--capability">Websites (Consultation)</span>
+                    <span class="govuk-tag lgam-tag--capability">Data pipelines</span>
                   </div>
                 </div>
 
                 <!-- Anti-patterns -->
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase2-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: The PDF and Inbox</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: The PDF and Inbox</span>
                     <p class="govuk-body">Publishing the draft Local Plan as a massive, 300-page static PDF on the council website and asking citizens to email their feedback to a generic inbox. This creates a data-sorting nightmare for officers, who must manually read, categorize, and copy-paste thousands of unstructured emails into a spreadsheet.</p>
                   </div>
                   
@@ -351,15 +342,15 @@ description: "Describes architectures for spatial evidence gathering and mass ci
                   <p class="govuk-body"><strong>The process:</strong> Following Examination by the Planning Inspectorate, the Local Plan is officially adopted. This plan is now the legal framework that Development Management officers must use to assess incoming planning applications.</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group">
-                    <span class="capability-tag">API management</span>
-                    <span class="capability-tag">Event-driven integration</span>
+                    <span class="govuk-tag lgam-tag--capability">API management</span>
+                    <span class="govuk-tag lgam-tag--capability">Event-driven integration</span>
                   </div>
                 </div>
 
                 <!-- Anti-patterns -->
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase3-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: The Disconnected Truth</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: The Disconnected Truth</span>
                     <p class="govuk-body">The Planning Policy team publishes the new rules as a PDF document. Meanwhile, Development Management continues to use older spatial layers in their separate IT system. There is no automated connection between the newly adopted rules and the systems used to enforce them daily.</p>
                   </div>
                   

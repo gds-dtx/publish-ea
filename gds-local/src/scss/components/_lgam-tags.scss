@@ -1,0 +1,71 @@
+/* ==========================================================================
+   LGAM - TAGGING SYSTEM
+   ========================================================================== */
+
+/* 
+  Base overrides to ensure .govuk-tag modifier classes retain the
+  legacy LGAM styling (slimmer padding, normal weight, no uppercase).
+*/
+%lgam-tag-base {
+  padding: 2px 8px !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  border: 1px solid transparent;
+}
+
+/* Modifier classes meant to be used alongside .govuk-tag */
+.lgam-tag--capability {
+  @extend %lgam-tag-base;
+  background-color: #000080 !important;
+  color: #ffffff !important;
+}
+
+.lgam-tag--business-area {
+  @extend %lgam-tag-base;
+  background-color: #0000FF !important;
+  color: #ffffff !important;
+}
+
+.lgam-tag--technology {
+  @extend %lgam-tag-base;
+  background-color: #008080 !important;
+  color: #ffffff !important;
+}
+
+.lgam-tag--integration {
+  @extend %lgam-tag-base;
+  background-color: #6B6B00 !important;
+  color: #ffffff !important;
+}
+
+.lgam-tag--security {
+  @extend %lgam-tag-base;
+  background-color: #CC0000 !important;
+  color: #ffffff !important;
+}
+
+.lgam-tag--data {
+  @extend %lgam-tag-base;
+  background-color: #800000 !important;
+  color: #ffffff !important;
+}
+
+.lgam-tag--corporate {
+  @extend %lgam-tag-base;
+  background-color: #696969 !important;
+  color: #ffffff !important;
+}
+
+.lgam-tag--target {
+  @extend %lgam-tag-base;
+  background-color: #00703c !important;
+  color: #ffffff !important;
+}
+
+.lgam-tag--anti {
+  @extend %lgam-tag-base;
+  background-color: #d4351c !important;
+  color: #ffffff !important;
+}

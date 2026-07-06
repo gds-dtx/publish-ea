@@ -1,0 +1,14 @@
+// =========================================================
+// GOV.UK Frontend Settings
+// =========================================================
+// Import GOV.UK Frontend with configuration
+@use "node_modules/govuk-frontend/dist/govuk/index" as * with (
+  $govuk-assets-path: "/assets/"
+);
+
+// =========================================================
+@import "components/layout";
+@import "components/shared-components";
+@import "components/lgam-accordion";
+@import "components/lgam-tags";
+@import "components/index";

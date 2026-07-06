@@ -9,8 +9,8 @@ description: "Details the architecture for processing planning applications. Fea
 ---
 <style>
     @keyframes spin { 100% { transform: rotate(360deg); } }
-    .govuk-tag--green { background-color: #00703c; color: #fff; }
-    .govuk-tag--grey { background-color: #b1b4b6; color: #0b0c0c; }
+    
+    
 </style>
 
 <nav-contents>
@@ -246,20 +246,20 @@ description: "Details the architecture for processing planning applications. Fea
                   <p class="govuk-body"><strong>The process:</strong> The intake of data from citizens, architects, and planning agents. The council securely captures the applicant's intent, property details, supporting documents, and the specific geographic boundaries of the proposed development.</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group govuk-!-margin-bottom-4">
-                    <span class="capability-tag">Forms</span>
-                    <span class="capability-tag">Identity and access management (IAM)</span>
-                    <span class="capability-tag">Document and records management</span>
+                    <span class="govuk-tag lgam-tag--capability">Forms</span>
+                    <span class="govuk-tag lgam-tag--capability">Identity and access management (IAM)</span>
+                    <span class="govuk-tag lgam-tag--capability">Document and records management</span>
                   </div>
                 </div>
 
                 <!-- Phase 1: Anti-patterns -->
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase1-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Generic E-Forms to PDF</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Generic E-Forms to PDF</span>
                     <p class="govuk-body">Using generic council web forms that capture free-text input and immediately flatten the data into an unstructured PDF. This strips the submission of its machine-readable data on day one.</p>
                   </div>
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Free-text address matching</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Free-text address matching</span>
                     <p class="govuk-body">Allowing applicants to manually type their address rather than forcing a UPRN lookup against the corporate gazetteer, resulting in failed spatial linkages downstream.</p>
                   </div>
                   
@@ -383,16 +383,16 @@ description: "Details the architecture for processing planning applications. Fea
                   <p class="govuk-body"><strong>The process:</strong> Ensuring the submission is legally complete, geographically sound, and financially settled before officer assessment begins. This involves checking architectural plans, validating ownership certificates, calculating fees, and drawing the site boundary polygons into the corporate GIS system.</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group govuk-!-margin-bottom-4">
-                    <span class="capability-tag">Workflow</span>
-                    <span class="capability-tag">Payments</span>
-                    <span class="capability-tag">Geospatial data</span>
+                    <span class="govuk-tag lgam-tag--capability">Workflow</span>
+                    <span class="govuk-tag lgam-tag--capability">Payments</span>
+                    <span class="govuk-tag lgam-tag--capability">Geospatial data</span>
                   </div>
                 </div>
 
                 <!-- Phase 2: Anti-patterns -->
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase2-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Swivel-chair integration</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Swivel-chair integration</span>
                     <p class="govuk-body">Validation officers forced to look at a PDF plan on one screen while manually clicking to redraw identical redline boundaries into a separate GIS database.</p>
                   </div>
                   
@@ -524,20 +524,20 @@ description: "Details the architecture for processing planning applications. Fea
                   <p class="govuk-body"><strong>The process:</strong> The core officer workflow. Managing the statutory public comment period, processing neighbour letters, performing spatial assessments, and exchanging information with external statutory bodies (e.g., Environment Agency, Highways).</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group govuk-!-margin-bottom-4">
-                    <span class="capability-tag">Workflow</span>
-                    <span class="capability-tag">Websites</span>
-                    <span class="capability-tag">Partner (B2B) integration</span>
+                    <span class="govuk-tag lgam-tag--capability">Workflow</span>
+                    <span class="govuk-tag lgam-tag--capability">Websites</span>
+                    <span class="govuk-tag lgam-tag--capability">Partner (B2B) integration</span>
                   </div>
                 </div>
 
                 <!-- Phase 3: Anti-patterns -->
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase3-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Contended Databases</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Contended Databases</span>
                     <p class="govuk-body">Pointing high-traffic public registers directly at the synchronous back-office workflow database. A controversial planning application can cause public traffic spikes that slow down or crash the internal system for officers.</p>
                   </div>
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Manual Consultee PDFs</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Manual Consultee PDFs</span>
                     <p class="govuk-body">Generating consultation requests as PDF letters and emailing them manually to statutory bodies, rather than passing the structured application payload via an API.</p>
                   </div>
                   
@@ -674,15 +674,15 @@ description: "Details the architecture for processing planning applications. Fea
                   <p class="govuk-body"><strong>The process:</strong> Issuing the final legal decision, recording conditions, preparing bundles for potential appeals, and publishing the final outcome data to central government repositories.</p>
                   <p class="govuk-body govuk-!-margin-bottom-2"><strong>Required LGAM Taxonomy Nodes:</strong></p>
                   <div class="pattern-group govuk-!-margin-bottom-4">
-                    <span class="capability-tag">Document and records management</span>
-                    <span class="capability-tag">Event-driven and streaming integration</span>
+                    <span class="govuk-tag lgam-tag--capability">Document and records management</span>
+                    <span class="govuk-tag lgam-tag--capability">Event-driven and streaming integration</span>
                   </div>
                 </div>
 
                 <!-- Phase 4: Anti-patterns -->
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase4-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Manual File Bundling</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Manual File Bundling</span>
                     <p class="govuk-body">When an appeal is lodged, officers manually download dozens of PDFs, compile them into a ZIP file, and email them to the Planning Inspectorate (PINS), creating massive administrative overhead.</p>
                   </div>
                   
