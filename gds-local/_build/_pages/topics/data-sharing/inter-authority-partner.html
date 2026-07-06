@@ -4,14 +4,13 @@ caption: LGAM Sharing Patterns
 status: draft
 parent: index.html
 parent_title: Data Sharing
-redirect_from: ds-inter-authority-partner.html
+redirect_from: ds-inter-authority-partner.html, topics/inter-authority-partner.html
 description: "Technical pattern guide detailing horizontal multi-agency sharing. Visually centers around an interactive Mermaid data flow diagram and utilizes a phase-based accordion with nested tabs to contrast target architectures against legacy anti-patterns."
 ---
 <style>
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    .govuk-tag--green { background-color: #00703c; color: #fff; }
-    .govuk-tag--grey { background-color: #b1b4b6; color: #0b0c0c; }
-    .govuk-tag--blue { background-color: #1d70b8; color: #fff; }
+    
+    
+    
     
     /* Mermaid diagram container */
     .arch-diagram-container {
@@ -191,7 +190,7 @@ flowchart TD
 
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase2-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Deterministic Exact Matching</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Deterministic Exact Matching</span>
                     <p class="govuk-body">Relying on exact string matches for First Name, Last Name, and Date of Birth across databases. This approach fails to account for typos, nicknames, name changes, or slight date errors, resulting in high rates of missed linkages (false negatives) for vulnerable people.</p>
                   </div>
                 </div>

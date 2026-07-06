@@ -21,6 +21,7 @@ import re
 import shutil
 import sys
 import datetime
+import subprocess
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 GDS_LOCAL_DIR = os.path.dirname(SCRIPT_DIR)
@@ -77,11 +78,9 @@ def parse_page(filepath):
     return front_matter, blocks
 
 
-def build_page(target_filename, front_matter, blocks):
+def build_page(target_filename, front_matter, blocks, is_preview=False):
     """Assemble a full HTML page from partials and page-specific blocks."""
     head_open = read_partial("head-open.html")
-    layout_css = read_partial("layout-css.html")
-    components_css = read_partial("components-css.html")
     header = read_partial("header.html")
     sidebar_lgam = read_partial("sidebar-lgam.html")
     footer = read_partial("footer.html")
@@ -96,7 +95,12 @@ def build_page(target_filename, front_matter, blocks):
 
     # Calculate depth to fix relative links to the root index.html
     depth = target_filename.count("/")
+    if is_preview:
+        depth += 1
     prefix = "../" * depth
+    head_open = head_open.replace("{{ prefix }}", prefix)
+    footer = footer.replace("{{ prefix }}", prefix)
+
     if depth > 0:
         header = header.replace('href="index.html"', f'href="{prefix}index.html"')
         sidebar_lgam = sidebar_lgam.replace('href="index.html"', f'href="{prefix}index.html"')
@@ -109,13 +113,11 @@ def build_page(target_filename, front_matter, blocks):
 
     # Page-specific CSS
     if blocks["style"].strip():
+        parts.append("\n  <style>\n")
         parts.append(blocks["style"])
-        parts.append("\n")
+        parts.append("\n  </style>\n")
 
-    # Layout CSS + shared component CSS
-    parts.append(layout_css)
-    parts.append(components_css)
-    parts.append("  </style>\n</head>\n\n")
+    parts.append("</head>\n\n")
 
     # Body: header + phase banner
     parts.append(header)
@@ -206,7 +208,7 @@ def update_index_links(pages):
         # Build the link paragraph we want to insert/find
         link_para = (
             f'<p class="govuk-body govuk-!-margin-top-3 govuk-!-margin-bottom-0">'
-            f'<a href="{link_url}" class="govuk-link">View {fm.get("title", "")} detail &rarr;</a></p>'
+            f'<a href="{link_url}" class="govuk-link">View {fm.get("title", "")} detail&nbsp;&rarr;</a></p>'
         )
 
         # Pattern to find existing auto-generated link for this file or target
@@ -423,6 +425,26 @@ def generate_preview_index(pages_meta):
 
 
 def main():
+    os.chdir(GDS_LOCAL_DIR)
+
+    print("Running asset pipeline...")
+    # 1. Compile SCSS to CSS
+    try:
+        subprocess.run(["npx", "sass", "--load-path=.", "src/scss/application.scss", "css/application.css"], check=True)
+        print("  [success] Compiled src/scss/application.scss -> css/application.css")
+    except subprocess.CalledProcessError as e:
+        print("  [error] SCSS compilation failed. Ensure Dart Sass is installed.")
+        sys.exit(1)
+
+    # 2. Copy the UMD JS bundle from node_modules
+    os.makedirs("js", exist_ok=True)
+    bundle_src = "node_modules/govuk-frontend/dist/govuk/all.bundle.js"
+    if os.path.exists(bundle_src):
+        shutil.copy2(bundle_src, "js/govuk-frontend.min.js")
+        print("  [success] Copied all.bundle.js -> js/govuk-frontend.min.js")
+    else:
+        print("  [warning] all.bundle.js not found in node_modules! Run `npm install`.")
+
     if not os.path.isdir(PAGES_DIR):
         print(f"Error: pages directory not found: {PAGES_DIR}", file=sys.stderr)
         sys.exit(1)
@@ -455,7 +477,7 @@ def main():
         target = fm.get("target", filename)
 
         # Build preview using original filename (preserves source tree structure in preview)
-        preview_output = build_page(filename, fm, blocks)
+        preview_output = build_page(filename, fm, blocks, is_preview=True)
         preview_path = os.path.join(PREVIEW_DIR, filename)
         os.makedirs(os.path.dirname(preview_path), exist_ok=True)
         with open(preview_path, "w", encoding="utf-8") as f:

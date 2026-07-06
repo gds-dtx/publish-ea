@@ -1,0 +1,17 @@
+{
+  "name": "gds-local",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "govuk-frontend": "^6.3.0",
+    "sass": "^1.101.0"
+  }
+}

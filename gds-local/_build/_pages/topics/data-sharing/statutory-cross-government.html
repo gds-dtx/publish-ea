@@ -4,14 +4,13 @@ caption: LGAM Sharing Patterns
 status: draft
 parent: index.html
 parent_title: Data Sharing
-redirect_from: ds-statutory-cross-government.html
+redirect_from: ds-statutory-cross-government.html, topics/statutory-cross-government.html
 description: "Architectural specification for central-to-local API integration. Employs an interactive Mermaid flowchart and a complex tabbed accordion structure to compare target data flows with legacy anti-patterns across different lifecycle phases."
 ---
 <style>
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    .govuk-tag--green { background-color: #00703c; color: #fff; }
-    .govuk-tag--grey { background-color: #b1b4b6; color: #0b0c0c; }
-    .govuk-tag--blue { background-color: #1d70b8; color: #fff; }
+    
+    
+    
     
     /* Mermaid diagram container */
     .arch-diagram-container {
@@ -158,11 +157,11 @@ flowchart LR
 
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase1-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Build first, govern later</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Build first, govern later</span>
                     <p class="govuk-body">Building technical integration pipelines before establishing the lawful basis. Information Governance must be established before technical builds commence.</p>
                   </div>
                   <div class="pattern-group govuk-!-margin-top-4">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Point-to-Point Justification</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Point-to-Point Justification</span>
                     <p class="govuk-body">Drafting bespoke DPIAs and DSAs from scratch for every minor data share, rather than leveraging scalable frameworks to standardise governance.</p>
                   </div>
                 </div>
@@ -197,11 +196,11 @@ flowchart LR
 
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase2-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Hardcoded Service Accounts</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Hardcoded Service Accounts</span>
                     <p class="govuk-body">Using static database credentials or API keys shared via email, which are never rotated and lack identity federation.</p>
                   </div>
                   <div class="pattern-group govuk-!-margin-top-4">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: IP Whitelisting Insufficiency</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: IP Whitelisting Insufficiency</span>
                     <p class="govuk-body">Relying solely on IP whitelisting to secure the exchange, which provides no visibility into the individual user or their asserted role.</p>
                   </div>
                 </div>
@@ -236,7 +235,7 @@ flowchart LR
 
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="phase3-anti">
                   <div class="pattern-group">
-                    <span class="pattern-tag pattern-tag--anti">Anti-pattern: Massive SFTP Data Dumps</span>
+                    <span class="govuk-tag lgam-tag--anti">Anti-pattern: Massive SFTP Data Dumps</span>
                     <p class="govuk-body">Relying on batch-generated CSV files containing thousands of raw records, uploaded to a secure FTP server. This over-shares personal data, violates data minimisation principles, and relies on manual ingestion processes.</p>
                   </div>
                 </div>
