@@ -8,10 +8,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/govuk-frontend@5.13.0/dist/govuk/govuk-frontend.min.css">
 <style>
   /* -------------------------------------------------------------
-    
      Structure is deliberately card-based so additional tools can
      be added later by:
-       1. dropping a new sub-folder into this directory, and
+       1. dropping a new .html file next to this index.html, and
        2. adding a new <li class="app-tool-card"> block below.
      ------------------------------------------------------------- */
 
@@ -206,45 +205,29 @@
     <!-- ================================================================
          TOOL CARDS
          ----------------------------------------------------------------
-         Each card is one tool. To add another tool later:
-           1. Create a sub-folder next to this file, e.g. "New-tool"
-              with its own index.html inside it.
-           2. Copy an <li class="app-tool-card"> block below and
-              update the title, description, folder path and metadata.
+         Each card is one tool. All tool HTML files live at the same
+         level as this index.html to keep the structure flat and simple.
+         To add another tool later:
+           1. Drop a new file next to this one, e.g. "arch_new_tool.html".
+           2. Copy an <li class="app-tool-card"> block below and update
+              the title, description, href and metadata.
          ================================================================ -->
     <ul class="app-tool-list">
 
-     <!-- ================================================================
       <!-- Tool 1: Architecture maturity self-assessment (live) -->
       <li class="app-tool-card">
         <span class="app-tool-card__meta">Practice maturity · 5–10 mins</span>
         <h3 class="app-tool-card__title">
-          <a href="architecture_self_assesment/arch_self_assessment.html">Architecture maturity self-assessment</a>
+          <a href="arch_self_assessment.html">Architecture maturity self-assessment</a>
         </h3>
         <p class="app-tool-card__desc">
           Score your practice against 14 dimensions — from purpose and mandate to outcomes and value realisation — and get a tailored action plan with links to standards like the Technology Code of Practice, SFIA and the DDaT Capability Framework.
         </p>
         <div class="app-tool-card__footer">
           <span class="app-tool-card__tag app-tool-card__tag--alpha">Alpha</span>
-          <a class="app-tool-card__cta" href="Architecture-self-assessment/">Start now →</a>
+          <a class="app-tool-card__cta" href="arch_self_assessment.html" aria-label="Start the Architecture maturity self-assessment">Start now →</a>
         </div>
       </li>
-
-      ================================================================ -->
-
-
-      <!-- Tool 1: Architecture maturity self-assessment (live) -->
-<li class="app-tool-card">
-  <span class="app-tool-card__meta">Practice maturity · 5–10 mins</span>
-  <h3 class="app-tool-card__title">
-    architecture_self_assesment/arch_self_assessment.htmlArchitecture maturity self-assessment</a>
-  </h3>
-  ...
-  <div class="app-tool-card__footer">
-    <span class="app-tool-card__tag app-tool-card__tag--alpha">Alpha</span>
-    Architecture-self-assessment/Start now →</a>
-  </div>
-</li>
 
       <!-- ============================================================
            EXAMPLE PLACEHOLDER CARDS (planned tools).
